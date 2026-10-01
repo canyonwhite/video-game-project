@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://qhwdo6l4dfk"]
+
+[ext_resource type="Script" uid="uid://b1yfpocobhemg" path="res://player.gd" id="1_s4uru"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_od7gf"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_od7gf"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tbpgo"]
+albedo_color = Color(0.13142002, 0.62111145, 0.99999994, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_od7gf"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rsx1k"]
+albedo_color = Color(0.16394997, 0.08725781, 0.014266075, 1)
+
+[node name="Node3D" type="Node" unique_id=483450799]
+
+[node name="Player" type="CharacterBody3D" parent="." unique_id=828709562]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = ExtResource("1_s4uru")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1312095851]
+shape = SubResource("CapsuleShape3D_od7gf")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player" unique_id=770795524]
+mesh = SubResource("CapsuleMesh_od7gf")
+surface_material_override/0 = SubResource("StandardMaterial3D_tbpgo")
+
+[node name="floor" type="MeshInstance3D" parent="." unique_id=114344309]
+transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0)
+mesh = SubResource("PlaneMesh_od7gf")
+surface_material_override/0 = SubResource("StandardMaterial3D_rsx1k")
