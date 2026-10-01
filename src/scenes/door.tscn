@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://c4r5q6xoljg3p"]
+
+[sub_resource type="PrismMesh" id="PrismMesh_od7gf"]
+
+[node name="Node3D" type="Node3D" unique_id=2092306592]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1765461840]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" unique_id=1121318114]
+mesh = SubResource("PrismMesh_od7gf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1981259168]

@@ -1,33 +1,78 @@
 [gd_scene format=3 uid="uid://qhwdo6l4dfk"]
 
-[ext_resource type="Script" uid="uid://b1yfpocobhemg" path="res://player.gd" id="1_s4uru"]
+[ext_resource type="PackedScene" uid="uid://du6s2a6fybqj6" path="res://src/scenes/player.tscn" id="1"]
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_od7gf"]
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_tbpgo"]
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_od7gf"]
+[sub_resource type="Sky" id="Sky_rsx1k"]
+sky_material = SubResource("PhysicalSkyMaterial_tbpgo")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tbpgo"]
-albedo_color = Color(0.13142002, 0.62111145, 0.99999994, 1)
+[sub_resource type="Environment" id="Environment_od7gf"]
+background_mode = 2
+sky = SubResource("Sky_rsx1k")
+sky_rotation = Vector3(0, -3.3510323, 0)
+fog_enabled = true
+fog_density = 0.005
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_s4uru"]
+
+[sub_resource type="Compositor" id="Compositor_s4uru"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_od7gf"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rsx1k"]
-albedo_color = Color(0.16394997, 0.08725781, 0.014266075, 1)
+albedo_color = Color(0.4701323, 0.42576155, 2.8878452e-07, 1)
 
-[node name="Node3D" type="Node" unique_id=483450799]
+[sub_resource type="BoxShape3D" id="BoxShape3D_od7gf"]
 
-[node name="Player" type="CharacterBody3D" parent="." unique_id=828709562]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-script = ExtResource("1_s4uru")
+[sub_resource type="BoxMesh" id="BoxMesh_od7gf"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1312095851]
-shape = SubResource("CapsuleShape3D_od7gf")
+[sub_resource type="BoxShape3D" id="BoxShape3D_rsx1k"]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Player" unique_id=770795524]
-mesh = SubResource("CapsuleMesh_od7gf")
-surface_material_override/0 = SubResource("StandardMaterial3D_tbpgo")
+[node name="MovementTestRoom" type="Node3D" unique_id=388921207]
 
-[node name="floor" type="MeshInstance3D" parent="." unique_id=114344309]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=605039358]
+environment = SubResource("Environment_od7gf")
+camera_attributes = SubResource("CameraAttributesPractical_s4uru")
+compositor = SubResource("Compositor_s4uru")
+
+[node name="Player" parent="." unique_id=747387532 instance=ExtResource("1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 7)
+
+[node name="Floor" type="StaticBody3D" parent="." unique_id=11232597]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=728566253]
 transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0)
 mesh = SubResource("PlaneMesh_od7gf")
 surface_material_override/0 = SubResource("StandardMaterial3D_rsx1k")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=482227617]
+transform = Transform3D(200, 0, 0, 0, 200, 0, 0, 0, 200, 0, -100, 0)
+shape = SubResource("BoxShape3D_od7gf")
+
+[node name="Box" type="StaticBody3D" parent="." unique_id=256486127]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.5, 3)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Box" unique_id=1004770279]
+mesh = SubResource("BoxMesh_od7gf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Box" unique_id=732522972]
+shape = SubResource("BoxShape3D_rsx1k")
+
+[node name="Wall 1" type="StaticBody3D" parent="." unique_id=1119185814]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 5, 2.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Wall 1" unique_id=1512401829]
+mesh = SubResource("BoxMesh_od7gf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall 1" unique_id=877139533]
+shape = SubResource("BoxShape3D_rsx1k")
+
+[node name="Wall 2" type="StaticBody3D" parent="." unique_id=929421452]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 5, 2.5, 5.75)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Wall 2" unique_id=354635293]
+mesh = SubResource("BoxMesh_od7gf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall 2" unique_id=1409903013]
+shape = SubResource("BoxShape3D_rsx1k")
