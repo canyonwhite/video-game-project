@@ -1,22 +1,27 @@
 [gd_scene format=3 uid="uid://qhwdo6l4dfk"]
 
 [ext_resource type="PackedScene" uid="uid://du6s2a6fybqj6" path="res://src/scenes/player.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://cbwfy7igmk51c" path="res://src/game_objects/classic laptop/classic_laptop_4k.gltf" id="2_fp51l"]
 
-[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_tbpgo"]
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fp51l"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
 
-[sub_resource type="Sky" id="Sky_rsx1k"]
-sky_material = SubResource("PhysicalSkyMaterial_tbpgo")
+[sub_resource type="Sky" id="Sky_0snwi"]
+sky_material = SubResource("ProceduralSkyMaterial_fp51l")
 
-[sub_resource type="Environment" id="Environment_od7gf"]
-background_mode = 2
-sky = SubResource("Sky_rsx1k")
-sky_rotation = Vector3(0, -3.3510323, 0)
-fog_enabled = true
-fog_density = 0.005
-
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_s4uru"]
-
-[sub_resource type="Compositor" id="Compositor_s4uru"]
+[sub_resource type="Environment" id="Environment_v8vse"]
+background_mode = 1
+background_color = Color(0.10747976, 0.10747973, 0.10747973, 1)
+sky = SubResource("Sky_0snwi")
+sdfgi_enabled = true
+sdfgi_use_occlusion = true
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.12
+volumetric_fog_albedo = Color(0, 0, 0, 1)
+adjustment_enabled = true
+adjustment_contrast = 1.2
+adjustment_saturation = 0.75
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_od7gf"]
 
@@ -31,10 +36,14 @@ albedo_color = Color(0.4701323, 0.42576155, 2.8878452e-07, 1)
 
 [node name="MovementTestRoom" type="Node3D" unique_id=388921207]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=605039358]
-environment = SubResource("Environment_od7gf")
-camera_attributes = SubResource("CameraAttributesPractical_s4uru")
-compositor = SubResource("Compositor_s4uru")
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=761221440]
+environment = SubResource("Environment_v8vse")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=190833900]
+transform = Transform3D(-0.8660254, -0.43301278, 0.24999999, 0.45164305, -0.4629449, 0.762693, -0.21451956, 0.77342224, 0.5964892, 0, 0, 0)
+light_energy = 0.5
+shadow_enabled = true
+shadow_opacity = 0.5
 
 [node name="Player" parent="." unique_id=747387532 instance=ExtResource("1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 7)
@@ -76,3 +85,7 @@ mesh = SubResource("BoxMesh_od7gf")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Wall 2" unique_id=1409903013]
 shape = SubResource("BoxShape3D_rsx1k")
+
+[node name="classic_laptop_4k" type="Node3D" parent="." unique_id=1752246315 instance=ExtResource("2_fp51l")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0856912, 1, 3.1430154)
+metadata/asset_placer_res_id = "uid://cbwfy7igmk51c"

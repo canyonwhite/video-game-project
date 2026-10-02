@@ -1,0 +1,455 @@
+[gd_scene format=4 uid="uid://b8hg2nhua2eqf"]
+
+[ext_resource type="Script" uid="uid://2jktco8h5i23" path="res://addons/hammerforge/level_root.gd" id="1_7ycgt"]
+[ext_resource type="Script" uid="uid://c08wqo8o0bomi" path="res://addons/hammerforge/brush_instance.gd" id="2_bct31"]
+[ext_resource type="Script" uid="uid://baa0jehgyu0by" path="res://addons/hammerforge/draft_entity.gd" id="2_ne27i"]
+[ext_resource type="Script" uid="uid://dww1kkncgdafi" path="res://addons/hammerforge/face_data.gd" id="3_qd6jr"]
+[ext_resource type="Script" uid="uid://bx7ydxsoo45un" path="res://addons/hammerforge/brush_manager.gd" id="3_yv12j"]
+[ext_resource type="Script" uid="uid://g7n2vsq686dw" path="res://addons/hammerforge/paint/hf_face_paint_layer.gd" id="4_7bjd7"]
+[ext_resource type="Script" uid="uid://cka1o771brxa2" path="res://addons/hammerforge/material_manager.gd" id="4_lvgit"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_down_blue.tres" id="5_bct31"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_down_brown.tres" id="6_qd6jr"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_down_cyan.tres" id="7_7bjd7"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_down_green.tres" id="8_qm5ex"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_down_grey.tres" id="9_12ywc"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_down_orange.tres" id="10_03xrf"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_down_pink.tres" id="11_11ctb"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_down_purple.tres" id="12_b5ewc"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_down_red.tres" id="13_xxuvm"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_down_yellow.tres" id="14_hsied"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_left_blue.tres" id="15_vfebb"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_left_brown.tres" id="16_laild"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_left_cyan.tres" id="17_7tevo"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_left_green.tres" id="18_tc2u6"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_left_grey.tres" id="19_b0p0w"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_left_orange.tres" id="20_gdjdj"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_left_pink.tres" id="21_qq7wa"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_left_purple.tres" id="22_5xtb2"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_left_red.tres" id="23_mei8x"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_left_yellow.tres" id="24_42l3g"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_right_blue.tres" id="25_2yyoj"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_right_brown.tres" id="26_lgq5i"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_right_cyan.tres" id="27_jy10m"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_right_green.tres" id="28_7mer1"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_right_grey.tres" id="29_el5vj"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_right_orange.tres" id="30_mfekc"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_right_pink.tres" id="31_y8hxc"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_right_purple.tres" id="32_2ffm1"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_right_red.tres" id="33_jhwtq"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_right_yellow.tres" id="34_6r6hg"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_up_blue.tres" id="35_mb30m"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_up_brown.tres" id="36_mq8go"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_up_cyan.tres" id="37_v4dul"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_up_green.tres" id="38_hfi3h"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_up_grey.tres" id="39_7dwah"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_up_orange.tres" id="40_nfx7q"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_up_pink.tres" id="41_umpuy"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_up_purple.tres" id="42_vefm4"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_up_red.tres" id="43_w7nyf"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_arrow_up_yellow.tres" id="44_oi8ul"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_brick_blue.tres" id="45_xq2va"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_brick_brown.tres" id="46_wikji"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_brick_cyan.tres" id="47_vn37e"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_brick_green.tres" id="48_bcefw"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_brick_grey.tres" id="49_qgeek"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_brick_orange.tres" id="50_noeen"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_brick_pink.tres" id="51_7egbc"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_brick_purple.tres" id="52_yx2vq"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_brick_red.tres" id="53_rlcf3"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_brick_yellow.tres" id="54_kofn3"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_checker_blue.tres" id="55_xpf0o"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_checker_brown.tres" id="56_kjq4y"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_checker_cyan.tres" id="57_jf2e2"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_checker_green.tres" id="58_36r4n"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_checker_grey.tres" id="59_dsnls"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_checker_orange.tres" id="60_bievk"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_checker_pink.tres" id="61_p0hhd"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_checker_purple.tres" id="62_g4p55"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_checker_red.tres" id="63_30knx"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_checker_yellow.tres" id="64_13hx7"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_cross_blue.tres" id="65_rcs8q"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_cross_brown.tres" id="66_l0e27"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_cross_cyan.tres" id="67_7cjpi"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_cross_green.tres" id="68_fk65d"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_cross_grey.tres" id="69_c3rdm"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_cross_orange.tres" id="70_omauu"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_cross_pink.tres" id="71_5it0f"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_cross_purple.tres" id="72_8ebjf"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_cross_red.tres" id="73_g4wwr"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_cross_yellow.tres" id="74_5exvh"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_diamond_blue.tres" id="75_yoyvw"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_diamond_brown.tres" id="76_tpgch"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_diamond_cyan.tres" id="77_kq5gd"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_diamond_green.tres" id="78_ca68y"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_diamond_grey.tres" id="79_5jejf"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_diamond_orange.tres" id="80_g164a"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_diamond_pink.tres" id="81_nlfp6"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_diamond_purple.tres" id="82_m0ub4"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_diamond_red.tres" id="83_p4wwh"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_diamond_yellow.tres" id="84_gy0hn"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_dots_blue.tres" id="85_fokjr"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_dots_brown.tres" id="86_poofu"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_dots_cyan.tres" id="87_o5k8f"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_dots_green.tres" id="88_radut"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_dots_grey.tres" id="89_mkfwt"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_dots_orange.tres" id="90_ienfh"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_dots_pink.tres" id="91_6ja86"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_dots_purple.tres" id="92_ogrdd"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_dots_red.tres" id="93_hqw76"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_dots_yellow.tres" id="94_yccn8"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_hex_blue.tres" id="95_i3drx"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_hex_brown.tres" id="96_lhiu1"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_hex_cyan.tres" id="97_v3u80"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_hex_green.tres" id="98_ufl36"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_hex_grey.tres" id="99_phwst"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_hex_orange.tres" id="100_jtrun"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_hex_pink.tres" id="101_8vad8"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_hex_purple.tres" id="102_tetp8"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_hex_red.tres" id="103_fhjqp"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_hex_yellow.tres" id="104_gyeiv"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_solid_blue.tres" id="105_1ku4e"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_solid_brown.tres" id="106_4reyj"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_solid_cyan.tres" id="107_8rtta"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_solid_green.tres" id="108_2j6v6"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_solid_grey.tres" id="109_lkadm"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_solid_orange.tres" id="110_xgejn"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_solid_pink.tres" id="111_7f2fr"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_solid_purple.tres" id="112_rdn6t"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_solid_red.tres" id="113_u26s6"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_solid_yellow.tres" id="114_q3okx"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_diagonal_blue.tres" id="115_ql3pl"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_diagonal_brown.tres" id="116_peim5"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_diagonal_cyan.tres" id="117_c55hh"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_diagonal_green.tres" id="118_1k54y"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_diagonal_grey.tres" id="119_00nhd"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_diagonal_orange.tres" id="120_pstm4"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_diagonal_pink.tres" id="121_7i1by"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_diagonal_purple.tres" id="122_ir4br"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_diagonal_red.tres" id="123_hlyv6"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_diagonal_yellow.tres" id="124_j028r"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_horizontal_blue.tres" id="125_2a1nm"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_horizontal_brown.tres" id="126_wjwm2"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_horizontal_cyan.tres" id="127_4ei0i"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_horizontal_green.tres" id="128_xwh4k"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_horizontal_grey.tres" id="129_tnmu2"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_horizontal_orange.tres" id="130_4tbdg"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_horizontal_pink.tres" id="131_wyu87"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_horizontal_purple.tres" id="132_ujg6u"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_horizontal_red.tres" id="133_1ngda"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_stripes_horizontal_yellow.tres" id="134_4lw60"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_triangles_blue.tres" id="135_711o1"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_triangles_brown.tres" id="136_7p1uo"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_triangles_cyan.tres" id="137_6wbd2"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_triangles_green.tres" id="138_2kovc"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_triangles_grey.tres" id="139_v3rip"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_triangles_orange.tres" id="140_m6pd0"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_triangles_pink.tres" id="141_y0x83"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_triangles_purple.tres" id="142_l2ey2"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_triangles_red.tres" id="143_twm1g"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_triangles_yellow.tres" id="144_8dmkx"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_zigzag_blue.tres" id="145_tqij8"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_zigzag_brown.tres" id="146_6vwk2"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_zigzag_cyan.tres" id="147_ulw8h"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_zigzag_green.tres" id="148_vqe15"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_zigzag_grey.tres" id="149_s7jis"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_zigzag_orange.tres" id="150_lij7v"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_zigzag_pink.tres" id="151_mveb8"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_zigzag_purple.tres" id="152_4b1aj"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_zigzag_red.tres" id="153_y2k3e"]
+[ext_resource type="Material" path="res://addons/hammerforge/textures/prototypes/materials/proto_zigzag_yellow.tres" id="154_fvymh"]
+[ext_resource type="Script" uid="uid://cfnswc2a51c0v" path="res://addons/hammerforge/baker.gd" id="155_4y8yc"]
+[ext_resource type="Script" uid="uid://bj0gnjx6mtkyt" path="res://addons/hammerforge/paint/hf_paint_layer_manager.gd" id="156_uihn4"]
+[ext_resource type="Script" uid="uid://wo0ah72vgg5" path="res://addons/hammerforge/paint/hf_paint_grid.gd" id="157_nyo6s"]
+[ext_resource type="Script" uid="uid://d4lu70khcx1cc" path="res://addons/hammerforge/paint/hf_paint_tool.gd" id="158_8rqqi"]
+[ext_resource type="Script" uid="uid://lmlc5c6m638q" path="res://addons/hammerforge/surface_paint.gd" id="159_5ph8q"]
+[ext_resource type="Script" uid="uid://dyksuh6hmsm5t" path="res://addons/hammerforge/paint/hf_paint_layer.gd" id="161_qm5ex"]
+
+[sub_resource type="Resource" id="Resource_bct31"]
+script = ExtResource("3_qd6jr")
+custom_uvs = PackedVector2Array()
+bounds = AABB(72.5, -0.25, -73, 0, 0.5, 146)
+local_verts = PackedVector3Array(72.5, -0.25, 73, 72.5, 0.25, 73, 72.5, 0.25, -73, 72.5, -0.25, -73)
+normal = Vector3(1, 0, 0)
+
+[sub_resource type="Resource" id="Resource_qd6jr"]
+script = ExtResource("3_qd6jr")
+custom_uvs = PackedVector2Array()
+bounds = AABB(-72.5, -0.25, -73, 0, 0.5, 146)
+local_verts = PackedVector3Array(-72.5, -0.25, -73, -72.5, 0.25, -73, -72.5, 0.25, 73, -72.5, -0.25, 73)
+normal = Vector3(-1, 0, 0)
+
+[sub_resource type="Resource" id="Resource_7bjd7"]
+script = ExtResource("3_qd6jr")
+custom_uvs = PackedVector2Array()
+bounds = AABB(-72.5, 0.25, -73, 145, 0, 146)
+local_verts = PackedVector3Array(72.5, 0.25, -73, 72.5, 0.25, 73, -72.5, 0.25, 73, -72.5, 0.25, -73)
+
+[sub_resource type="Resource" id="Resource_qm5ex"]
+script = ExtResource("3_qd6jr")
+custom_uvs = PackedVector2Array()
+bounds = AABB(-72.5, -0.25, -73, 145, 0, 146)
+local_verts = PackedVector3Array(72.5, -0.25, 73, 72.5, -0.25, -73, -72.5, -0.25, -73, -72.5, -0.25, 73)
+normal = Vector3(0, -1, 0)
+
+[sub_resource type="Resource" id="Resource_12ywc"]
+script = ExtResource("3_qd6jr")
+custom_uvs = PackedVector2Array()
+bounds = AABB(-72.5, -0.25, 73, 145, 0.5, 0)
+local_verts = PackedVector3Array(-72.5, 0.25, 73, 72.5, 0.25, 73, 72.5, -0.25, 73, -72.5, -0.25, 73)
+normal = Vector3(0, 0, 1)
+
+[sub_resource type="Resource" id="Resource_03xrf"]
+script = ExtResource("3_qd6jr")
+custom_uvs = PackedVector2Array()
+bounds = AABB(-72.5, -0.25, -73, 145, 0.5, 0)
+local_verts = PackedVector3Array(-72.5, -0.25, -73, 72.5, -0.25, -73, 72.5, 0.25, -73, -72.5, 0.25, -73)
+normal = Vector3(0, 0, -1)
+
+[sub_resource type="Resource" id="Resource_11ctb"]
+script = ExtResource("3_qd6jr")
+custom_uvs = PackedVector2Array()
+bounds = AABB(5.75, -17.25, -16.75, 0, 34.5, 33.5)
+local_verts = PackedVector3Array(5.75, -17.25, 16.75, 5.75, 17.25, 16.75, 5.75, 17.25, -16.75, 5.75, -17.25, -16.75)
+normal = Vector3(1, 0, 0)
+
+[sub_resource type="Resource" id="Resource_b5ewc"]
+script = ExtResource("3_qd6jr")
+custom_uvs = PackedVector2Array()
+bounds = AABB(-5.75, -17.25, -16.75, 0, 34.5, 33.5)
+local_verts = PackedVector3Array(-5.75, -17.25, -16.75, -5.75, 17.25, -16.75, -5.75, 17.25, 16.75, -5.75, -17.25, 16.75)
+normal = Vector3(-1, 0, 0)
+
+[sub_resource type="Resource" id="Resource_xxuvm"]
+script = ExtResource("3_qd6jr")
+custom_uvs = PackedVector2Array()
+bounds = AABB(-5.75, 17.25, -16.75, 11.5, 0, 33.5)
+local_verts = PackedVector3Array(5.75, 17.25, -16.75, 5.75, 17.25, 16.75, -5.75, 17.25, 16.75, -5.75, 17.25, -16.75)
+
+[sub_resource type="Resource" id="Resource_hsied"]
+script = ExtResource("3_qd6jr")
+custom_uvs = PackedVector2Array()
+bounds = AABB(-5.75, -17.25, -16.75, 11.5, 0, 33.5)
+local_verts = PackedVector3Array(5.75, -17.25, 16.75, 5.75, -17.25, -16.75, -5.75, -17.25, -16.75, -5.75, -17.25, 16.75)
+normal = Vector3(0, -1, 0)
+
+[sub_resource type="Resource" id="Resource_vfebb"]
+script = ExtResource("3_qd6jr")
+custom_uvs = PackedVector2Array()
+bounds = AABB(-5.75, -17.25, 16.75, 11.5, 34.5, 0)
+local_verts = PackedVector3Array(-5.75, 17.25, 16.75, 5.75, 17.25, 16.75, 5.75, -17.25, 16.75, -5.75, -17.25, 16.75)
+normal = Vector3(0, 0, 1)
+
+[sub_resource type="Resource" id="Resource_laild"]
+script = ExtResource("3_qd6jr")
+custom_uvs = PackedVector2Array()
+bounds = AABB(-5.75, -17.25, -16.75, 11.5, 34.5, 0)
+local_verts = PackedVector3Array(-5.75, -17.25, -16.75, 5.75, -17.25, -16.75, 5.75, 17.25, -16.75, -5.75, 17.25, -16.75)
+normal = Vector3(0, 0, -1)
+
+[sub_resource type="Resource" id="Resource_7tevo"]
+script = ExtResource("3_qd6jr")
+custom_uvs = PackedVector2Array()
+bounds = AABB(0.05, -5, -4.25, 0, 10, 8.5)
+local_verts = PackedVector3Array(0.05, -5, 4.25, 0.05, 5, 4.25, 0.05, 5, -4.25, 0.05, -5, -4.25)
+normal = Vector3(1, 0, 0)
+
+[sub_resource type="Resource" id="Resource_tc2u6"]
+script = ExtResource("3_qd6jr")
+custom_uvs = PackedVector2Array()
+bounds = AABB(-0.05, -5, -4.25, 0, 10, 8.5)
+local_verts = PackedVector3Array(-0.05, -5, -4.25, -0.05, 5, -4.25, -0.05, 5, 4.25, -0.05, -5, 4.25)
+normal = Vector3(-1, 0, 0)
+
+[sub_resource type="Resource" id="Resource_b0p0w"]
+script = ExtResource("3_qd6jr")
+custom_uvs = PackedVector2Array()
+bounds = AABB(-0.05, 5, -4.25, 0.1, 0, 8.5)
+local_verts = PackedVector3Array(0.05, 5, -4.25, 0.05, 5, 4.25, -0.05, 5, 4.25, -0.05, 5, -4.25)
+
+[sub_resource type="Resource" id="Resource_gdjdj"]
+script = ExtResource("3_qd6jr")
+custom_uvs = PackedVector2Array()
+bounds = AABB(-0.05, -5, -4.25, 0.1, 0, 8.5)
+local_verts = PackedVector3Array(0.05, -5, 4.25, 0.05, -5, -4.25, -0.05, -5, -4.25, -0.05, -5, 4.25)
+normal = Vector3(0, -1, 0)
+
+[sub_resource type="Resource" id="Resource_qq7wa"]
+script = ExtResource("3_qd6jr")
+custom_uvs = PackedVector2Array()
+bounds = AABB(-0.05, -5, 4.25, 0.1, 10, 0)
+local_verts = PackedVector3Array(-0.05, 5, 4.25, 0.05, 5, 4.25, 0.05, -5, 4.25, -0.05, -5, 4.25)
+normal = Vector3(0, 0, 1)
+
+[sub_resource type="Resource" id="Resource_5xtb2"]
+script = ExtResource("3_qd6jr")
+custom_uvs = PackedVector2Array()
+bounds = AABB(-0.05, -5, -4.25, 0.1, 10, 0)
+local_verts = PackedVector3Array(-0.05, -5, -4.25, 0.05, -5, -4.25, 0.05, 5, -4.25, -0.05, 5, -4.25)
+normal = Vector3(0, 0, -1)
+
+[sub_resource type="Resource" id="Resource_jgmgm"]
+script = ExtResource("157_nyo6s")
+cell_size = 0.5
+layer_y = 27.0
+
+[sub_resource type="Resource" id="Resource_jy10m"]
+script = ExtResource("157_nyo6s")
+cell_size = 0.5
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_7mer1"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_mei8x"]
+data = PackedVector3Array(-54.5, 0, -73, -54.5, 0.5, -73, -54.5, 0, 73, -54.5, 0.5, -73, -13.5, 0.5, -1.5, -25, 0.5, -1.5, -54.5, 0.5, -73, -25, 0.5, -1.5, -25, 0.5, 32, -54.5, 0, -73, 90.5, 0, -73, -54.5, 0.5, -73, -54.5, 0, -73, -54.5, 0, 73, 90.5, 0, -73, -54.5, 0.5, -73, 90.5, 0.5, 73, -13.5, 0.5, -1.5, -54.5, 0.5, -73, -25, 0.5, 32, -54.5, 0.5, 73, -54.5, 0.5, -73, -54.5, 0.5, 73, -54.5, 0, 73, -54.5, 0, 73, -54.5, 0.5, 73, 90.5, 0.5, 73, -25, 0.5, 32, -13.5, 0.5, 32, 90.5, 0.5, 73, -25, 0.5, 32, 90.5, 0.5, 73, -54.5, 0.5, 73, -54.5, 0.5, -73, 90.5, 0, -73, 90.5, 0.5, -73, -54.5, 0.5, -73, 90.5, 0.5, -73, 90.5, 0.5, 73, 90.5, 0, -73, 90.5, 0.5, 73, 90.5, 0.5, -73, -13.5, 0.5, -1.5, 90.5, 0.5, 73, -13.5, 0.5, 11, -13.5, 0.5, 11, 90.5, 0.5, 73, -13.5, 0.5, 19.5, -54.5, 0, 73, 90.5, 0, 73, 90.5, 0, -73, -13.5, 0.5, 19.5, 90.5, 0.5, 73, -13.5, 0.5, 32, -54.5, 0, 73, 90.5, 0.5, 73, 90.5, 0, 73, 90.5, 0, -73, 90.5, 0, 73, 90.5, 0.5, 73, -25, 0.5, -1.5, -13.5, 0.5, -1.5, -25, 35, -1.5, -25, 0.5, -1.5, -25, 35, -1.5, -25, 0.5, 32, -13.5, 0.5, -1.5, -13.5, 0.5, 11, -13.5, 10.5, 11, -13.5, 0.5, 32, -13.5, 10.5, 19.5, -13.5, 0.5, 19.5, -25, 0.5, 32, -13.5, 35, 32, -13.5, 0.5, 32, -13.5, 0.5, -1.5, -13.5, 10.5, 11, -13.5, 35, 32, -13.5, 0.5, 32, -13.5, 35, 32, -13.5, 10.5, 19.5, -13.5, 0.5, -1.5, -13.5, 35, -1.5, -25, 35, -1.5, -25, 0.5, 32, -25, 35, -1.5, -25, 35, 32, -25, 0.5, 32, -25, 35, 32, -13.5, 35, 32, -25, 35, -1.5, -13.5, 35, 32, -25, 35, 32, -13.5, 35, 32, -13.5, 10.5, 11, -13.5, 10.5, 19.5, -13.5, 0.5, -1.5, -13.5, 35, 32, -13.5, 35, -1.5, -25, 35, -1.5, -13.5, 35, -1.5, -13.5, 35, 32, -13.549999, 0.5, 11, -13.5, 0.5, 11, -13.5, 0.5, 19.5, -13.549999, 0.5, 11, -13.5, 0.5, 19.5, -13.549999, 0.5, 19.5, -13.549999, 0.5, 11, -13.549999, 10.5, 11, -13.5, 0.5, 11, -13.549999, 0.5, 11, -13.549999, 0.5, 19.5, -13.549999, 10.5, 11, -13.549999, 0.5, 19.5, -13.5, 0.5, 19.5, -13.5, 10.5, 19.5, -13.549999, 10.5, 11, -13.5, 10.5, 11, -13.5, 0.5, 11, -13.549999, 0.5, 19.5, -13.549999, 10.5, 19.5, -13.549999, 10.5, 11, -13.549999, 0.5, 19.5, -13.5, 10.5, 19.5, -13.549999, 10.5, 19.5, -13.549999, 10.5, 11, -13.549999, 10.5, 19.5, -13.5, 10.5, 11, -13.549999, 10.5, 19.5, -13.5, 10.5, 19.5, -13.5, 10.5, 11)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mfekc"]
+transparency = 1
+albedo_color = Color(0.3, 0.6, 1, 0.35)
+roughness = 0.6
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_42l3g"]
+_surfaces = [{
+"aabb": AABB(-54.5, 0, -73, 145, 35, 146),
+"attribute_data": PackedByteArray("AACAPwAAAAAAAAAAAAAAAAAAgD8AAIA/AACAPwAAgD9RoQI/Ip03P1GhAj/Q6ks/AACAPwAAgD9RoQI/0OpLP+THjz7Q6ks/AACAPwAAAAAAAAAAAAAAAAAAgD8AAIA/AACAPwAAAAAAAAAAAAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAAAAAFGhAj8inTc/AACAPwAAgD/kx48+0OpLPwAAAAAAAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAA5MePPtDqSz/kx48+Ip03PwAAAAAAAAAA5MePPtDqSz8AAAAAAAAAAAAAAAAAAIA/AACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/UaECPyKdNz8AAAAAAAAAALZs2T4inTc/tmzZPiKdNz8AAAAAAAAAAM+duz4inTc/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/z527PiKdNz8AAAAAAAAAAOTHjz4inTc/AACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAgD8AAIA/AACAPwAAAAAAAAAAAAAAAAAAgD8AAIA/AACAPwAAgD8AAIA/RXogPw/MNT9FeiA/AACAPwAAAAAPzDU/dgu/PgAAgD92C78+AACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/AACAPwAAgD8PzDU/RXogPwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAA/MNT92C78+AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAPzDU/RXogPw/MNT92C78+AACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAA"),
+"format": 34359738391,
+"material": SubResource("StandardMaterial3D_mfekc"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 102,
+"vertex_data": PackedByteArray("AABawgAAAAAAAJLCAABawgAAAD8AAJLCAABawgAAAAAAAJJCAABawgAAAD8AAJLCAABYwQAAAD8AAMC/AADIwQAAAD8AAMC/AABawgAAAD8AAJLCAADIwQAAAD8AAMC/AADIwQAAAD8AAABCAABawgAAAAAAAJLCAAC1QgAAAAAAAJLCAABawgAAAD8AAJLCAABawgAAAAAAAJLCAABawgAAAAAAAJJCAAC1QgAAAAAAAJLCAABawgAAAD8AAJLCAAC1QgAAAD8AAJJCAABYwQAAAD8AAMC/AABawgAAAD8AAJLCAADIwQAAAD8AAABCAABawgAAAD8AAJJCAABawgAAAD8AAJLCAABawgAAAD8AAJJCAABawgAAAAAAAJJCAABawgAAAAAAAJJCAABawgAAAD8AAJJCAAC1QgAAAD8AAJJCAADIwQAAAD8AAABCAABYwQAAAD8AAABCAAC1QgAAAD8AAJJCAADIwQAAAD8AAABCAAC1QgAAAD8AAJJCAABawgAAAD8AAJJCAABawgAAAD8AAJLCAAC1QgAAAAAAAJLCAAC1QgAAAD8AAJLCAABawgAAAD8AAJLCAAC1QgAAAD8AAJLCAAC1QgAAAD8AAJJCAAC1QgAAAAAAAJLCAAC1QgAAAD8AAJJCAAC1QgAAAD8AAJLCAABYwQAAAD8AAMC/AAC1QgAAAD8AAJJCAABYwQAAAD8AADBBAABYwQAAAD8AADBBAAC1QgAAAD8AAJJCAABYwQAAAD8AAJxBAABawgAAAAAAAJJCAAC1QgAAAAAAAJJCAAC1QgAAAAAAAJLCAABYwQAAAD8AAJxBAAC1QgAAAD8AAJJCAABYwQAAAD8AAABCAABawgAAAAAAAJJCAAC1QgAAAD8AAJJCAAC1QgAAAAAAAJJCAAC1QgAAAAAAAJLCAAC1QgAAAAAAAJJCAAC1QgAAAD8AAJJCAADIwQAAAD8AAMC/AABYwQAAAD8AAMC/AADIwQAADEIAAMC/AADIwQAAAD8AAMC/AADIwQAADEIAAMC/AADIwQAAAD8AAABCAABYwQAAAD8AAMC/AABYwQAAAD8AADBBAABYwQAAKEEAADBBAABYwQAAAD8AAABCAABYwQAAKEEAAJxBAABYwQAAAD8AAJxBAADIwQAAAD8AAABCAABYwQAADEIAAABCAABYwQAAAD8AAABCAABYwQAAAD8AAMC/AABYwQAAKEEAADBBAABYwQAADEIAAABCAABYwQAAAD8AAABCAABYwQAADEIAAABCAABYwQAAKEEAAJxBAABYwQAAAD8AAMC/AABYwQAADEIAAMC/AADIwQAADEIAAMC/AADIwQAAAD8AAABCAADIwQAADEIAAMC/AADIwQAADEIAAABCAADIwQAAAD8AAABCAADIwQAADEIAAABCAABYwQAADEIAAABCAADIwQAADEIAAMC/AABYwQAADEIAAABCAADIwQAADEIAAABCAABYwQAADEIAAABCAABYwQAAKEEAADBBAABYwQAAKEEAAJxBAABYwQAAAD8AAMC/AABYwQAADEIAAABCAABYwQAADEIAAMC/AADIwQAADEIAAMC/AABYwQAADEIAAMC/AABYwQAADEIAAABCAAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//////AAD/f/////8AAP9//////wAA/3//////AAD/f/////8AAP9//////wAA/////wAA/z//////AAD/P/////8AAP8//38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//////AAD/f/////8AAP9//////wAA/3//////AAD/f/////8AAP9///8AAAAAAAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f/////8AAP9//////wAA/3//////AAD/f/////8AAP9///8AAAAA/////wAA/z//////AAD/P/////8AAP8//3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5//3//////AAD/f/////8AAP9//////wAA/3//////AAD/f/////8AAP9//////wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//////AAD/f/////8AAP9//////wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8/////f/9//n////9//3/+f////3//f/5//////wAA/z//////AAD/P/////8AAP8/AAD/f/9//n8AAP9//3/+fwAA/3//f/5/////f/9//n////9//3/+f////3//f/5/////f/9//n////9//3/+f////3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8/////f/9//n////9//3/+f////3//f/5/////f/9//n////9//3/+f////3//f/5//////wAA/z//////AAD/P/////8AAP8/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5/////f/9//n////9//3/+f////3//f/5//3//////AAD/f/////8AAP9//////wAA")
+}, {
+"aabb": AABB(-13.55, 0.5, 11, 0.05000019, 10, 8.5),
+"attribute_data": PackedByteArray("AACAPwAAAAAAAIA/AAAAPwAAAAAAAAA/AACAPwAAAAAAAAAAAAAAPwAAAAAAAAAAAACAPwAAAAAAAIA/AACAPwAAAD8AAAAAAACAPwAAAAAAAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAAA/AACAPwAAAD8AAAAAAACAPwAAgD8AAAA/AACAPwAAAD8AAAAAAACAPwAAgD8AAAAAAACAPwAAAAAAAAAAAACAPwAAgD8AAAA/AAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAACAPwAAgD8AAAA/AAAAAAAAgD8AAAAAAAAAPwAAgD8AAAA/"),
+"format": 34359738391,
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 30,
+"vertex_data": PackedByteArray("zcxYwQAAAD8AADBBAABYwQAAAD8AADBBAABYwQAAAD8AAJxBzcxYwQAAAD8AADBBAABYwQAAAD8AAJxBzcxYwQAAAD8AAJxBzcxYwQAAAD8AADBBzcxYwQAAKEEAADBBAABYwQAAAD8AADBBzcxYwQAAAD8AADBBzcxYwQAAAD8AAJxBzcxYwQAAKEEAADBBzcxYwQAAAD8AAJxBAABYwQAAAD8AAJxBAABYwQAAKEEAAJxBzcxYwQAAKEEAADBBAABYwQAAKEEAADBBAABYwQAAAD8AADBBzcxYwQAAAD8AAJxBzcxYwQAAKEEAAJxBzcxYwQAAKEEAADBBzcxYwQAAAD8AAJxBAABYwQAAKEEAAJxBzcxYwQAAKEEAAJxBzcxYwQAAKEEAADBBzcxYwQAAKEEAAJxBAABYwQAAKEEAADBBzcxYwQAAKEEAAJxBAABYwQAAKEEAAJxBAABYwQAAKEEAADBB/3//////////f/////////9//////////3//////////f/////////9//////////3//fwAA/7//f/9/AAD/v/9//38AAP+/////f/9/AID///9//38AgP///3//fwCA/////wAA/7//////AAD/v/////8AAP+//3//fwAA/7//f/9/AAD/v/9//38AAP+/////f/9/AID///9//38AgP///3//fwCA/////wAA/7//////AAD/v/////8AAP+//38AAP//////fwAA//////9/AAD//////38AAP//////fwAA//////9/AAD/////")
+}]
+
+[node name="Node3D" type="Node3D" unique_id=842528359]
+
+[node name="LevelRoot" type="Node3D" parent="." unique_id=1176185381]
+script = ExtResource("1_7ycgt")
+bake_connector_stair_threshold = 2.01
+level_uid = "53f4fa961c7"
+live_registries = {
+"duplicators": [],
+"generators": [],
+"group_order": [],
+"groups": {},
+"hollows": [],
+"prefab_instances": {
+"instances": [],
+"next_entity_uid": 1,
+"next_instance_id": 1
+},
+"visgroup_order": [],
+"visgroups": {}
+}
+
+[node name="DraftBrushes" type="Node3D" parent="LevelRoot" unique_id=690084456]
+
+[node name="@Node3D@35453" type="Node3D" parent="LevelRoot/DraftBrushes" unique_id=1819245486]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0.25, 0)
+script = ExtResource("2_bct31")
+size = Vector3(145, 0.5, 146)
+brush_id = "462956702_7"
+faces = Array[ExtResource("3_qd6jr")]([SubResource("Resource_bct31"), SubResource("Resource_qd6jr"), SubResource("Resource_7bjd7"), SubResource("Resource_qm5ex"), SubResource("Resource_12ywc"), SubResource("Resource_03xrf")])
+metadata/hf_container_role = "draft"
+metadata/brush_id = "462956702_7"
+
+[node name="@Node3D@36159" type="Node3D" parent="LevelRoot/DraftBrushes" unique_id=1591489929]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.25, 17.75, 15.25)
+script = ExtResource("2_bct31")
+size = Vector3(11.5, 34.5, 33.5)
+brush_id = "490812903_9"
+faces = Array[ExtResource("3_qd6jr")]([SubResource("Resource_11ctb"), SubResource("Resource_b5ewc"), SubResource("Resource_xxuvm"), SubResource("Resource_hsied"), SubResource("Resource_vfebb"), SubResource("Resource_laild")])
+metadata/hf_container_role = "draft"
+metadata/brush_id = "490812903_9"
+
+[node name="@Node3D@36490" type="Node3D" parent="LevelRoot/DraftBrushes" unique_id=1422831924]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, 5.5, 15.25)
+script = ExtResource("2_bct31")
+size = Vector3(0.1, 10, 8.5)
+operation = 2
+brush_id = "576369123_11"
+faces = Array[ExtResource("3_qd6jr")]([SubResource("Resource_7tevo"), SubResource("Resource_tc2u6"), SubResource("Resource_b0p0w"), SubResource("Resource_gdjdj"), SubResource("Resource_qq7wa"), SubResource("Resource_5xtb2")])
+metadata/pending_subtract = false
+metadata/hf_container_role = "draft"
+metadata/brush_id = "576369123_11"
+
+[node name="PendingCuts" type="Node3D" parent="LevelRoot" unique_id=1843503306]
+
+[node name="CommittedCuts" type="Node3D" parent="LevelRoot" unique_id=518335065]
+visible = false
+
+[node name="Entities" type="Node3D" parent="LevelRoot" unique_id=1844265577]
+
+[node name="DraftEntity" type="Node3D" parent="LevelRoot/Entities" unique_id=843603677]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = ExtResource("2_ne27i")
+entity_type = "player_start"
+data/primary = false
+data/angle = 0.0
+data/height_offset = 1.0
+metadata/is_entity = true
+
+[node name="Decals" type="Node3D" parent="LevelRoot" unique_id=1195494351]
+
+[node name="BrushManager" type="Node" parent="LevelRoot" unique_id=233187019]
+script = ExtResource("3_yv12j")
+
+[node name="MaterialManager" type="Node" parent="LevelRoot" unique_id=290455138]
+script = ExtResource("4_lvgit")
+materials = Array[Material]([ExtResource("5_bct31"), ExtResource("6_qd6jr"), ExtResource("7_7bjd7"), ExtResource("8_qm5ex"), ExtResource("9_12ywc"), ExtResource("10_03xrf"), ExtResource("11_11ctb"), ExtResource("12_b5ewc"), ExtResource("13_xxuvm"), ExtResource("14_hsied"), ExtResource("15_vfebb"), ExtResource("16_laild"), ExtResource("17_7tevo"), ExtResource("18_tc2u6"), ExtResource("19_b0p0w"), ExtResource("20_gdjdj"), ExtResource("21_qq7wa"), ExtResource("22_5xtb2"), ExtResource("23_mei8x"), ExtResource("24_42l3g"), ExtResource("25_2yyoj"), ExtResource("26_lgq5i"), ExtResource("27_jy10m"), ExtResource("28_7mer1"), ExtResource("29_el5vj"), ExtResource("30_mfekc"), ExtResource("31_y8hxc"), ExtResource("32_2ffm1"), ExtResource("33_jhwtq"), ExtResource("34_6r6hg"), ExtResource("35_mb30m"), ExtResource("36_mq8go"), ExtResource("37_v4dul"), ExtResource("38_hfi3h"), ExtResource("39_7dwah"), ExtResource("40_nfx7q"), ExtResource("41_umpuy"), ExtResource("42_vefm4"), ExtResource("43_w7nyf"), ExtResource("44_oi8ul"), ExtResource("45_xq2va"), ExtResource("46_wikji"), ExtResource("47_vn37e"), ExtResource("48_bcefw"), ExtResource("49_qgeek"), ExtResource("50_noeen"), ExtResource("51_7egbc"), ExtResource("52_yx2vq"), ExtResource("53_rlcf3"), ExtResource("54_kofn3"), ExtResource("55_xpf0o"), ExtResource("56_kjq4y"), ExtResource("57_jf2e2"), ExtResource("58_36r4n"), ExtResource("59_dsnls"), ExtResource("60_bievk"), ExtResource("61_p0hhd"), ExtResource("62_g4p55"), ExtResource("63_30knx"), ExtResource("64_13hx7"), ExtResource("65_rcs8q"), ExtResource("66_l0e27"), ExtResource("67_7cjpi"), ExtResource("68_fk65d"), ExtResource("69_c3rdm"), ExtResource("70_omauu"), ExtResource("71_5it0f"), ExtResource("72_8ebjf"), ExtResource("73_g4wwr"), ExtResource("74_5exvh"), ExtResource("75_yoyvw"), ExtResource("76_tpgch"), ExtResource("77_kq5gd"), ExtResource("78_ca68y"), ExtResource("79_5jejf"), ExtResource("80_g164a"), ExtResource("81_nlfp6"), ExtResource("82_m0ub4"), ExtResource("83_p4wwh"), ExtResource("84_gy0hn"), ExtResource("85_fokjr"), ExtResource("86_poofu"), ExtResource("87_o5k8f"), ExtResource("88_radut"), ExtResource("89_mkfwt"), ExtResource("90_ienfh"), ExtResource("91_6ja86"), ExtResource("92_ogrdd"), ExtResource("93_hqw76"), ExtResource("94_yccn8"), ExtResource("95_i3drx"), ExtResource("96_lhiu1"), ExtResource("97_v3u80"), ExtResource("98_ufl36"), ExtResource("99_phwst"), ExtResource("100_jtrun"), ExtResource("101_8vad8"), ExtResource("102_tetp8"), ExtResource("103_fhjqp"), ExtResource("104_gyeiv"), ExtResource("105_1ku4e"), ExtResource("106_4reyj"), ExtResource("107_8rtta"), ExtResource("108_2j6v6"), ExtResource("109_lkadm"), ExtResource("110_xgejn"), ExtResource("111_7f2fr"), ExtResource("112_rdn6t"), ExtResource("113_u26s6"), ExtResource("114_q3okx"), ExtResource("115_ql3pl"), ExtResource("116_peim5"), ExtResource("117_c55hh"), ExtResource("118_1k54y"), ExtResource("119_00nhd"), ExtResource("120_pstm4"), ExtResource("121_7i1by"), ExtResource("122_ir4br"), ExtResource("123_hlyv6"), ExtResource("124_j028r"), ExtResource("125_2a1nm"), ExtResource("126_wjwm2"), ExtResource("127_4ei0i"), ExtResource("128_xwh4k"), ExtResource("129_tnmu2"), ExtResource("130_4tbdg"), ExtResource("131_wyu87"), ExtResource("132_ujg6u"), ExtResource("133_1ngda"), ExtResource("134_4lw60"), ExtResource("135_711o1"), ExtResource("136_7p1uo"), ExtResource("137_6wbd2"), ExtResource("138_2kovc"), ExtResource("139_v3rip"), ExtResource("140_m6pd0"), ExtResource("141_y0x83"), ExtResource("142_l2ey2"), ExtResource("143_twm1g"), ExtResource("144_8dmkx"), ExtResource("145_tqij8"), ExtResource("146_6vwk2"), ExtResource("147_ulw8h"), ExtResource("148_vqe15"), ExtResource("149_s7jis"), ExtResource("150_lij7v"), ExtResource("151_mveb8"), ExtResource("152_4b1aj"), ExtResource("153_y2k3e"), ExtResource("154_fvymh")])
+
+[node name="Baker" type="Node" parent="LevelRoot" unique_id=326097246]
+script = ExtResource("155_4y8yc")
+
+[node name="PaintLayers" type="Node" parent="LevelRoot" unique_id=580681755]
+script = ExtResource("156_uihn4")
+base_grid = SubResource("Resource_jgmgm")
+
+[node name="Layer_layer_0" type="Node" parent="LevelRoot/PaintLayers" unique_id=118140412]
+script = ExtResource("161_qm5ex")
+grid = SubResource("Resource_jy10m")
+
+[node name="Generated" type="Node3D" parent="LevelRoot" unique_id=642296325]
+
+[node name="Floors" type="Node3D" parent="LevelRoot/Generated" unique_id=1216639910]
+
+[node name="Walls" type="Node3D" parent="LevelRoot/Generated" unique_id=1116907239]
+
+[node name="HeightmapFloors" type="Node3D" parent="LevelRoot/Generated" unique_id=192469585]
+
+[node name="RegionOverlay" type="MeshInstance3D" parent="LevelRoot/Generated" unique_id=1981139982]
+cast_shadow = 0
+mesh = SubResource("ArrayMesh_7mer1")
+
+[node name="PaintTool" type="Node" parent="LevelRoot" unique_id=57839565 node_paths=PackedStringArray("layer_manager")]
+script = ExtResource("158_8rqqi")
+layer_manager = NodePath("../PaintLayers")
+
+[node name="SurfacePaint" type="Node" parent="LevelRoot" unique_id=1624836137]
+script = ExtResource("159_5ph8q")
+
+[node name="TempFloor" type="CSGBox3D" parent="LevelRoot" unique_id=1124040663]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8, 0)
+use_collision = true
+size = Vector3(1024, 16, 1024)
+
+[node name="DefaultSun" type="DirectionalLight3D" parent="LevelRoot" unique_id=216974184]
+transform = Transform3D(0.8660254, -0.35355338, 0.35355338, 0, 0.70710677, 0.70710677, -0.5, -0.6123724, 0.6123724, 0, 0, 0)
+shadow_enabled = true
+
+[node name="BakedGeometry" type="Node3D" parent="LevelRoot" unique_id=851509576]
+metadata/_hammerforge_baked_container = 1
+
+[node name="FloorCollision" type="StaticBody3D" parent="LevelRoot/BakedGeometry" unique_id=890845990]
+collision_mask = 0
+
+[node name="@CollisionShape3D@36512" type="CollisionShape3D" parent="LevelRoot/BakedGeometry/FloorCollision" unique_id=170690471]
+shape = SubResource("ConcavePolygonShape3D_mei8x")
+
+[node name="BakedMesh_0" type="MeshInstance3D" parent="LevelRoot/BakedGeometry" unique_id=2103949044]
+mesh = SubResource("ArrayMesh_42l3g")
