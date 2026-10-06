@@ -1,0 +1,68 @@
+[gd_resource type="BehaviorTree" load_steps=23 format=3]
+
+[ext_resource type="Script" path="res://ai/tasks/zombie_condition.gd" id="1"]
+[ext_resource type="Script" path="res://ai/tasks/zombie_action.gd" id="2"]
+
+[sub_resource type="BTCondition" id="DeadCheck"]
+script = ExtResource("1")
+check = 0
+[sub_resource type="BTAction" id="DeadAction"]
+script = ExtResource("2")
+action = 0
+[sub_resource type="BTDynamicSequence" id="Dead"]
+children = [SubResource("DeadCheck"), SubResource("DeadAction")]
+
+[sub_resource type="BTCondition" id="StaggerCheck"]
+script = ExtResource("1")
+check = 1
+[sub_resource type="BTAction" id="StaggerAction"]
+script = ExtResource("2")
+action = 1
+[sub_resource type="BTDynamicSequence" id="Stagger"]
+children = [SubResource("StaggerCheck"), SubResource("StaggerAction")]
+
+[sub_resource type="BTCondition" id="AttackCheck"]
+script = ExtResource("1")
+check = 2
+[sub_resource type="BTAction" id="AttackAction"]
+script = ExtResource("2")
+action = 2
+[sub_resource type="BTDynamicSequence" id="Attack"]
+children = [SubResource("AttackCheck"), SubResource("AttackAction")]
+
+[sub_resource type="BTCondition" id="VisibleCheck"]
+script = ExtResource("1")
+check = 3
+[sub_resource type="BTAction" id="ChaseAction"]
+script = ExtResource("2")
+action = 3
+[sub_resource type="BTDynamicSequence" id="Chase"]
+children = [SubResource("VisibleCheck"), SubResource("ChaseAction")]
+
+[sub_resource type="BTCondition" id="RecognizeCheck"]
+script = ExtResource("1")
+check = 5
+[sub_resource type="BTAction" id="RecognizeAction"]
+script = ExtResource("2")
+action = 6
+[sub_resource type="BTDynamicSequence" id="Recognize"]
+children = [SubResource("RecognizeCheck"), SubResource("RecognizeAction")]
+
+[sub_resource type="BTCondition" id="MemoryCheck"]
+script = ExtResource("1")
+check = 4
+[sub_resource type="BTAction" id="InvestigateAction"]
+script = ExtResource("2")
+action = 4
+[sub_resource type="BTDynamicSequence" id="Investigate"]
+children = [SubResource("MemoryCheck"), SubResource("InvestigateAction")]
+
+[sub_resource type="BTAction" id="Idle"]
+script = ExtResource("2")
+action = 5
+[sub_resource type="BTDynamicSelector" id="Root"]
+children = [SubResource("Dead"), SubResource("Stagger"), SubResource("Attack"), SubResource("Recognize"), SubResource("Chase"), SubResource("Investigate"), SubResource("Idle")]
+
+[resource]
+description = "Zombie: death > stagger > committed attack > recognition > chase > last seen search > idle"
+root_task = SubResource("Root")
