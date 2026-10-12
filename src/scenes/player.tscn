@@ -10,7 +10,8 @@ height = 1.8
 radius = 0.3
 height = 1.8
 
-[node name="Player" type="CharacterBody3D" unique_id=553334857]
+[node name="Player" type="CharacterBody3D" unique_id=553334857 groups=["Player"]]
+collision_layer = 3
 floor_constant_speed = true
 floor_snap_length = 0.25
 script = ExtResource("1")
@@ -32,3 +33,35 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
 current = true
 
 [node name="ViewModel" type="Node3D" parent="Head/CameraEffects" unique_id=312934144]
+
+[node name="Game UI" type="Control" parent="." unique_id=1014770228]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Status" type="Label" parent="Game UI" unique_id=49196867]
+layout_mode = 0
+offset_right = 54.0
+offset_bottom = 49.0
+text = "Status:
+"
+
+[node name="Journal" type="Label" parent="Game UI" unique_id=1908532290]
+layout_mode = 0
+offset_top = 22.21
+offset_right = 112.0
+offset_bottom = 71.21001
+text = "Journal Closed
+"
+
+[node name="Pause" type="Label" parent="Game UI" unique_id=1842674299]
+layout_mode = 0
+offset_top = 44.51
+offset_right = 112.0
+offset_bottom = 93.51001
+text = "Game Unpaused
+"

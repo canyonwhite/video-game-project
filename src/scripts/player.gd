@@ -32,6 +32,8 @@ extends CharacterBody3D
 @onready var collision: CollisionShape3D = $CollisionShape3D
 @onready var head: Node3D = $Head
 @onready var camera_effects: Node3D = $Head/CameraEffects
+@onready var player_journal: Label = $"Game UI/Journal"
+@onready var player_pause_ui: Label = $"Game UI/Pause"
 
 var capsule: CapsuleShape3D
 var standing_query_shape: CapsuleShape3D
@@ -42,256 +44,307 @@ var is_sprinting: bool = false
 var bob_phase: float = 0.0
 var landing_offset: float = 0.0
 
+var is_in_menu: bool = false
+@export var can_interact: bool = false
+@export var interact_type: String = ""
+
 
 # FUNCTIONS
 
 func _ready() -> void:
-    # Capsule resources can be shared between scene instances.
-    # Duplicate this one before modifying its height.
-    capsule = collision.shape.duplicate() as CapsuleShape3D
-    collision.shape = capsule
+	# Capsule resources can be shared between scene instances.
+	# Duplicate this one before modifying its height.
+	capsule = collision.shape.duplicate() as CapsuleShape3D
+	collision.shape = capsule
 
-    capsule.height = standing_height
-    collision.position.y = standing_height * 0.5
-    head.position.y = standing_eye_height
+	capsule.height = standing_height
+	collision.position.y = standing_height * 0.5
+	head.position.y = standing_eye_height
 
-    # Slightly inset the standing query so touching the floor
-    # doesn't incorrectly count as blocked overhead clearance.
-    standing_query_shape = CapsuleShape3D.new()
-    standing_query_shape.radius = capsule.radius
-    standing_query_shape.height = standing_height - 0.04
+	# Slightly inset the standing query so touching the floor
+	# doesn't incorrectly count as blocked overhead clearance.
+	standing_query_shape = CapsuleShape3D.new()
+	standing_query_shape.radius = capsule.radius
+	standing_query_shape.height = standing_height - 0.04
 
-    floor_snap_length = 0.25
-    floor_constant_speed = true
-    floor_stop_on_slope = true
+	floor_snap_length = 0.25
+	floor_constant_speed = true
+	floor_stop_on_slope = true
 
-    Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _unhandled_input(event: InputEvent) -> void:
-    if event.is_action_pressed("ui_cancel"):
-        Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-        return
+	if event.is_action_pressed("interact") and can_interact:
+		_interact(interact_type)
 
-    if event is InputEventMouseButton:
-        if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-            Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-        return
+	#if event is InputEventMouseButton:
+		#if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			#Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		#return
 
-    if event is InputEventMouseMotion:
-        if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
-            return
+	if event is InputEventMouseMotion:
+		if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+			return
 
-        # Yaw turns the body and therefore the walking direction.
-        rotate_y(-event.screen_relative.x * mouse_sensitivity)
+		# Yaw turns the body and therefore the walking direction.
+		rotate_y(-event.screen_relative.x * mouse_sensitivity)
+		
+		# Pitch only turns the head.
+		head.rotation.x -= event.screen_relative.y * mouse_sensitivity
 
-        # Pitch only turns the head.
-        head.rotation.x -= event.screen_relative.y * mouse_sensitivity
-
-        var limit := deg_to_rad(pitch_limit_degrees)
-        head.rotation.x = clampf(head.rotation.x, -limit, limit)
+		var limit := deg_to_rad(pitch_limit_degrees)
+		head.rotation.x = clampf(head.rotation.x, -limit, limit)
+	
+	if event.is_action_pressed("ui_cancel"):
+		if is_in_menu:
+			_close_menu("Pause")
+			return
+		else:
+			_open_menu("Pause")
+	
+	if event.is_action_pressed("journal"):
+		if is_in_menu:
+			_close_menu("Journal")
+			return
+		else: 
+			_open_menu("Journal")
 
 func _physics_process(delta: float) -> void:
-    var controls_active := (
-        Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
-    )
+	var controls_active := (
+		Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
+	)
 
-    var movement_input := Vector2.ZERO
+	var movement_input := Vector2.ZERO
 
-    if controls_active:
-        movement_input = Input.get_vector(
-            "left",
-            "right",
-            "forward",
+	if controls_active:
+		movement_input = Input.get_vector(
+			"left",
+			"right",
+			"forward",
             "backward"
-        )
+		)
 
-    _update_crouching(controls_active)
+	_update_crouching(controls_active)
 
-    _update_horizontal_velocity(
-        movement_input,
-        controls_active,
-        delta
-    )
+	_update_horizontal_velocity(
+		movement_input,
+		controls_active,
+		delta
+	)
 
-    var was_on_floor := is_on_floor()
+	var was_on_floor := is_on_floor()
 
-    if not was_on_floor:
-        velocity += get_gravity() * delta
-    elif velocity.y < 0.0:
-        velocity.y = 0.0
+	if not was_on_floor:
+		velocity += get_gravity() * delta
+	elif velocity.y < 0.0:
+		velocity.y = 0.0
 
-    # Save the falling speed before collision modifies velocity.
-    var vertical_speed_before_move := velocity.y
+	# Save the falling speed before collision modifies velocity.
+	var vertical_speed_before_move := velocity.y
 
-    move_and_slide()
+	move_and_slide()
 
-    if landing_feedback_enabled:
-        if not was_on_floor and is_on_floor():
-            if vertical_speed_before_move < -2.0:
-                landing_offset = -minf(
-                    absf(vertical_speed_before_move) * 0.008,
-                    0.06
-                )
+	if landing_feedback_enabled:
+		if not was_on_floor and is_on_floor():
+			if vertical_speed_before_move < -2.0:
+				landing_offset = -minf(
+					absf(vertical_speed_before_move) * 0.008,
+					0.06
+				)
 
-    _update_camera(delta)
+	_update_camera(delta)
 
 func _update_horizontal_velocity(
-    movement_input: Vector2,
-    controls_active: bool,
-    delta: float
+	movement_input: Vector2,
+	controls_active: bool,
+	delta: float
 ) -> void:
-    # Sprint only when moving mostly forward.
-    is_sprinting = (
-        controls_active
-        and not is_crouching
-        and Input.is_action_pressed("sprint")
-        and movement_input.y < -0.5
-    )
+	# Sprint only when moving mostly forward.
+	is_sprinting = (
+		controls_active
+		and not is_crouching
+		and Input.is_action_pressed("sprint")
+		and movement_input.y < -0.5
+	)
 
-    var speed := walk_speed
+	var speed := walk_speed
 
-    if is_crouching:
-        speed = crouch_speed
-    elif is_sprinting:
-        speed = sprint_speed
+	if is_crouching:
+		speed = crouch_speed
+	elif is_sprinting:
+		speed = sprint_speed
 
-    var local_direction := Vector3(
-        movement_input.x * strafe_multiplier,
-        0.0,
-        movement_input.y
-    )
+	var local_direction := Vector3(
+		movement_input.x * strafe_multiplier,
+		0.0,
+		movement_input.y
+	)
 
-    if movement_input.y > 0.0:
-        local_direction.z *= backward_multiplier
+	if movement_input.y > 0.0:
+		local_direction.z *= backward_multiplier
 
-    # The body rotates only around Y, so this stays horizontal.
-    var target_velocity := global_basis * local_direction * speed
+	# The body rotates only around Y, so this stays horizontal.
+	var target_velocity := global_basis * local_direction * speed
 
-    var horizontal_velocity := Vector3(
-        velocity.x,
-        0.0,
-        velocity.z
-    )
+	var horizontal_velocity := Vector3(
+		velocity.x,
+		0.0,
+		velocity.z
+	)
 
-    var change_rate := acceleration
+	var change_rate := acceleration
 
-    if movement_input.is_zero_approx():
-        change_rate = deceleration
+	if movement_input.is_zero_approx():
+		change_rate = deceleration
 
-    horizontal_velocity = horizontal_velocity.move_toward(
-        target_velocity,
-        change_rate * delta
-    )
+	horizontal_velocity = horizontal_velocity.move_toward(
+		target_velocity,
+		change_rate * delta
+	)
 
-    velocity.x = horizontal_velocity.x
-    velocity.z = horizontal_velocity.z
+	velocity.x = horizontal_velocity.x
+	velocity.z = horizontal_velocity.z
 
 
 func _update_crouching(controls_active: bool) -> void:
-    var wants_to_crouch := (
-        controls_active
-        and Input.is_action_pressed("crouch")
-    )
+	var wants_to_crouch := (
+		controls_active
+		and Input.is_action_pressed("crouch")
+	)
 
-    if wants_to_crouch:
-        _set_crouching(true)
-    elif is_crouching and _can_stand():
-        _set_crouching(false)
+	if wants_to_crouch:
+		_set_crouching(true)
+	elif is_crouching and _can_stand():
+		_set_crouching(false)
 
 
 func _set_crouching(value: bool) -> void:
-    if is_crouching == value:
-        return
+	if is_crouching == value:
+		return
 
-    is_crouching = value
+	is_crouching = value
 
-    var height := standing_height
+	var height := standing_height
 
-    if is_crouching:
-        height = crouching_height
+	if is_crouching:
+		height = crouching_height
 
-    # Keep the bottom of the capsule at the player's feet.
-    capsule.height = height
-    collision.position.y = height * 0.5
+	# Keep the bottom of the capsule at the player's feet.
+	capsule.height = height
+	collision.position.y = height * 0.5
 
 
 func _can_stand() -> bool:
-    var query := PhysicsShapeQueryParameters3D.new()
-    query.shape = standing_query_shape
+	var query := PhysicsShapeQueryParameters3D.new()
+	query.shape = standing_query_shape
 
-    query.transform = Transform3D(
-        global_basis,
-        global_position + Vector3.UP * standing_height * 0.5
-    )
+	query.transform = Transform3D(
+		global_basis,
+		global_position + Vector3.UP * standing_height * 0.5
+	)
 
-    query.collision_mask = collision_mask
-    query.exclude = [get_rid()]
+	query.collision_mask = collision_mask
+	query.exclude = [get_rid()]
 
-    var hits := get_world_3d().direct_space_state.intersect_shape(
-        query,
-        1
-    )
+	var hits := get_world_3d().direct_space_state.intersect_shape(
+		query,
+		1
+	)
 
-    return hits.is_empty()
+	return hits.is_empty()
 
 
 func _update_camera(delta: float) -> void:
-    var target_eye_height := standing_eye_height
+	var target_eye_height := standing_eye_height
 
-    if is_crouching:
-        target_eye_height = crouching_eye_height
+	if is_crouching:
+		target_eye_height = crouching_eye_height
 
-    # Exponential smoothing behaves consistently across frame rates.
-    var crouch_blend := 1.0 - exp(
-        -crouch_transition_speed * delta
-    )
+	# Exponential smoothing behaves consistently across frame rates.
+	var crouch_blend := 1.0 - exp(
+		-crouch_transition_speed * delta
+	)
 
-    head.position.y = lerpf(
-        head.position.y,
-        target_eye_height,
-        crouch_blend
-    )
+	head.position.y = lerpf(
+		head.position.y,
+		target_eye_height,
+		crouch_blend
+	)
 
-    var target_offset := Vector3.ZERO
-    var actual_motion := get_position_delta()
+	var target_offset := Vector3.ZERO
+	var actual_motion := get_position_delta()
 
-    var horizontal_distance := Vector2(
-        actual_motion.x,
-        actual_motion.z
-    ).length()
+	var horizontal_distance := Vector2(
+		actual_motion.x,
+		actual_motion.z
+	).length()
 
-    if (
-        head_bob_enabled
-        and is_on_floor()
-        and horizontal_distance > 0.0001
-    ):
-        bob_phase += horizontal_distance * bob_phase_per_meter
+	if (
+		head_bob_enabled
+		and is_on_floor()
+		and horizontal_distance > 0.0001
+	):
+		bob_phase += horizontal_distance * bob_phase_per_meter
 
-        var amplitude := bob_amplitude
+		var amplitude := bob_amplitude
 
-        if is_crouching:
-            amplitude *= 0.5
-        elif is_sprinting:
-            amplitude *= 1.25
+		if is_crouching:
+			amplitude *= 0.5
+		elif is_sprinting:
+			amplitude *= 1.25
 
-        target_offset.x = (
-            cos(bob_phase * 0.5) * amplitude * 0.5
-        )
-        target_offset.y = sin(bob_phase) * amplitude
+		target_offset.x = (
+			cos(bob_phase * 0.5) * amplitude * 0.5
+		)
+		target_offset.y = sin(bob_phase) * amplitude
 
-    landing_offset = move_toward(
-        landing_offset,
-        0.0,
-        0.25 * delta
-    )
+	landing_offset = move_toward(
+		landing_offset,
+		0.0,
+		0.25 * delta
+	)
 
-    target_offset.y += landing_offset
+	target_offset.y += landing_offset
 
-    var camera_blend := 1.0 - exp(
-        -camera_return_speed * delta
-    )
+	var camera_blend := 1.0 - exp(
+		-camera_return_speed * delta
+	)
 
-    camera_effects.position = camera_effects.position.lerp(
-        target_offset,
-        camera_blend
-    )
+	camera_effects.position = camera_effects.position.lerp(
+		target_offset,
+		camera_blend
+	)
+
+
+func _open_menu(menu: String) -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	if menu == "Journal":
+		print("Journal Opened")
+		player_journal.text = "Journal Opened"
+		is_in_menu = true
+		return
+	if menu == "Pause":
+		print("Game Paused")
+		player_pause_ui.text = "Game Paused"
+		is_in_menu = true
+		return
+	return
+
+func _close_menu(menu: String) -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	print("Menu closed")
+	if menu == "Journal":
+		print("Journal Closed")
+		is_in_menu = false
+		player_journal.text = "Journal Closed"
+		return
+	if menu == "Pause":
+		print("Unpaused")
+		is_in_menu = false
+		player_pause_ui.text = "Game Unpaused"
+		return
+	return
+
+func _interact(item: String) -> void:
+	print("You have interacted with " + item)
+	return

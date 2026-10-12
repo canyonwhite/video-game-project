@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://6owlddbkpk6v"]
+
+[ext_resource type="Script" uid="uid://sacas3w7vylw" path="res://src/scenes/interact_node.gd" id="1_fhjmb"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fwano"]
+
+[node name="Interact_node" type="Node3D" unique_id=182213318]
+script = ExtResource("1_fhjmb")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=1525553415]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=760958769]
+shape = SubResource("BoxShape3D_fwano")
+
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_exited" from="Area3D" to="." method="_on_area_3d_body_exited"]
