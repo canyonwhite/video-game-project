@@ -1,0 +1,2276 @@
+{
+  ".codex/hooks.json": {
+    "mtime": 1791830081.7176476,
+    "seen": 1791999149.254449,
+    "ast_hash": "005ac71c84af2cae38e255e2b9de2411",
+    "semantic_hash": ""
+  },
+  ".vscode/launch.json": {
+    "mtime": 1791507647.4483287,
+    "seen": 1791999149.254451,
+    "ast_hash": "13606f6722bbb8a552207420a1634d42",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/DialogueManager.cs": {
+    "mtime": 1791507647.4627101,
+    "seen": 1791999149.254452,
+    "ast_hash": "9397084b41b0bc82d5af3689c1455013",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/example_balloon/ExampleBalloon.cs": {
+    "mtime": 1791507647.4684372,
+    "seen": 1791999149.254453,
+    "ast_hash": "c2351a20ba9a9484acc0c244441b85a5",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/nodes/actionable/DialogueActionable2D.cs": {
+    "mtime": 1791507647.469706,
+    "seen": 1791999149.254453,
+    "ast_hash": "99ef7bdf23f37a44218507a9d02b0dbf",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/nodes/actionable/DialogueActionable3D.cs": {
+    "mtime": 1791507647.4697902,
+    "seen": 1791999149.254454,
+    "ast_hash": "3c352b7661e8cece909e379d0183be34",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/nodes/context/DialogueStateContext.cs": {
+    "mtime": 1791507647.4703002,
+    "seen": 1791999149.254454,
+    "ast_hash": "dc269c2500e47807d7995f2ef8170e26",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/nodes/dialogue_label/DialogueLabel.cs": {
+    "mtime": 1791507647.4706335,
+    "seen": 1791999149.254455,
+    "ast_hash": "d61d655d82c9b4eac7e68ceeecc897fb",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/nodes/marker/DialogueMarker2D.cs": {
+    "mtime": 1791507647.4710853,
+    "seen": 1791999149.254455,
+    "ast_hash": "01e142855099c572f7f716f38603bf7b",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/nodes/marker/DialogueMarker3D.cs": {
+    "mtime": 1791507647.471168,
+    "seen": 1791999149.254456,
+    "ast_hash": "91eac37e328f4c06a40081b6ffe71ee2",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/nodes/responses_menu/DialogueResponsesMenu.cs": {
+    "mtime": 1791507647.4717233,
+    "seen": 1791999149.254456,
+    "ast_hash": "9fdff4d1dcde73a61359ba46367bd874",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/data/example_levels.json": {
+    "mtime": 1791507647.4748828,
+    "seen": 1791999149.254456,
+    "ast_hash": "50cf8b8520436e00c04666caf910788b",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/entities.json": {
+    "mtime": 1791507647.4768717,
+    "seen": 1791999149.254457,
+    "ast_hash": "5d22623d4c50c18e4755130db2e3303c",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/scripts/managers/PhantomCameraManager.cs": {
+    "mtime": 1791507647.6252415,
+    "seen": 1791999149.254457,
+    "ast_hash": "d82750c1a0007b57c32b8c7793e23ad5",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/scripts/phantom_camera/PhantomCamera.cs": {
+    "mtime": 1791507647.626104,
+    "seen": 1791999149.254457,
+    "ast_hash": "04fc74646fb1b819f168b88bb3ec2142",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/scripts/phantom_camera/PhantomCamera2D.cs": {
+    "mtime": 1791507647.6262228,
+    "seen": 1791999149.2544582,
+    "ast_hash": "952d7e92ade7c164226c504c46860107",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/scripts/phantom_camera/PhantomCamera3D.cs": {
+    "mtime": 1791507647.626312,
+    "seen": 1791999149.2544582,
+    "ast_hash": "db6dd1ef4e2415bfc127cbd68cf8e1b3",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/scripts/phantom_camera/PhantomCameraNoiseEmitter2D.cs": {
+    "mtime": 1791507647.6264145,
+    "seen": 1791999149.254459,
+    "ast_hash": "40c4cfb2f37668bc7d048342be60a69d",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/scripts/phantom_camera/PhantomCameraNoiseEmitter3D.cs": {
+    "mtime": 1791507647.6265042,
+    "seen": 1791999149.254459,
+    "ast_hash": "3fcf025f0a9d1ae229d92bd2fa67e736",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/scripts/phantom_camera/PhantomCameraTweenDirector.cs": {
+    "mtime": 1791507647.6265955,
+    "seen": 1791999149.254459,
+    "ast_hash": "31168c0c8cb345d9d54c9167c6482a34",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/scripts/phantom_camera_host/PhantomCameraHost.cs": {
+    "mtime": 1791507647.6273773,
+    "seen": 1791999149.2544599,
+    "ast_hash": "eed6725f9f18c38f6d1420dbde597952",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/scripts/resources/Camera3DResource.cs": {
+    "mtime": 1791507647.627649,
+    "seen": 1791999149.2544599,
+    "ast_hash": "cd4b4a02a5094f5bd68fe74045432aed",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/scripts/resources/PhantomCameraNoise2D.cs": {
+    "mtime": 1791507647.6277466,
+    "seen": 1791999149.2544608,
+    "ast_hash": "e0c9dc50498b6908918a2aa869dbd3e3",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/scripts/resources/PhantomCameraNoise3D.cs": {
+    "mtime": 1791507647.6278212,
+    "seen": 1791999149.2544608,
+    "ast_hash": "1b044d86c3d0a48c94f80369149fa00d",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/scripts/resources/PhantomCameraTween.cs": {
+    "mtime": 1791507647.6278958,
+    "seen": 1791999149.2544608,
+    "ast_hash": "f2c89b52bebee9d5215d9b491676fc40",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/scripts/resources/TweenDirectorResource.cs": {
+    "mtime": 1791507647.6279752,
+    "seen": 1791999149.254462,
+    "ast_hash": "07610353da904e8a6117b4066d3c09a3",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1791830081.7175024,
+    "seen": 1791999149.254462,
+    "ast_hash": "4d1763f1403a0b6e9c018f2249277d0b",
+    "semantic_hash": ""
+  },
+  "MOVEMENT_PROTOTYPE.md": {
+    "mtime": 1791507647.4484599,
+    "seen": 1791999149.254463,
+    "ast_hash": "349da467987964b1bdb2360d62d35194",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1791507588.1663055,
+    "seen": 1791999149.254463,
+    "ast_hash": "d08c8d9b3c5e0888cd1e678f97aa343f",
+    "semantic_hash": ""
+  },
+  "ZOMBIE_AI.md": {
+    "mtime": 1791507647.4485219,
+    "seen": 1791999149.254463,
+    "ast_hash": "ba81782d0aef04e7d9c52dad7635e38f",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/README.md": {
+    "mtime": 1791507647.473857,
+    "seen": 1791999149.254464,
+    "ast_hash": "900557be5f4757ed760b4b4a5ee0942b",
+    "semantic_hash": ""
+  },
+  "addons/limboai/LICENSE.md": {
+    "mtime": 1791507647.5195143,
+    "seen": 1791999149.254464,
+    "ast_hash": "6f8910ee0273f78c5be74140851d26a5",
+    "semantic_hash": ""
+  },
+  "addons/limboai/LOGO_LICENSE.md": {
+    "mtime": 1791507647.5195606,
+    "seen": 1791999149.254464,
+    "ast_hash": "8ef7d39ee7b50b469c02dccd87c433c3",
+    "semantic_hash": ""
+  },
+  "addons/limboai/README.md": {
+    "mtime": 1791507647.5196238,
+    "seen": 1791999149.254465,
+    "ast_hash": "69b76eb44483b9f3b18a3af6ecd88de4",
+    "semantic_hash": ""
+  },
+  "addons/limboai/version.txt": {
+    "mtime": 1791507647.6168714,
+    "seen": 1791999149.254465,
+    "ast_hash": "0d7ba264881026905af2b824746204c0",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/examples/credits.txt": {
+    "mtime": 1791507647.6172483,
+    "seen": 1791999149.254466,
+    "ast_hash": "d2b263f626c6e4e8ea109d6c0fa3ae31",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/LICENSE.txt": {
+    "mtime": 1791507647.6287174,
+    "seen": 1791999149.254466,
+    "ast_hash": "5b256279fb0ebbb021d054eec2d3ec4d",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/README.md": {
+    "mtime": 1791507647.6287801,
+    "seen": 1791999149.254466,
+    "ast_hash": "5e987aa5e40b8471ba8f30d89209f5bb",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/menu/channel_packer_import_template.txt": {
+    "mtime": 1791507647.6872034,
+    "seen": 1791999149.254467,
+    "ast_hash": "c9b52443d03e3a395aa9e6ac340a2abe",
+    "semantic_hash": ""
+  },
+  "demo/LICENSE_ASSETS.md": {
+    "mtime": 1791507647.6892538,
+    "seen": 1791999149.254467,
+    "ast_hash": "d2466bfa94b4b4c6b3c008977709025f",
+    "semantic_hash": ""
+  },
+  "demo/assets/textures/asset_licenses.txt": {
+    "mtime": 1791507647.6984477,
+    "seen": 1791999149.254467,
+    "ast_hash": "6602daa3e10b9351965bb514d84c9063",
+    "semantic_hash": ""
+  },
+  "addons/asset_placer/icon.png": {
+    "mtime": 1791507647.4519746,
+    "seen": 1791999149.2544682,
+    "ast_hash": "7bfe9bc86810f353aa0b4e7239936548",
+    "semantic_hash": ""
+  },
+  "addons/asset_placer/ui/asset_collections_window/components/collection_circle.svg": {
+    "mtime": 1791507647.4542265,
+    "seen": 1791999149.2544682,
+    "ast_hash": "cdcaed0f98dbb07728172f2fe1bd7e58",
+    "semantic_hash": ""
+  },
+  "addons/asset_placer/ui/plane_preview/plane_texture.svg": {
+    "mtime": 1791507647.4595027,
+    "seen": 1791999149.2544692,
+    "ast_hash": "54178d9956773b12e32c5f297e52abef",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/assets/cue.svg": {
+    "mtime": 1791507647.4629488,
+    "seen": 1791999149.2544692,
+    "ast_hash": "ab17eef2b20565beba5ca77c1393d8a3",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/assets/icon.svg": {
+    "mtime": 1791507647.4630814,
+    "seen": 1791999149.2544692,
+    "ast_hash": "836758827ba219577da18bcb389a4ed8",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/assets/logo.svg": {
+    "mtime": 1791507647.463238,
+    "seen": 1791999149.2544699,
+    "ast_hash": "0f700e7cf149311ac470a6e3b967ef48",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/assets/region.svg": {
+    "mtime": 1791507647.4633546,
+    "seen": 1791999149.2544699,
+    "ast_hash": "d2c0feb98faf5692d57c324022280bbf",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/assets/resource.svg": {
+    "mtime": 1791507647.4634693,
+    "seen": 1791999149.2544708,
+    "ast_hash": "a114b31dc47a312fb92897a02d8a032c",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/assets/update.svg": {
+    "mtime": 1791507647.463618,
+    "seen": 1791999149.2544708,
+    "ast_hash": "244057406f7243e41f7f2df1a60ebe26",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/nodes/actionable/dialogue_actionable_2d.svg": {
+    "mtime": 1791507647.469981,
+    "seen": 1791999149.2544708,
+    "ast_hash": "4c21dae4b403fa32ddd1f679662b047f",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/nodes/actionable/dialogue_actionable_3d.svg": {
+    "mtime": 1791507647.4701838,
+    "seen": 1791999149.254472,
+    "ast_hash": "f76485d008f8ff6fa8fae62bb3378a01",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/nodes/context/dialogue_state_context.svg": {
+    "mtime": 1791507647.4704893,
+    "seen": 1791999149.254472,
+    "ast_hash": "b39e1d721f040bf1516bc3882f9e6a45",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/nodes/dialogue_label/dialogue_label.svg": {
+    "mtime": 1791507647.4708917,
+    "seen": 1791999149.254472,
+    "ast_hash": "e855ffc79e08f93b1b220a38c8d4e6bd",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/nodes/marker/dialogue_marker_2d.svg": {
+    "mtime": 1791507647.4713907,
+    "seen": 1791999149.254473,
+    "ast_hash": "298a0948835b37ea0ba811e7b356f102",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/nodes/marker/dialogue_marker_3d.svg": {
+    "mtime": 1791507647.471579,
+    "seen": 1791999149.254473,
+    "ast_hash": "8f4e380cb42aca445b528030ba73e3f0",
+    "semantic_hash": ""
+  },
+  "addons/dialogue_manager/nodes/responses_menu/dialogue_responses_menu.svg": {
+    "mtime": 1791507647.4719818,
+    "seen": 1791999149.254474,
+    "ast_hash": "652126c8037cc61d4a0acf404331a873",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/branding/hf_lockup_dark.svg": {
+    "mtime": 1791507647.4740582,
+    "seen": 1791999149.254474,
+    "ast_hash": "aa7b51b4d8b52d2cc874e5baf636e83e",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/branding/hf_lockup_light.svg": {
+    "mtime": 1791507647.474177,
+    "seen": 1791999149.254475,
+    "ast_hash": "7b9470d324362092c98171b90c50ba99",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/branding/hf_mark_editor.svg": {
+    "mtime": 1791507647.4742682,
+    "seen": 1791999149.254475,
+    "ast_hash": "119bde65fab3ac44dc9558c5e16b62a6",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/icon.png": {
+    "mtime": 1791507647.4814515,
+    "seen": 1791999149.254475,
+    "ast_hash": "324af376f470303d3a19fcadc3edd4bf",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/icon.svg": {
+    "mtime": 1791507647.4815779,
+    "seen": 1791999149.254476,
+    "ast_hash": "2d17ce70b27b611d9a5b57565b516a9c",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/icons/player_start.png": {
+    "mtime": 1791507647.4817164,
+    "seen": 1791999149.254476,
+    "ast_hash": "5e581ffc9fd51ee618504b6e4b84c808",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/icons/shapes/shape_box.svg": {
+    "mtime": 1791507647.4818673,
+    "seen": 1791999149.254476,
+    "ast_hash": "3389136df0adfba9c3374b61e346273b",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/icons/shapes/shape_capsule.svg": {
+    "mtime": 1791507647.481973,
+    "seen": 1791999149.254477,
+    "ast_hash": "581fd59c374a9034ae1bc78631197496",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/icons/shapes/shape_cone.svg": {
+    "mtime": 1791507647.4820764,
+    "seen": 1791999149.254477,
+    "ast_hash": "3de47ec3f506767048ccca4de48ad0ef",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/icons/shapes/shape_cylinder.svg": {
+    "mtime": 1791507647.482176,
+    "seen": 1791999149.254478,
+    "ast_hash": "e532deddb3c328449932abd9b5a631fa",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/icons/shapes/shape_dodecahedron.svg": {
+    "mtime": 1791507647.4822714,
+    "seen": 1791999149.254478,
+    "ast_hash": "e1ad26087cdaaacf11b1eead85ba4a1b",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/icons/shapes/shape_ellipsoid.svg": {
+    "mtime": 1791507647.482407,
+    "seen": 1791999149.254478,
+    "ast_hash": "c36f257d71c1d35dcc9388fa0efe3671",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/icons/shapes/shape_icosahedron.svg": {
+    "mtime": 1791507647.4825754,
+    "seen": 1791999149.2544792,
+    "ast_hash": "b3043368db87b190fbbc6dfde8af6123",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/icons/shapes/shape_octahedron.svg": {
+    "mtime": 1791507647.4826608,
+    "seen": 1791999149.2544792,
+    "ast_hash": "4c75b85994adbd23c1c9b26f87f511d5",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/icons/shapes/shape_prism_pent.svg": {
+    "mtime": 1791507647.482739,
+    "seen": 1791999149.25448,
+    "ast_hash": "1e67c813c0e03cab79f32c1e2667dba3",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/icons/shapes/shape_prism_tri.svg": {
+    "mtime": 1791507647.4828198,
+    "seen": 1791999149.25448,
+    "ast_hash": "ab79e173bad8d2f2defca5ef9a43a004",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/icons/shapes/shape_pyramid.svg": {
+    "mtime": 1791507647.4828982,
+    "seen": 1791999149.25448,
+    "ast_hash": "f0b404d5cd60c87cf06dbc9920ab35de",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/icons/shapes/shape_sphere.svg": {
+    "mtime": 1791507647.482983,
+    "seen": 1791999149.2544808,
+    "ast_hash": "e582aa9583aa2c85fb4d7a6cce4f925f",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/icons/shapes/shape_tetrahedron.svg": {
+    "mtime": 1791507647.4830577,
+    "seen": 1791999149.2544808,
+    "ast_hash": "75d56ea9203375dd0394a7b4147bd4bb",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/icons/shapes/shape_torus.svg": {
+    "mtime": 1791507647.4831352,
+    "seen": 1791999149.2544808,
+    "ast_hash": "eb49ada417eb6bd99c441e00caf8a75b",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/icons/shapes/shape_wedge.svg": {
+    "mtime": 1791507647.4832091,
+    "seen": 1791999149.254482,
+    "ast_hash": "d05401f23b515fbfa0d41af869a81cab",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_down_blue.svg": {
+    "mtime": 1791507647.4925177,
+    "seen": 1791999149.254482,
+    "ast_hash": "516c3a9d168a7b5f525ad2c894952891",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_down_brown.svg": {
+    "mtime": 1791507647.4925966,
+    "seen": 1791999149.254483,
+    "ast_hash": "48b8bab76d8a33170dafc0a968e81ae9",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_down_cyan.svg": {
+    "mtime": 1791507647.4926708,
+    "seen": 1791999149.254483,
+    "ast_hash": "e95fd22050953ca38e2579cca96c9ab9",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_down_green.svg": {
+    "mtime": 1791507647.4927433,
+    "seen": 1791999149.254483,
+    "ast_hash": "d4d9c1f7f0399e471818236846b21f25",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_down_grey.svg": {
+    "mtime": 1791507647.492812,
+    "seen": 1791999149.254484,
+    "ast_hash": "ff87b8622b6f932af8038cbbb2dc1539",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_down_orange.svg": {
+    "mtime": 1791507647.4928901,
+    "seen": 1791999149.254484,
+    "ast_hash": "2b46c17f8b9986b7cf447b0ba23b5f53",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_down_pink.svg": {
+    "mtime": 1791507647.4930122,
+    "seen": 1791999149.254484,
+    "ast_hash": "e86283a8273d3aa06ae64b7ed84a1ba1",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_down_purple.svg": {
+    "mtime": 1791507647.4931667,
+    "seen": 1791999149.254485,
+    "ast_hash": "abdef54621e7cfb5b606db1fa3c5f7a8",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_down_red.svg": {
+    "mtime": 1791507647.4932396,
+    "seen": 1791999149.254485,
+    "ast_hash": "4946b8b38f93859fa136a150d38238c7",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_down_yellow.svg": {
+    "mtime": 1791507647.493315,
+    "seen": 1791999149.254486,
+    "ast_hash": "f6fa0fb322cd26f5d4458527c74e30e5",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_left_blue.svg": {
+    "mtime": 1791507647.4933877,
+    "seen": 1791999149.254486,
+    "ast_hash": "2364b02d2abf93a6f88fcfaa918d3ec4",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_left_brown.svg": {
+    "mtime": 1791507647.4935393,
+    "seen": 1791999149.254486,
+    "ast_hash": "60788e1069e4329645347b43487504f0",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_left_cyan.svg": {
+    "mtime": 1791507647.4936454,
+    "seen": 1791999149.254487,
+    "ast_hash": "6b37d6910f46bd09f82ef91f5fea76da",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_left_green.svg": {
+    "mtime": 1791507647.4937196,
+    "seen": 1791999149.254487,
+    "ast_hash": "73af9ce53e1b632d45a8716913c97338",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_left_grey.svg": {
+    "mtime": 1791507647.493825,
+    "seen": 1791999149.254488,
+    "ast_hash": "f60f36ee30f6ebeb7375585d69e41205",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_left_orange.svg": {
+    "mtime": 1791507647.4938943,
+    "seen": 1791999149.254488,
+    "ast_hash": "75149533204d71e4fc3c486b3dc1f263",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_left_pink.svg": {
+    "mtime": 1791507647.494006,
+    "seen": 1791999149.254488,
+    "ast_hash": "9e1a094972f30460121868176d4bb89a",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_left_purple.svg": {
+    "mtime": 1791507647.494069,
+    "seen": 1791999149.2544892,
+    "ast_hash": "edde2f58fb72dafa5cb2a741da09b95f",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_left_red.svg": {
+    "mtime": 1791507647.4941359,
+    "seen": 1791999149.2544892,
+    "ast_hash": "423de8143ee037d1fdccb2a8b004c13c",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_left_yellow.svg": {
+    "mtime": 1791507647.4942486,
+    "seen": 1791999149.2544892,
+    "ast_hash": "b07bb7effc218fc4cc8cd07c505d23cb",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_right_blue.svg": {
+    "mtime": 1791507647.494319,
+    "seen": 1791999149.2544901,
+    "ast_hash": "0e3927191bb39a79649f2964019ef3a5",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_right_brown.svg": {
+    "mtime": 1791507647.4943862,
+    "seen": 1791999149.2544901,
+    "ast_hash": "58389ac1c1207bbaafcb00c3e3b177ed",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_right_cyan.svg": {
+    "mtime": 1791507647.4945328,
+    "seen": 1791999149.2544901,
+    "ast_hash": "ff67a59b1240abb5f93520d87a36bbac",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_right_green.svg": {
+    "mtime": 1791507647.4946725,
+    "seen": 1791999149.2544909,
+    "ast_hash": "8e8ca08b17eecf81e37a99caf576a1e8",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_right_grey.svg": {
+    "mtime": 1791507647.494782,
+    "seen": 1791999149.2544909,
+    "ast_hash": "f8339981d8e420385eb2237da93050b4",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_right_orange.svg": {
+    "mtime": 1791507647.494924,
+    "seen": 1791999149.2544918,
+    "ast_hash": "3c8a1c15d17487decdff77ac1e0f528f",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_right_pink.svg": {
+    "mtime": 1791507647.4950309,
+    "seen": 1791999149.2544918,
+    "ast_hash": "511ae24abb7a3684c5fa548680799f9d",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_right_purple.svg": {
+    "mtime": 1791507647.4951437,
+    "seen": 1791999149.2544918,
+    "ast_hash": "e1b6cd00932121390076c4a2964d1ba7",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_right_red.svg": {
+    "mtime": 1791507647.495253,
+    "seen": 1791999149.254493,
+    "ast_hash": "22f8c01babcc53d284f1295aacd51b51",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_right_yellow.svg": {
+    "mtime": 1791507647.4953535,
+    "seen": 1791999149.254493,
+    "ast_hash": "dee281198037b6985fdd0403bac13f8d",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_up_blue.svg": {
+    "mtime": 1791507647.495425,
+    "seen": 1791999149.254493,
+    "ast_hash": "2799e2c07e8c792711bde85efb6e3f8e",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_up_brown.svg": {
+    "mtime": 1791507647.4955359,
+    "seen": 1791999149.254494,
+    "ast_hash": "3a8af04708b5cc9cf8577a539f28b1bd",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_up_cyan.svg": {
+    "mtime": 1791507647.495642,
+    "seen": 1791999149.254494,
+    "ast_hash": "c8c40bcae732daff48f11cb492cbcfb9",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_up_green.svg": {
+    "mtime": 1791507647.495745,
+    "seen": 1791999149.254494,
+    "ast_hash": "3614dbdff777ad97379deec9c55f76e2",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_up_grey.svg": {
+    "mtime": 1791507647.4958537,
+    "seen": 1791999149.254495,
+    "ast_hash": "f24f91af5ec5fc28f43511f8e3a4b42d",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_up_orange.svg": {
+    "mtime": 1791507647.4959283,
+    "seen": 1791999149.254495,
+    "ast_hash": "ee7fdfbf12aa678e013051c6012a60c9",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_up_pink.svg": {
+    "mtime": 1791507647.4960008,
+    "seen": 1791999149.254496,
+    "ast_hash": "66f627b375df7c1aed28c26b80c0a9cf",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_up_purple.svg": {
+    "mtime": 1791507647.4961395,
+    "seen": 1791999149.254496,
+    "ast_hash": "5dc7b375905cd6e43818380681c643f7",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_up_red.svg": {
+    "mtime": 1791507647.4962885,
+    "seen": 1791999149.254496,
+    "ast_hash": "5ba87c341cfd2cdb528760dacb6c3595",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/arrow_up_yellow.svg": {
+    "mtime": 1791507647.4964323,
+    "seen": 1791999149.254497,
+    "ast_hash": "efe9ea735b0a4c8ed2e12a439c00f742",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/brick_blue.svg": {
+    "mtime": 1791507647.496577,
+    "seen": 1791999149.254497,
+    "ast_hash": "f658fe185f18c716ee71c2a555947ba6",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/brick_brown.svg": {
+    "mtime": 1791507647.4966478,
+    "seen": 1791999149.254497,
+    "ast_hash": "879e70f58cc5b2c9be5576db36b93e30",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/brick_cyan.svg": {
+    "mtime": 1791507647.4967227,
+    "seen": 1791999149.254498,
+    "ast_hash": "dd95ed5ee2311b0ff708dae6f365dfaf",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/brick_green.svg": {
+    "mtime": 1791507647.4967918,
+    "seen": 1791999149.254498,
+    "ast_hash": "b0bd30a795301bd5027aea29fd6a6b8f",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/brick_grey.svg": {
+    "mtime": 1791507647.496903,
+    "seen": 1791999149.254499,
+    "ast_hash": "e52a14e4a4ff93b12e4cdcea7fefdf39",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/brick_orange.svg": {
+    "mtime": 1791507647.4969752,
+    "seen": 1791999149.254499,
+    "ast_hash": "97a83c0ce39288a4711646f68ded274a",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/brick_pink.svg": {
+    "mtime": 1791507647.4970434,
+    "seen": 1791999149.254499,
+    "ast_hash": "0dd394d6eec3c38b5341b9fb114cc357",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/brick_purple.svg": {
+    "mtime": 1791507647.4971871,
+    "seen": 1791999149.2545002,
+    "ast_hash": "c2cb1b45caabee46073864f15631406d",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/brick_red.svg": {
+    "mtime": 1791507647.4972594,
+    "seen": 1791999149.2545002,
+    "ast_hash": "3cfafd224beccc30403b61c031ad1d04",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/brick_yellow.svg": {
+    "mtime": 1791507647.4973314,
+    "seen": 1791999149.2545002,
+    "ast_hash": "9626f3df0874f829ad2cda41bb31b447",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/checker_blue.svg": {
+    "mtime": 1791507647.4974768,
+    "seen": 1791999149.254501,
+    "ast_hash": "300d9240e7b3cdcd1d4c498fa2fc6180",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/checker_brown.svg": {
+    "mtime": 1791507647.4975843,
+    "seen": 1791999149.254501,
+    "ast_hash": "20cd797b2a5b1debc0f70fa7446a63f0",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/checker_cyan.svg": {
+    "mtime": 1791507647.4976637,
+    "seen": 1791999149.254501,
+    "ast_hash": "1d87bfc52b299280662f3f808b4fd933",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/checker_green.svg": {
+    "mtime": 1791507647.4977767,
+    "seen": 1791999149.2545018,
+    "ast_hash": "30034e925a03587ab965aa5925a82a4b",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/checker_grey.svg": {
+    "mtime": 1791507647.4979267,
+    "seen": 1791999149.2545018,
+    "ast_hash": "46eebcbdcdfb613dd942da8fbe625083",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/checker_orange.svg": {
+    "mtime": 1791507647.497999,
+    "seen": 1791999149.254503,
+    "ast_hash": "2bd1fa25e6179bfc774e17dbb163c5b6",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/checker_pink.svg": {
+    "mtime": 1791507647.4981132,
+    "seen": 1791999149.254503,
+    "ast_hash": "c54bc9bff35df1b3e0a0b180b05dbaec",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/checker_purple.svg": {
+    "mtime": 1791507647.4982271,
+    "seen": 1791999149.254503,
+    "ast_hash": "e400c3390d026e2214258c09adeaac50",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/checker_red.svg": {
+    "mtime": 1791507647.4983027,
+    "seen": 1791999149.254504,
+    "ast_hash": "eb1d04323d4e780c523e7e9af4d8d25a",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/checker_yellow.svg": {
+    "mtime": 1791507647.498411,
+    "seen": 1791999149.254504,
+    "ast_hash": "1b6bceca21fd46bea07d1a1d174bb349",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/cross_blue.svg": {
+    "mtime": 1791507647.4985878,
+    "seen": 1791999149.254504,
+    "ast_hash": "ff1075862a41b77cdcf96773cc5508ed",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/cross_brown.svg": {
+    "mtime": 1791507647.4987383,
+    "seen": 1791999149.254505,
+    "ast_hash": "a7c40f58effd3d659494b35573689e0d",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/cross_cyan.svg": {
+    "mtime": 1791507647.498845,
+    "seen": 1791999149.254505,
+    "ast_hash": "23cb4c41827014b4c9571b39ee3be6d2",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/cross_green.svg": {
+    "mtime": 1791507647.4990177,
+    "seen": 1791999149.254505,
+    "ast_hash": "c03c6530d679abc65ad4bea611224cfb",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/cross_grey.svg": {
+    "mtime": 1791507647.4991314,
+    "seen": 1791999149.2545059,
+    "ast_hash": "8f66874f75dddb1d5e4de068521ae6f4",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/cross_orange.svg": {
+    "mtime": 1791507647.4992864,
+    "seen": 1791999149.2545059,
+    "ast_hash": "19d24cc254b9593a7de4e2452af438d8",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/cross_pink.svg": {
+    "mtime": 1791507647.4993904,
+    "seen": 1791999149.2545059,
+    "ast_hash": "7dda5dbdd798f1181332e4af1771b79d",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/cross_purple.svg": {
+    "mtime": 1791507647.4994981,
+    "seen": 1791999149.254507,
+    "ast_hash": "9967394e481f40b8987c47141252ab22",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/cross_red.svg": {
+    "mtime": 1791507647.499605,
+    "seen": 1791999149.254507,
+    "ast_hash": "1d830d809e63408f11f846d264478dac",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/cross_yellow.svg": {
+    "mtime": 1791507647.4997425,
+    "seen": 1791999149.254508,
+    "ast_hash": "d19ecddb026c7be5741ad6fa1a2190dc",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/diamond_blue.svg": {
+    "mtime": 1791507647.4998846,
+    "seen": 1791999149.254508,
+    "ast_hash": "5280432ec821c1706f583771085ad2c5",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/diamond_brown.svg": {
+    "mtime": 1791507647.5000052,
+    "seen": 1791999149.254508,
+    "ast_hash": "13c0af71883af3a990ad63ffaeb19570",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/diamond_cyan.svg": {
+    "mtime": 1791507647.5001194,
+    "seen": 1791999149.254509,
+    "ast_hash": "b7c9c1c2af05b376fb8901c7ee78fc97",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/diamond_green.svg": {
+    "mtime": 1791507647.5002856,
+    "seen": 1791999149.254509,
+    "ast_hash": "b95c1e34dd23a74726ced207876cfe49",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/diamond_grey.svg": {
+    "mtime": 1791507647.5004404,
+    "seen": 1791999149.254509,
+    "ast_hash": "889d585b40c65a88004011fa4596f2b9",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/diamond_orange.svg": {
+    "mtime": 1791507647.5005913,
+    "seen": 1791999149.2545102,
+    "ast_hash": "11ae95245efa93e7c0ce14c9c6d30d8d",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/diamond_pink.svg": {
+    "mtime": 1791507647.5007138,
+    "seen": 1791999149.2545102,
+    "ast_hash": "9cb2dd8b0cb59490d2fee93f4ddd0410",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/diamond_purple.svg": {
+    "mtime": 1791507647.5008805,
+    "seen": 1791999149.2545102,
+    "ast_hash": "a79c08d224530ca87d4342f8716839ab",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/diamond_red.svg": {
+    "mtime": 1791507647.5009887,
+    "seen": 1791999149.254511,
+    "ast_hash": "2a268c234a38e77539e4b2f8f6e66b82",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/diamond_yellow.svg": {
+    "mtime": 1791507647.5011353,
+    "seen": 1791999149.254511,
+    "ast_hash": "5b3103bac2541b6ab9f316cdc42e6385",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/dots_blue.svg": {
+    "mtime": 1791507647.5012379,
+    "seen": 1791999149.254512,
+    "ast_hash": "8a5ee09c9d0a17d204cc020e55207ea1",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/dots_brown.svg": {
+    "mtime": 1791507647.5013762,
+    "seen": 1791999149.254512,
+    "ast_hash": "53eb11cd2d45f56fa4854324950550ef",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/dots_cyan.svg": {
+    "mtime": 1791507647.5015366,
+    "seen": 1791999149.254512,
+    "ast_hash": "f8dd4aa6bf674af0c015e02ec3c4287a",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/dots_green.svg": {
+    "mtime": 1791507647.501642,
+    "seen": 1791999149.2545128,
+    "ast_hash": "d8b8bd507db469df136c579db2778365",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/dots_grey.svg": {
+    "mtime": 1791507647.501788,
+    "seen": 1791999149.2545128,
+    "ast_hash": "239746a793aa50fdf2f479c86713e8d7",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/dots_orange.svg": {
+    "mtime": 1791507647.501884,
+    "seen": 1791999149.2545128,
+    "ast_hash": "b93b51b5754b867864191100fe58dd1d",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/dots_pink.svg": {
+    "mtime": 1791507647.5019832,
+    "seen": 1791999149.254514,
+    "ast_hash": "5c5daece116d72ee8fbe2a6d842b551b",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/dots_purple.svg": {
+    "mtime": 1791507647.5021045,
+    "seen": 1791999149.254514,
+    "ast_hash": "0d798355e50a3a68bd12b9bcd5478cc5",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/dots_red.svg": {
+    "mtime": 1791507647.5022113,
+    "seen": 1791999149.254514,
+    "ast_hash": "8e984ad70f72231e4c10875dbeeb86fa",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/dots_yellow.svg": {
+    "mtime": 1791507647.5022812,
+    "seen": 1791999149.254515,
+    "ast_hash": "65d7ae8ef87b258281c3b851c3403efc",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/hex_blue.svg": {
+    "mtime": 1791507647.5023842,
+    "seen": 1791999149.254515,
+    "ast_hash": "9adc915486fe831d2df6a748c0f77c8b",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/hex_brown.svg": {
+    "mtime": 1791507647.5024579,
+    "seen": 1791999149.254516,
+    "ast_hash": "bdac27a173ffee76011fe84707561ff4",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/hex_cyan.svg": {
+    "mtime": 1791507647.5025363,
+    "seen": 1791999149.254516,
+    "ast_hash": "f3c76624f4ed750dab338dd98a488175",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/hex_green.svg": {
+    "mtime": 1791507647.5026174,
+    "seen": 1791999149.254517,
+    "ast_hash": "b8fa594bf1d9d97aa955810201a8b069",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/hex_grey.svg": {
+    "mtime": 1791507647.5027182,
+    "seen": 1791999149.254517,
+    "ast_hash": "86aca4edd031d40d685a00e8408b6e50",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/hex_orange.svg": {
+    "mtime": 1791507647.502789,
+    "seen": 1791999149.254518,
+    "ast_hash": "7be7e8b0c3917967830e0e1b3038e08f",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/hex_pink.svg": {
+    "mtime": 1791507647.5028605,
+    "seen": 1791999149.254518,
+    "ast_hash": "dc5fe7f70776c76a34b25df7a813d9a1",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/hex_purple.svg": {
+    "mtime": 1791507647.5029666,
+    "seen": 1791999149.254518,
+    "ast_hash": "a2de99735b24397375f2689b4a583161",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/hex_red.svg": {
+    "mtime": 1791507647.503073,
+    "seen": 1791999149.254519,
+    "ast_hash": "bd303982f6feb254d6bfc77849dc84d5",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/hex_yellow.svg": {
+    "mtime": 1791507647.5031898,
+    "seen": 1791999149.254519,
+    "ast_hash": "f435fd109525948657ca0da71a3d9cb7",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/solid_blue.svg": {
+    "mtime": 1791507647.509094,
+    "seen": 1791999149.254519,
+    "ast_hash": "7b6fcd397e7438574c7f418edb976b35",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/solid_brown.svg": {
+    "mtime": 1791507647.5092454,
+    "seen": 1791999149.2545202,
+    "ast_hash": "87734b7ddeb8280ad25f773f93c3d642",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/solid_cyan.svg": {
+    "mtime": 1791507647.5093844,
+    "seen": 1791999149.2545202,
+    "ast_hash": "4907d11f5d06c0fd6c9561b494028076",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/solid_green.svg": {
+    "mtime": 1791507647.5095341,
+    "seen": 1791999149.2545202,
+    "ast_hash": "69b76038d2692687b147b0f44cd6d8ff",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/solid_grey.svg": {
+    "mtime": 1791507647.5096946,
+    "seen": 1791999149.2545211,
+    "ast_hash": "3b09a4817351e3dc9ba800fbe81e982f",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/solid_orange.svg": {
+    "mtime": 1791507647.5097938,
+    "seen": 1791999149.2545211,
+    "ast_hash": "08e4c3a8e73a4860fc1c97066db59e53",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/solid_pink.svg": {
+    "mtime": 1791507647.5099316,
+    "seen": 1791999149.2545211,
+    "ast_hash": "c968fbabf9cc66c605e1eac4102f63f6",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/solid_purple.svg": {
+    "mtime": 1791507647.5100768,
+    "seen": 1791999149.254522,
+    "ast_hash": "97e05d6d19552a8a0b372291b6867b1f",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/solid_red.svg": {
+    "mtime": 1791507647.5102398,
+    "seen": 1791999149.254522,
+    "ast_hash": "5cdf027554239ce3ad06e4ed7a8c2778",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/solid_yellow.svg": {
+    "mtime": 1791507647.5103467,
+    "seen": 1791999149.2545228,
+    "ast_hash": "677bb35588d137de23f227d614f7804d",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_diagonal_blue.svg": {
+    "mtime": 1791507647.5105064,
+    "seen": 1791999149.2545228,
+    "ast_hash": "96a31e302d82c56f6d934f15fabe33c1",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_diagonal_brown.svg": {
+    "mtime": 1791507647.5106585,
+    "seen": 1791999149.2545228,
+    "ast_hash": "f31432958da7801564259e7738219b25",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_diagonal_cyan.svg": {
+    "mtime": 1791507647.51076,
+    "seen": 1791999149.254524,
+    "ast_hash": "b0b2e2c2868c077d1d16875dd43ff972",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_diagonal_green.svg": {
+    "mtime": 1791507647.5108826,
+    "seen": 1791999149.254524,
+    "ast_hash": "b9dfc2046297a924db04b78f50be4746",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_diagonal_grey.svg": {
+    "mtime": 1791507647.5110753,
+    "seen": 1791999149.254524,
+    "ast_hash": "19a708fedfe8188933c7b72c9aba5f05",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_diagonal_orange.svg": {
+    "mtime": 1791507647.5112674,
+    "seen": 1791999149.254525,
+    "ast_hash": "6d19997893777d0166c20f900fca92c0",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_diagonal_pink.svg": {
+    "mtime": 1791507647.5114381,
+    "seen": 1791999149.254525,
+    "ast_hash": "8086cf6fa6e8eab91a6a666d00d4b8c9",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_diagonal_purple.svg": {
+    "mtime": 1791507647.5115898,
+    "seen": 1791999149.254526,
+    "ast_hash": "fff794a370b2eda3aa74c6ebc09a15d9",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_diagonal_red.svg": {
+    "mtime": 1791507647.5117886,
+    "seen": 1791999149.254526,
+    "ast_hash": "3035dbe2ba051b6f8e24e8cd60bdff4e",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_diagonal_yellow.svg": {
+    "mtime": 1791507647.511929,
+    "seen": 1791999149.254526,
+    "ast_hash": "2a848a8882b4634698a88ac44e85046d",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_horizontal_blue.svg": {
+    "mtime": 1791507647.5120306,
+    "seen": 1791999149.254527,
+    "ast_hash": "5cd215ff065f3b83929b4682d056f2e6",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_horizontal_brown.svg": {
+    "mtime": 1791507647.5122285,
+    "seen": 1791999149.254527,
+    "ast_hash": "5cc5e057a12a0c6e4185cb65569e630f",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_horizontal_cyan.svg": {
+    "mtime": 1791507647.5123422,
+    "seen": 1791999149.254527,
+    "ast_hash": "6caa3c5b80f873cdd243f843c7cd3eaa",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_horizontal_green.svg": {
+    "mtime": 1791507647.5124776,
+    "seen": 1791999149.254528,
+    "ast_hash": "847338c447f9df526b2ea1fdf2e23822",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_horizontal_grey.svg": {
+    "mtime": 1791507647.512568,
+    "seen": 1791999149.254528,
+    "ast_hash": "4a7cdd09b8597938387e58683902979a",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_horizontal_orange.svg": {
+    "mtime": 1791507647.512716,
+    "seen": 1791999149.254528,
+    "ast_hash": "4a7cc926b170de3189ba883e2ed8d289",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_horizontal_pink.svg": {
+    "mtime": 1791507647.5128474,
+    "seen": 1791999149.254529,
+    "ast_hash": "804229536e3b3f1d634115824a91f6f0",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_horizontal_purple.svg": {
+    "mtime": 1791507647.5130212,
+    "seen": 1791999149.254529,
+    "ast_hash": "b703c4aa384db18a18bd7007974af02f",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_horizontal_red.svg": {
+    "mtime": 1791507647.5131116,
+    "seen": 1791999149.25453,
+    "ast_hash": "127fc8162fa0e5fcbb38d438a86f5ae8",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/stripes_horizontal_yellow.svg": {
+    "mtime": 1791507647.513292,
+    "seen": 1791999149.25453,
+    "ast_hash": "413be842fb28443e1bf126fbb24276ad",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/triangles_blue.svg": {
+    "mtime": 1791507647.5133922,
+    "seen": 1791999149.25453,
+    "ast_hash": "9c70e477680539fda08e1f8534eff97a",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/triangles_brown.svg": {
+    "mtime": 1791507647.5134735,
+    "seen": 1791999149.2545311,
+    "ast_hash": "9a570779000714a3381d3be2a02c3e51",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/triangles_cyan.svg": {
+    "mtime": 1791507647.513542,
+    "seen": 1791999149.2545311,
+    "ast_hash": "a99fd44a242b6f47bdda40279a45ef0b",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/triangles_green.svg": {
+    "mtime": 1791507647.5136468,
+    "seen": 1791999149.2545311,
+    "ast_hash": "8c2bb0c345a0b59d877f68be50664021",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/triangles_grey.svg": {
+    "mtime": 1791507647.5137722,
+    "seen": 1791999149.254532,
+    "ast_hash": "a5aff0bb3cab8ac8652844696c228cf9",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/triangles_orange.svg": {
+    "mtime": 1791507647.5138886,
+    "seen": 1791999149.254532,
+    "ast_hash": "a75c5718fcd778573c72af1ab55a6ee0",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/triangles_pink.svg": {
+    "mtime": 1791507647.514071,
+    "seen": 1791999149.254532,
+    "ast_hash": "9bb4fc3e6c0502f60d273ded84f6bd6f",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/triangles_purple.svg": {
+    "mtime": 1791507647.5141368,
+    "seen": 1791999149.254533,
+    "ast_hash": "f8a33b9e3e3d948c378498af01ae35bd",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/triangles_red.svg": {
+    "mtime": 1791507647.5142443,
+    "seen": 1791999149.254533,
+    "ast_hash": "02175dea1f77bfaf43a2ba529f046bbe",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/triangles_yellow.svg": {
+    "mtime": 1791507647.5144062,
+    "seen": 1791999149.254533,
+    "ast_hash": "560cec7838f426fbf800fd586ade518a",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/zigzag_blue.svg": {
+    "mtime": 1791507647.514605,
+    "seen": 1791999149.254534,
+    "ast_hash": "73f010350a0a6d209d22c284524afc64",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/zigzag_brown.svg": {
+    "mtime": 1791507647.5147767,
+    "seen": 1791999149.254534,
+    "ast_hash": "8ad0f9223a0f01b9f3b98b1d5ce00498",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/zigzag_cyan.svg": {
+    "mtime": 1791507647.5149195,
+    "seen": 1791999149.254535,
+    "ast_hash": "8c65c9bfdd5d8354f307661e816784fd",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/zigzag_green.svg": {
+    "mtime": 1791507647.515021,
+    "seen": 1791999149.254535,
+    "ast_hash": "45f3fddec39d228c35c9e124a5cfc679",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/zigzag_grey.svg": {
+    "mtime": 1791507647.515137,
+    "seen": 1791999149.254535,
+    "ast_hash": "9900661f0b61122eccdcf63b54be2ebb",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/zigzag_orange.svg": {
+    "mtime": 1791507647.5153017,
+    "seen": 1791999149.254536,
+    "ast_hash": "6f7b964c90beceb7136b3cee9badb17c",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/zigzag_pink.svg": {
+    "mtime": 1791507647.515471,
+    "seen": 1791999149.254536,
+    "ast_hash": "c0dff1b5573561ae4e0d8f4cc582e434",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/zigzag_purple.svg": {
+    "mtime": 1791507647.515563,
+    "seen": 1791999149.254536,
+    "ast_hash": "2d74c1991488ac4797b7bda0f422355c",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/zigzag_red.svg": {
+    "mtime": 1791507647.5156438,
+    "seen": 1791999149.2545369,
+    "ast_hash": "aee390fbd3e50c23c80cf8bd393a6ad2",
+    "semantic_hash": ""
+  },
+  "addons/hammerforge/textures/prototypes/zigzag_yellow.svg": {
+    "mtime": 1791507647.515808,
+    "seen": 1791999149.2545369,
+    "ast_hash": "77c985ac538005181f1ea057275110c8",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTAction.svg": {
+    "mtime": 1791507647.6111655,
+    "seen": 1791999149.2545369,
+    "ast_hash": "08b9e190b7e060993500f49eb8a47577",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTAlwaysFail.svg": {
+    "mtime": 1791507647.6112618,
+    "seen": 1791999149.254538,
+    "ast_hash": "3241200ebc900c9061fcf2cac5f1fcf6",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTAlwaysSucceed.svg": {
+    "mtime": 1791507647.6113505,
+    "seen": 1791999149.254538,
+    "ast_hash": "10dd819d373957ee854ec71e5a35681c",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTAwaitAnimation.svg": {
+    "mtime": 1791507647.611438,
+    "seen": 1791999149.254539,
+    "ast_hash": "f147dfdff97a74fe15d20e8c8627ec06",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTCallMethod.svg": {
+    "mtime": 1791507647.6115174,
+    "seen": 1791999149.254539,
+    "ast_hash": "b52ffc0ebebeab1f3845f73cae69d231",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTCheckAgentProperty.svg": {
+    "mtime": 1791507647.6116083,
+    "seen": 1791999149.254539,
+    "ast_hash": "0b8d1d1105e17ead87aadbfd25b8dde4",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTCheckTrigger.svg": {
+    "mtime": 1791507647.6116884,
+    "seen": 1791999149.25454,
+    "ast_hash": "1db2653fef1ad228aa9bc0edbea124a7",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTCheckVar.svg": {
+    "mtime": 1791507647.6117778,
+    "seen": 1791999149.25454,
+    "ast_hash": "366205bb62338f2e9a623b5d2abd0183",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTComment.svg": {
+    "mtime": 1791507647.6118622,
+    "seen": 1791999149.25454,
+    "ast_hash": "0ecab271485d1c19f83296654debf0c6",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTCondition.svg": {
+    "mtime": 1791507647.6119533,
+    "seen": 1791999149.2545412,
+    "ast_hash": "32d0e9d7d651e88db0c79cc52920adf1",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTConsolePrint.svg": {
+    "mtime": 1791507647.612042,
+    "seen": 1791999149.2545412,
+    "ast_hash": "06a14b8595fd784669b663c057ae4931",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTCooldown.svg": {
+    "mtime": 1791507647.612155,
+    "seen": 1791999149.2545412,
+    "ast_hash": "98a35dd8ef8200e5bad3c5cca0d4fe44",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTDecorator.svg": {
+    "mtime": 1791507647.6122499,
+    "seen": 1791999149.254542,
+    "ast_hash": "6092a19a9d0b10b588d6b7b71c7addb0",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTDelay.svg": {
+    "mtime": 1791507647.6123369,
+    "seen": 1791999149.254542,
+    "ast_hash": "98a35dd8ef8200e5bad3c5cca0d4fe44",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTDynamicSelector.svg": {
+    "mtime": 1791507647.612426,
+    "seen": 1791999149.254543,
+    "ast_hash": "7fd604355c3cbf874e69fb7e18b95d17",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTDynamicSequence.svg": {
+    "mtime": 1791507647.612501,
+    "seen": 1791999149.254543,
+    "ast_hash": "add75c1fb07660140734971005b7e70d",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTEvaluateExpression.svg": {
+    "mtime": 1791507647.6125882,
+    "seen": 1791999149.254543,
+    "ast_hash": "2cdfb16536e0be0281404a939124daa9",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTFail.svg": {
+    "mtime": 1791507647.6126678,
+    "seen": 1791999149.2545438,
+    "ast_hash": "3241200ebc900c9061fcf2cac5f1fcf6",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTForEach.svg": {
+    "mtime": 1791507647.6127586,
+    "seen": 1791999149.2545438,
+    "ast_hash": "ab537c96d920ba726018f1527b6798e9",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTInvert.svg": {
+    "mtime": 1791507647.612852,
+    "seen": 1791999149.2545438,
+    "ast_hash": "c66c18e4059329499c7d780622aec724",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTNewScope.svg": {
+    "mtime": 1791507647.6129363,
+    "seen": 1791999149.254545,
+    "ast_hash": "702e9a5df03ac8c80cf4914d325158a0",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTParallel.svg": {
+    "mtime": 1791507647.61301,
+    "seen": 1791999149.254545,
+    "ast_hash": "39177dde8b691e3b83608fe531f66312",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTPauseAnimation.svg": {
+    "mtime": 1791507647.6130972,
+    "seen": 1791999149.254546,
+    "ast_hash": "a69964e38fd87f15ae83a8c1bfb8e5a8",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTPlayAnimation.svg": {
+    "mtime": 1791507647.6131895,
+    "seen": 1791999149.254546,
+    "ast_hash": "53d3cb63683671fc34fc04adf5a08ad2",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTPlayer.svg": {
+    "mtime": 1791507647.6132822,
+    "seen": 1791999149.254546,
+    "ast_hash": "2ff0cf74b5c941ed3fee0f0973abee98",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTProbability.svg": {
+    "mtime": 1791507647.6133657,
+    "seen": 1791999149.2545469,
+    "ast_hash": "c18c5f2388c8d4eb773efa2bb8742205",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTProbabilitySelector.svg": {
+    "mtime": 1791507647.6134484,
+    "seen": 1791999149.2545469,
+    "ast_hash": "8ada5f29f410a1362f3172a2c6a5b37c",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTRandomSelector.svg": {
+    "mtime": 1791507647.61353,
+    "seen": 1791999149.2545469,
+    "ast_hash": "592a3c1394b79b9fea185dc471380cec",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTRandomSequence.svg": {
+    "mtime": 1791507647.6136084,
+    "seen": 1791999149.254548,
+    "ast_hash": "220d437d60a109202d818852d0f614cc",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTRandomWait.svg": {
+    "mtime": 1791507647.6136818,
+    "seen": 1791999149.254548,
+    "ast_hash": "2614ca637d04250b2655fac73a03d7d6",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTRepeat.svg": {
+    "mtime": 1791507647.6137574,
+    "seen": 1791999149.254548,
+    "ast_hash": "23d87aaf847e06b0d33747d96a509942",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTRepeatUntilFailure.svg": {
+    "mtime": 1791507647.6138353,
+    "seen": 1791999149.254549,
+    "ast_hash": "3e2431033df981a86a2d45210c6616aa",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTRepeatUntilSuccess.svg": {
+    "mtime": 1791507647.6139235,
+    "seen": 1791999149.254549,
+    "ast_hash": "c8df7881eb5a83eb02ab78b174587594",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTRunLimit.svg": {
+    "mtime": 1791507647.6140091,
+    "seen": 1791999149.25455,
+    "ast_hash": "ea356c27bbf7bc521023f3853010ad62",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTSelector.svg": {
+    "mtime": 1791507647.6141086,
+    "seen": 1791999149.25455,
+    "ast_hash": "494cc4a4361e588e8ebc74a0694c55fb",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTSequence.svg": {
+    "mtime": 1791507647.614197,
+    "seen": 1791999149.25455,
+    "ast_hash": "3003702959a4f78cd21cbdadd3e64540",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTSetAgentProperty.svg": {
+    "mtime": 1791507647.6142712,
+    "seen": 1791999149.254551,
+    "ast_hash": "79e96178ae0921d54d4533d7258cd164",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTSetVar.svg": {
+    "mtime": 1791507647.6143875,
+    "seen": 1791999149.254551,
+    "ast_hash": "58347c19df57c32371095210c6f13d3a",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTState.svg": {
+    "mtime": 1791507647.614487,
+    "seen": 1791999149.254551,
+    "ast_hash": "2ff0cf74b5c941ed3fee0f0973abee98",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTStopAnimation.svg": {
+    "mtime": 1791507647.6145773,
+    "seen": 1791999149.2545521,
+    "ast_hash": "1d37f06c7c76c6aeb4435e9256d4af64",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTSubtree.svg": {
+    "mtime": 1791507647.6146674,
+    "seen": 1791999149.2545521,
+    "ast_hash": "b4526aa6f8288dfc2cea6124abf71e08",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTTimeLimit.svg": {
+    "mtime": 1791507647.6147473,
+    "seen": 1791999149.2545521,
+    "ast_hash": "98a35dd8ef8200e5bad3c5cca0d4fe44",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTWait.svg": {
+    "mtime": 1791507647.6148226,
+    "seen": 1791999149.254553,
+    "ast_hash": "2614ca637d04250b2655fac73a03d7d6",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BTWaitTicks.svg": {
+    "mtime": 1791507647.6148994,
+    "seen": 1791999149.254553,
+    "ast_hash": "2614ca637d04250b2655fac73a03d7d6",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BehaviorTree.svg": {
+    "mtime": 1791507647.61497,
+    "seen": 1791999149.254554,
+    "ast_hash": "b4526aa6f8288dfc2cea6124abf71e08",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BehaviorTreeView.svg": {
+    "mtime": 1791507647.6150436,
+    "seen": 1791999149.254554,
+    "ast_hash": "19ccb4bc1f2bc40e30304bca1acfddaf",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/BlackboardPlan.svg": {
+    "mtime": 1791507647.615135,
+    "seen": 1791999149.254554,
+    "ast_hash": "d2fcb14dfe65d554f26d3329367c90f6",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/LimboAI.svg": {
+    "mtime": 1791507647.6152177,
+    "seen": 1791999149.254555,
+    "ast_hash": "0a2da66fa52ea65356dfbab97116a9ec",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/LimboDeselectAll.svg": {
+    "mtime": 1791507647.6153078,
+    "seen": 1791999149.254555,
+    "ast_hash": "abb5f5b72117addc3811fe258212d938",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/LimboEditBlackboard.svg": {
+    "mtime": 1791507647.6154146,
+    "seen": 1791999149.254555,
+    "ast_hash": "da6187b9ac34c556057cd3cae1e139a9",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/LimboExtraBlackboard.svg": {
+    "mtime": 1791507647.6155667,
+    "seen": 1791999149.254556,
+    "ast_hash": "58347c19df57c32371095210c6f13d3a",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/LimboExtraClock.svg": {
+    "mtime": 1791507647.6156864,
+    "seen": 1791999149.254556,
+    "ast_hash": "c94a2fbed451986ed317da91ec795c0d",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/LimboExtraVariable.svg": {
+    "mtime": 1791507647.6157787,
+    "seen": 1791999149.254556,
+    "ast_hash": "bf3abe749edc04448eb9d8706a17e845",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/LimboExtractSubtree.svg": {
+    "mtime": 1791507647.6158612,
+    "seen": 1791999149.254557,
+    "ast_hash": "80ffad2c501ee7d3237ed780d1bbb679",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/LimboHSM.svg": {
+    "mtime": 1791507647.6159563,
+    "seen": 1791999149.254557,
+    "ast_hash": "5d8fb4e9220606d44c6c6c1f4564608c",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/LimboPercent.svg": {
+    "mtime": 1791507647.6160421,
+    "seen": 1791999149.2545578,
+    "ast_hash": "b085e5957377652877ec425a063296d8",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/LimboSelectAll.svg": {
+    "mtime": 1791507647.6161318,
+    "seen": 1791999149.2545578,
+    "ast_hash": "958b3fd1382ab86e94d1b2190109f112",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/LimboState.svg": {
+    "mtime": 1791507647.6162212,
+    "seen": 1791999149.2545578,
+    "ast_hash": "6da6f3688f5633d6aeb84d1047a1035d",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/LimboVarAdd.svg": {
+    "mtime": 1791507647.616316,
+    "seen": 1791999149.254559,
+    "ast_hash": "a28761815b0d94fc4b0410be3fba0cc0",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/LimboVarEmpty.svg": {
+    "mtime": 1791507647.6164148,
+    "seen": 1791999149.254559,
+    "ast_hash": "a66a365be915a31a6bdfecc6deae315b",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/LimboVarError.svg": {
+    "mtime": 1791507647.616517,
+    "seen": 1791999149.254559,
+    "ast_hash": "c9a7f9dd553678df08f508c269e9d0e6",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/LimboVarExists.svg": {
+    "mtime": 1791507647.6166234,
+    "seen": 1791999149.25456,
+    "ast_hash": "83931acb519daefbac68d521eb4b8ae0",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/LimboVarNotFound.svg": {
+    "mtime": 1791507647.616712,
+    "seen": 1791999149.25456,
+    "ast_hash": "a80dccd183952e73a6ca7e9e157a2b81",
+    "semantic_hash": ""
+  },
+  "addons/limboai/icons/LimboVarPrivate.svg": {
+    "mtime": 1791507647.6167948,
+    "seen": 1791999149.25456,
+    "ast_hash": "330d26d3b2349e9d65ba95c1c111dbfd",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/assets/PhantomCameraBtnPrimaryDefault.png": {
+    "mtime": 1791507647.617045,
+    "seen": 1791999149.254561,
+    "ast_hash": "6c00f2f1d8cd0aee16b6e1e3554eac94",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/assets/PhantomCameraBtnPrimaryHover.png": {
+    "mtime": 1791507647.617143,
+    "seen": 1791999149.254561,
+    "ast_hash": "84a037f97f2501ae73dadc461eb46955",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/examples/textures/2D/inventory_container.png": {
+    "mtime": 1791507647.620238,
+    "seen": 1791999149.2545621,
+    "ast_hash": "c3b3d8cdb001782e3d379c6cdfd517b4",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/examples/textures/2D/level_spritesheet.png": {
+    "mtime": 1791507647.6204038,
+    "seen": 1791999149.2545621,
+    "ast_hash": "89e976c8832aa97a6982c5898432e80d",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/examples/textures/2D/phantom_camera_2d_sprite.png": {
+    "mtime": 1791507647.6205053,
+    "seen": 1791999149.2545621,
+    "ast_hash": "1add119fe22c01a0fd34e1ba9a063483",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/examples/textures/2D/player_sprite.svg": {
+    "mtime": 1791507647.6206026,
+    "seen": 1791999149.254563,
+    "ast_hash": "b1ed724723a87129fdb0ca4227bafb05",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/examples/textures/2D/sign_prompt.png": {
+    "mtime": 1791507647.6208115,
+    "seen": 1791999149.254563,
+    "ast_hash": "e0f953951e3dbf90b70bc604d40bc7af",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/examples/textures/3D/checker_pattern_dark.png": {
+    "mtime": 1791507647.6209362,
+    "seen": 1791999149.254563,
+    "ast_hash": "98acbba7e0c36d4c4d183de92778b745",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/examples/textures/3D/target.png": {
+    "mtime": 1791507647.6211498,
+    "seen": 1791999149.254564,
+    "ast_hash": "b561845ed6dde3ac6d46f1ea8d883aa4",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/misc/PriorityOverride.svg": {
+    "mtime": 1791507647.62201,
+    "seen": 1791999149.254564,
+    "ast_hash": "e757eaf28855191773eacc946ff7c379",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/phantom_camera_2d.svg": {
+    "mtime": 1791507647.6221032,
+    "seen": 1791999149.254564,
+    "ast_hash": "9341be792242a5d0f360dcecbb70780c",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/phantom_camera_3d.svg": {
+    "mtime": 1791507647.6221898,
+    "seen": 1791999149.2545652,
+    "ast_hash": "7d0318bb798edfb9a7f1d12eda1976ee",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/phantom_camera_camera_3d_resource.svg": {
+    "mtime": 1791507647.6222763,
+    "seen": 1791999149.2545652,
+    "ast_hash": "38c5b228a583ced54f2acd40a56967a4",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/phantom_camera_gizmo.svg": {
+    "mtime": 1791507647.622373,
+    "seen": 1791999149.254566,
+    "ast_hash": "b4a8d8be46b11afc694d1d97009e8886",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/phantom_camera_glow_logo.png": {
+    "mtime": 1791507647.6224627,
+    "seen": 1791999149.254566,
+    "ast_hash": "174b896d908c5ab5fcaae3113253dc34",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/phantom_camera_host.svg": {
+    "mtime": 1791507647.622553,
+    "seen": 1791999149.254566,
+    "ast_hash": "398f8268b067ee83e6553fe3fea36dd7",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/phantom_camera_logo.png": {
+    "mtime": 1791507647.62276,
+    "seen": 1791999149.254567,
+    "ast_hash": "a99fb97af6b16745294043aa1758c910",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/phantom_camera_noise_emitter_2d.svg": {
+    "mtime": 1791507647.6228511,
+    "seen": 1791999149.254567,
+    "ast_hash": "d6cb47a7e4897bd94098bd8008df3807",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/phantom_camera_noise_emitter_3d.svg": {
+    "mtime": 1791507647.622932,
+    "seen": 1791999149.254567,
+    "ast_hash": "dff3d439a4753b87f399cfa7641cceac",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/phantom_camera_noise_emitter_gizmo.svg": {
+    "mtime": 1791507647.6230233,
+    "seen": 1791999149.2545679,
+    "ast_hash": "efab6f54c9424a00718ed25a11cd05a7",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/phantom_camera_noise_resource.svg": {
+    "mtime": 1791507647.6231215,
+    "seen": 1791999149.2545679,
+    "ast_hash": "1e2e24e4a266853c69e6da0d762bf1b8",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/phantom_camera_tween.svg": {
+    "mtime": 1791507647.6231968,
+    "seen": 1791999149.2545679,
+    "ast_hash": "e1be0ca70d1f2bf6202baffb7f79a77e",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/phantom_camera_tween_director.svg": {
+    "mtime": 1791507647.623283,
+    "seen": 1791999149.254569,
+    "ast_hash": "971ae03d438907e6423ab103820f47d1",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/phantom_camera_tween_director_resource.svg": {
+    "mtime": 1791507647.6233816,
+    "seen": 1791999149.254569,
+    "ast_hash": "791a996890d58d980812c2427d54c34a",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/phantom_camera_updater_panel_icon.svg": {
+    "mtime": 1791507647.6234872,
+    "seen": 1791999149.254569,
+    "ast_hash": "67ebb2e351ef973f9000fa42dc8d632f",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/viewfinder/Camera2DIcon.svg": {
+    "mtime": 1791507647.623598,
+    "seen": 1791999149.25457,
+    "ast_hash": "d98914fd09107e6d81b9dfdcb38ac4be",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/viewfinder/Camera3DIcon.svg": {
+    "mtime": 1791507647.6236851,
+    "seen": 1791999149.25457,
+    "ast_hash": "96847a381c4ca3bd4e7e6ecca7fa9c08",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/viewfinder/SceneTypesIcon.svg": {
+    "mtime": 1791507647.6237795,
+    "seen": 1791999149.254571,
+    "ast_hash": "9d25eb9ca5647bfdf715cdd389cd2f33",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/viewfinder/Select.svg": {
+    "mtime": 1791507647.6238713,
+    "seen": 1791999149.254571,
+    "ast_hash": "9e4775a4458ebbe11762202b7cc21e50",
+    "semantic_hash": ""
+  },
+  "addons/phantom_camera/icons/warning.svg": {
+    "mtime": 1791507647.623956,
+    "seen": 1791999149.254571,
+    "ast_hash": "02e390bbfadd41015e0b31586df5c3e0",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/autoshader.svg": {
+    "mtime": 1791507647.685011,
+    "seen": 1791999149.254572,
+    "ast_hash": "4ac6c5aa595cd99c1b2c63791f6fee23",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/color_paint.svg": {
+    "mtime": 1791507647.6851106,
+    "seen": 1791999149.254572,
+    "ast_hash": "32f3539514d3b6f8fc4853bb2b7ca765",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/height_add.svg": {
+    "mtime": 1791507647.685198,
+    "seen": 1791999149.254572,
+    "ast_hash": "46ad497dcdd9bec95775f76a20dd8cfd",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/height_div.svg": {
+    "mtime": 1791507647.6852853,
+    "seen": 1791999149.254573,
+    "ast_hash": "8c182bf278a3c5fbe65325deb363f4e4",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/height_flat.svg": {
+    "mtime": 1791507647.6853802,
+    "seen": 1791999149.254573,
+    "ast_hash": "d57808bddf1e64a2e4d6de98019eec5f",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/height_mul.svg": {
+    "mtime": 1791507647.6854908,
+    "seen": 1791999149.254573,
+    "ast_hash": "1387064caead92b85ac98bf4751812cc",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/height_slope.svg": {
+    "mtime": 1791507647.6855886,
+    "seen": 1791999149.254574,
+    "ast_hash": "a3f5762362ede8388b8b6b7af03a411d",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/height_smooth.svg": {
+    "mtime": 1791507647.6856751,
+    "seen": 1791999149.254574,
+    "ast_hash": "eb34746f6147566ebae24613b4b91618",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/height_sub.svg": {
+    "mtime": 1791507647.685745,
+    "seen": 1791999149.254575,
+    "ast_hash": "52786a95339cd11476bf861998f44749",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/holes.svg": {
+    "mtime": 1791507647.6858177,
+    "seen": 1791999149.254575,
+    "ast_hash": "9660e9aab6d0d308a6c209a1d8f76fac",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/layers.svg": {
+    "mtime": 1791507647.6859016,
+    "seen": 1791999149.254575,
+    "ast_hash": "b2ee2ac0975c764a2a4ee521b3d2b0c8",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/multimesh.svg": {
+    "mtime": 1791507647.6859782,
+    "seen": 1791999149.2545762,
+    "ast_hash": "876bc64d9b73d53ae2f3b84bbf529ede",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/navigation.svg": {
+    "mtime": 1791507647.6860547,
+    "seen": 1791999149.2545762,
+    "ast_hash": "c7c685c450d765f5b067ca3dbc0df26b",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/picker_checked.svg": {
+    "mtime": 1791507647.686137,
+    "seen": 1791999149.2545762,
+    "ast_hash": "6f1d358e254b4c894b12da7065012f8b",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/region_add.svg": {
+    "mtime": 1791507647.6862125,
+    "seen": 1791999149.254577,
+    "ast_hash": "a5af9d7f72c3780ddac49ad1fd278942",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/region_remove.svg": {
+    "mtime": 1791507647.6863098,
+    "seen": 1791999149.254577,
+    "ast_hash": "6aa1b6e0322bb922fcf2be27c15dc79a",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/terrain3d.svg": {
+    "mtime": 1791507647.6863976,
+    "seen": 1791999149.254577,
+    "ast_hash": "068ca69865c6ee320ec4fe57902ce8c8",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/texture_paint.svg": {
+    "mtime": 1791507647.6865032,
+    "seen": 1791999149.2545779,
+    "ast_hash": "c2299bbbe95c84c24fe5fe9b03325d01",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/texture_spray.svg": {
+    "mtime": 1791507647.6865978,
+    "seen": 1791999149.2545779,
+    "ast_hash": "d0ceffa2af176132189afaf1d54f7c12",
+    "semantic_hash": ""
+  },
+  "addons/terrain_3d/icons/wetness.svg": {
+    "mtime": 1791507647.6867044,
+    "seen": 1791999149.2545788,
+    "ast_hash": "4d20e82bfdddb52aac090167c1210fa1",
+    "semantic_hash": ""
+  },
+  "demo/assets/agent_bobby.png": {
+    "mtime": 1791507647.6926491,
+    "seen": 1791999149.25458,
+    "ast_hash": "938101982013c1183af8276f443c81cd",
+    "semantic_hash": ""
+  },
+  "demo/assets/agent_charger.png": {
+    "mtime": 1791507647.6927621,
+    "seen": 1791999149.25458,
+    "ast_hash": "de4d5d8fd2d9bc70b22da76df7eae8fd",
+    "semantic_hash": ""
+  },
+  "demo/assets/agent_combo.png": {
+    "mtime": 1791507647.692862,
+    "seen": 1791999149.254581,
+    "ast_hash": "00c71a3590e5d056690378c24183f726",
+    "semantic_hash": ""
+  },
+  "demo/assets/agent_demon.png": {
+    "mtime": 1791507647.6929824,
+    "seen": 1791999149.254581,
+    "ast_hash": "f44042e87f9b0cfe1d364cf98e04bb76",
+    "semantic_hash": ""
+  },
+  "demo/assets/agent_imp.png": {
+    "mtime": 1791507647.6930869,
+    "seen": 1791999149.254582,
+    "ast_hash": "e22c9cae5f3e4b2e5f3995ebd789f100",
+    "semantic_hash": ""
+  },
+  "demo/assets/agent_junior_pieces.png": {
+    "mtime": 1791507647.6931903,
+    "seen": 1791999149.254582,
+    "ast_hash": "ceadd5de8d2872bb9cd18c85816693da",
+    "semantic_hash": ""
+  },
+  "demo/assets/agent_melee_nuanced.png": {
+    "mtime": 1791507647.693289,
+    "seen": 1791999149.254582,
+    "ast_hash": "abecb02884c00338647b9ec271e7b286",
+    "semantic_hash": ""
+  },
+  "demo/assets/agent_melee_simple.png": {
+    "mtime": 1791507647.693386,
+    "seen": 1791999149.2545831,
+    "ast_hash": "2e88c9b9dba09e51505a0d91bb28be92",
+    "semantic_hash": ""
+  },
+  "demo/assets/agent_ranged.png": {
+    "mtime": 1791507647.6934848,
+    "seen": 1791999149.2545831,
+    "ast_hash": "fcc755e0ddc8871d90b61c120601f4b1",
+    "semantic_hash": ""
+  },
+  "demo/assets/agent_skirmisher.png": {
+    "mtime": 1791507647.6935809,
+    "seen": 1791999149.2545831,
+    "ast_hash": "cb9a6ebb171b5d97704ad4c4a2ebc5b7",
+    "semantic_hash": ""
+  },
+  "demo/assets/agent_summoner.png": {
+    "mtime": 1791507647.6936889,
+    "seen": 1791999149.254584,
+    "ast_hash": "2d818e0b4ac5b531c1f230664f0f986a",
+    "semantic_hash": ""
+  },
+  "demo/assets/arrow_left.png": {
+    "mtime": 1791507647.693762,
+    "seen": 1791999149.254584,
+    "ast_hash": "2be85958873d294df6964b9da7ad301c",
+    "semantic_hash": ""
+  },
+  "demo/assets/arrow_right.png": {
+    "mtime": 1791507647.6938262,
+    "seen": 1791999149.254585,
+    "ast_hash": "0a524edec2f22c0146026948c86aecf8",
+    "semantic_hash": ""
+  },
+  "demo/assets/dummy.png": {
+    "mtime": 1791507647.6938908,
+    "seen": 1791999149.254585,
+    "ast_hash": "1269733fff750b4e16b3b9ef18d883f3",
+    "semantic_hash": ""
+  },
+  "demo/assets/env_clouds.png": {
+    "mtime": 1791507647.6940355,
+    "seen": 1791999149.254585,
+    "ast_hash": "997fcfd3392163f2ccdf38dd4e2e996f",
+    "semantic_hash": ""
+  },
+  "demo/assets/env_gong.png": {
+    "mtime": 1791507647.6941543,
+    "seen": 1791999149.2545862,
+    "ast_hash": "eec6200a6fab56bdef98faad221c61c8",
+    "semantic_hash": ""
+  },
+  "demo/assets/env_ground.png": {
+    "mtime": 1791507647.6948338,
+    "seen": 1791999149.2545862,
+    "ast_hash": "a711ba9a04babdca49585d337989da17",
+    "semantic_hash": ""
+  },
+  "demo/assets/env_plants.png": {
+    "mtime": 1791507647.6950638,
+    "seen": 1791999149.2545862,
+    "ast_hash": "0d3280ac75557e277976b75e92ada263",
+    "semantic_hash": ""
+  },
+  "demo/assets/env_rocks.png": {
+    "mtime": 1791507647.6962209,
+    "seen": 1791999149.254587,
+    "ast_hash": "a7111145f6da36068183bc65c27f9119",
+    "semantic_hash": ""
+  },
+  "demo/assets/fireball.png": {
+    "mtime": 1791507647.696326,
+    "seen": 1791999149.254587,
+    "ast_hash": "da25339aea385d28d3246c413cf3464d",
+    "semantic_hash": ""
+  },
+  "demo/assets/fx.png": {
+    "mtime": 1791507647.6966777,
+    "seen": 1791999149.254587,
+    "ast_hash": "dd6ea264bedf807e645c5ef0bc5577bc",
+    "semantic_hash": ""
+  },
+  "demo/assets/hp_bar.png": {
+    "mtime": 1791507647.696747,
+    "seen": 1791999149.254588,
+    "ast_hash": "4cd72eb00bba2e537546f7f95de5ad03",
+    "semantic_hash": ""
+  },
+  "demo/assets/hp_over.png": {
+    "mtime": 1791507647.6968145,
+    "seen": 1791999149.254588,
+    "ast_hash": "ad9f91bd70cdc9b78f3624f41bb73846",
+    "semantic_hash": ""
+  },
+  "demo/assets/hp_under.png": {
+    "mtime": 1791507647.6968763,
+    "seen": 1791999149.2545888,
+    "ast_hash": "73de8ffc964bad017d821433384225a5",
+    "semantic_hash": ""
+  },
+  "demo/assets/icon.svg": {
+    "mtime": 1791507647.6969466,
+    "seen": 1791999149.2545888,
+    "ast_hash": "b07ac065bdef6b29721b8ea6e3d84e07",
+    "semantic_hash": ""
+  },
+  "demo/assets/logo.png": {
+    "mtime": 1791507647.697028,
+    "seen": 1791999149.2545888,
+    "ast_hash": "ed1ac2dc2ad90fe00259d49039987dc2",
+    "semantic_hash": ""
+  },
+  "demo/assets/shadow.png": {
+    "mtime": 1791507647.698295,
+    "seen": 1791999149.25459,
+    "ast_hash": "fa0b4cd2c57b5d09106d0bd7c4c9a236",
+    "semantic_hash": ""
+  },
+  "demo/assets/smoke.png": {
+    "mtime": 1791507647.6983619,
+    "seen": 1791999149.25459,
+    "ast_hash": "cf2cf52fbf6948a7587ed2accb85f387",
+    "semantic_hash": ""
+  },
+  "demo/assets/textures/ground037_alb_ht.png": {
+    "mtime": 1791507647.6995661,
+    "seen": 1791999149.25459,
+    "ast_hash": "3c974af7634bd2478e4719b74234d832",
+    "semantic_hash": ""
+  },
+  "demo/assets/textures/ground037_nrm_rgh.png": {
+    "mtime": 1791507647.700801,
+    "seen": 1791999149.254591,
+    "ast_hash": "bc7959df20782de6b31188f9a19e5d38",
+    "semantic_hash": ""
+  },
+  "demo/assets/textures/rock023_alb_ht.png": {
+    "mtime": 1791507647.7059426,
+    "seen": 1791999149.254591,
+    "ast_hash": "0b9eae999d04ca62768fad98ffae979a",
+    "semantic_hash": ""
+  },
+  "demo/assets/textures/rock023_nrm_rgh.png": {
+    "mtime": 1791507647.707024,
+    "seen": 1791999149.254591,
+    "ast_hash": "6d949ba301ec8cd335950ee92fa04f8b",
+    "semantic_hash": ""
+  },
+  "demo/assets/weapon_ninja_star.png": {
+    "mtime": 1791507647.708732,
+    "seen": 1791999149.254592,
+    "ast_hash": "8e4cf0a1a6c92a56491c62eb29a7c6c5",
+    "semantic_hash": ""
+  },
+  "icon.svg": {
+    "mtime": 1791507588.1663506,
+    "seen": 1791999149.254592,
+    "ast_hash": "a16f2eed1b4496c4abf03d329708ba09",
+    "semantic_hash": ""
+  },
+  "src/game_objects/classic laptop/textures/classic_laptop_arm_4k.jpg": {
+    "mtime": 1791507647.7466707,
+    "seen": 1791999149.2545931,
+    "ast_hash": "2196e2451e3e9c9ade8f7578b14d83d8",
+    "semantic_hash": ""
+  },
+  "src/game_objects/classic laptop/textures/classic_laptop_diff_4k.jpg": {
+    "mtime": 1791507647.7597823,
+    "seen": 1791999149.2545931,
+    "ast_hash": "4182e7e2cc1c8b76e6e8e2a868aa878c",
+    "semantic_hash": ""
+  },
+  "src/game_objects/classic laptop/textures/classic_laptop_nor_gl_4k.jpg": {
+    "mtime": 1791507647.7661035,
+    "seen": 1791999149.2545931,
+    "ast_hash": "96ac61bf642467dcb8fbf070814aa0be",
+    "semantic_hash": ""
+  }
+}

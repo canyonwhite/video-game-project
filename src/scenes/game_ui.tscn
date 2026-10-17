@@ -23,7 +23,7 @@ offset_bottom = 71.21001
 text = "Journal Closed
 "
 
-[node name="Journal2" type="Label" parent="." unique_id=1842674299]
+[node name="Pause" type="Label" parent="." unique_id=1842674299]
 layout_mode = 0
 offset_top = 44.51
 offset_right = 112.0

@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://du6s2a6fybqj6"]
 
 [ext_resource type="Script" uid="uid://duteniqjjyen2" path="res://src/scripts/player.gd" id="1"]
+[ext_resource type="Script" uid="uid://db26l6r2o8r5a" path="res://src/scripts/states/state_machine_controller.gd" id="2_v4rts"]
 
 [sub_resource type="CapsuleShape3D" id="Capsule"]
 radius = 0.3
@@ -65,3 +66,7 @@ offset_right = 112.0
 offset_bottom = 93.51001
 text = "Game Unpaused
 "
+
+[node name="state_machine_controller" type="Node" parent="." unique_id=23884684]
+script = ExtResource("2_v4rts")
+metadata/_custom_type_script = "uid://db26l6r2o8r5a"
