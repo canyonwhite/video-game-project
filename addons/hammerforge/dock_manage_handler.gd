@@ -1,0 +1,794 @@
+@tool
+class_name HFDockManageHandler
+extends RefCounted
+## Test-tab bake, play, spawn, and validation handlers extracted from dock.gd.
+
+# Preloaded under their global names so the script parses before Godot has
+# registered the global classes, as on a fresh clone.
+@warning_ignore_start("shadowed_global_identifier")
+const DraftEntity = preload("draft_entity.gd")
+const HFUndoHelper = preload("undo_helper.gd")
+@warning_ignore_restore("shadowed_global_identifier")
+const HFPlaytestRequest = preload("hf_playtest_request.gd")
+
+
+static func on_bake(dock: Object) -> void:
+	if dock == null:
+		return
+	dock._log("Bake requested")
+	dock._warn_missing_dependencies()
+	if not dock.level_root or not can_start_bake(dock, "Bake"):
+		return
+	# Prefer incremental bake when only specific brushes are dirty
+	if (
+		dock.level_root
+		and not dock.level_root._dirty_brush_ids.is_empty()
+		and not dock.level_root._full_reconcile_needed
+	):
+		dock._log("Dirty brushes detected — using incremental bake")
+		dock._on_bake_changed()
+		return
+	set_bake_buttons_disabled(dock, true)
+	var succeeded: bool = await dock.level_root.bake(
+		true, false, dock.get_collision_layer_mask(), get_bake_preview_mode(dock)
+	)
+	set_bake_buttons_disabled(dock, false)
+	if succeeded:
+		dock.record_history("Bake")
+
+
+static func on_bake_dry_run(dock: Object) -> void:
+	if dock == null or not dock.level_root:
+		if dock:
+			dock._set_status("No LevelRoot for bake dry run", true)
+		return
+	var info: Dictionary = dock.level_root.bake_dry_run()
+	if info.is_empty():
+		dock._set_status("Bake dry run failed", true)
+		return
+	var draft = int(info.get("draft", 0))
+	var pending = int(info.get("pending", 0))
+	var committed = int(info.get("committed", 0))
+	var gen_floors = int(info.get("generated_floors", 0))
+	var gen_walls = int(info.get("generated_walls", 0))
+	var hm = int(info.get("heightmap_floors", 0))
+	var chunks = int(info.get("chunk_count", 0))
+	var summary = (
+		"Dry run: draft %d, pending %d, committed %d, floors %d, walls %d, heightmap %d, chunks %d"
+		% [draft, pending, committed, gen_floors, gen_walls, hm, chunks]
+	)
+	dock._set_status(summary, false, 5.0)
+	dock._log(summary)
+
+
+static func get_bake_preview_mode(dock: Object) -> int:
+	if dock and dock.bake_preview_mode_opt:
+		return dock.bake_preview_mode_opt.get_selected_id()
+	return 0  # FULL
+
+
+static func on_bake_selected(dock: Object) -> void:
+	if dock == null:
+		return
+	dock._log("Bake selected requested")
+	if not dock.level_root or not can_start_bake(dock, "Bake Selected"):
+		return
+	if not dock._guard_selection_action(
+		"Bake Selected", dock.DockSelectionRequirement.BRUSHES_ONLY
+	):
+		return
+	if dock._selection_nodes.is_empty():
+		dock.show_toast("Select brushes to bake", 1)
+		return
+	var brush_nodes: Array = []
+	for node in dock._selection_nodes:
+		if dock.level_root.is_brush_node(node):
+			brush_nodes.append(node)
+	if brush_nodes.is_empty():
+		dock.show_toast("No brushes in selection", 1)
+		return
+	dock._warn_missing_dependencies()
+	var mask = dock.get_collision_layer_mask()
+	set_bake_buttons_disabled(dock, true)
+	var succeeded: bool = await dock.level_root.bake_selected(
+		brush_nodes, mask, get_bake_preview_mode(dock)
+	)
+	set_bake_buttons_disabled(dock, false)
+	if succeeded:
+		dock.record_history("Bake Selected")
+
+
+static func on_bake_changed(dock: Object) -> void:
+	if dock == null:
+		return
+	dock._log("Bake changed requested")
+	if not dock.level_root or not can_start_bake(dock, "Bake Changed"):
+		return
+	dock._warn_missing_dependencies()
+	var mask = dock.get_collision_layer_mask()
+	set_bake_buttons_disabled(dock, true)
+	var succeeded: bool = await dock.level_root.bake_dirty(mask, get_bake_preview_mode(dock))
+	set_bake_buttons_disabled(dock, false)
+	if succeeded:
+		dock.record_history("Bake Changed")
+
+
+static func on_bake_check_issues(dock: Object) -> void:
+	if dock == null or not dock.level_root or not dock.level_root.validation_system:
+		return
+	var issues: Array = dock.level_root.validation_system.check_bake_issues()
+	if issues.is_empty():
+		dock.show_toast("No bake issues found", 0)
+		dock._set_status("Bake check: no issues", false, 3.0)
+		return
+	var errors := 0
+	var warnings := 0
+	for issue in issues:
+		var sev: int = issue.get("severity", 0)
+		if sev >= 2:
+			errors += 1
+		elif sev >= 1:
+			warnings += 1
+	var summary := "Bake check: %d errors, %d warnings" % [errors, warnings]
+	dock._set_status(summary, errors > 0, 5.0)
+	var shown := 0
+	for issue in issues:
+		if shown >= 3:
+			break
+		var msg: String = issue.get("message", "")
+		var sev: int = issue.get("severity", 0)
+		dock.show_toast(msg, min(sev, 2))
+		shown += 1
+	if issues.size() > 3:
+		dock.show_toast("...and %d more issues (check Output)" % (issues.size() - 3), 1)
+	for issue in issues:
+		push_warning("HF Bake Issue: %s" % issue.get("message", ""))
+
+
+## One way of saying how long something takes, so the estimate before a bake and
+## the report after it cannot drift into two different formats.
+static func format_duration_ms(ms: int) -> String:
+	if ms < 1000:
+		return "%d ms" % ms
+	if ms < 60000:
+		return "%.1f s" % (float(ms) / 1000.0)
+	return "%.1f min" % (float(ms) / 60000.0)
+
+
+static func update_bake_estimate(dock: Object) -> void:
+	if dock == null or not dock.level_root or not dock.bake_estimate_label:
+		return
+	var est: Dictionary = dock.level_root.estimate_bake_time()
+	var ms: int = est.get("estimated_ms", 0)
+	var count: int = est.get("brush_count", 0)
+	var tip: String = est.get("tip", "")
+	var label_text := "Est: %s (%d brushes)" % [format_duration_ms(ms), count]
+	if tip != "":
+		label_text += " — %s" % tip
+	dock.bake_estimate_label.text = label_text
+
+
+static func on_validate_level(dock: Object) -> void:
+	run_validation(dock, false)
+
+
+static func on_validate_fix(dock: Object) -> void:
+	run_validation(dock, true)
+
+
+static func on_bake_started(dock: Object) -> void:
+	if dock == null:
+		return
+	update_bake_estimate(dock)
+	dock._bake_started_msec = Time.get_ticks_msec()
+	dock._set_status("Baking...", false, 0.0)
+	if dock.progress_bar:
+		dock.progress_bar.max_value = 100
+		dock.progress_bar.value = 0
+		dock.progress_bar.show()
+	set_bake_buttons_disabled(dock, true)
+	dock._hints_dirty = true
+	dock.bake_state_changed.emit(true, false)
+
+
+static func on_bake_progress(dock: Object, value: float, label: String) -> void:
+	if dock == null:
+		return
+	var clamped = clamp(value, 0.0, 1.0)
+	var pct = int(round(clamped * 100.0))
+	if dock.progress_bar:
+		dock.progress_bar.max_value = 100
+		dock.progress_bar.value = pct
+		if not dock.progress_bar.visible:
+			dock.progress_bar.show()
+	var message = "Baking"
+	if label != "":
+		message = "%s: %s" % [message, label]
+	message += " (%d%%)" % pct
+	dock._set_status(message, false, 0.0)
+
+
+static func on_bake_finished(dock: Object, success: bool) -> void:
+	if dock == null:
+		return
+	var started: int = int(dock._bake_started_msec)
+	dock._bake_started_msec = 0
+	if success:
+		# A bake this dock did not see the start of is reported without a duration
+		# rather than with one measured from zero.
+		var message := "Bake complete"
+		if started > 0:
+			message = "Bake complete in %s" % format_duration_ms(Time.get_ticks_msec() - started)
+		dock._set_status_success(message, 3.0)
+		dock.show_toast("Bake complete", 0)
+	else:
+		dock._set_status("Bake failed - check Output for details", true)
+		dock.show_toast("Bake failed — check Output for details", 2)
+	if dock.progress_bar:
+		dock.progress_bar.hide()
+	update_bake_estimate(dock)
+	set_bake_buttons_disabled(dock, false)
+	dock._hints_dirty = true
+	dock.bake_state_changed.emit(false, success)
+
+
+static func set_bake_buttons_disabled(dock: Object, disabled: bool) -> void:
+	if dock == null:
+		return
+	dock._bake_disabled = disabled
+	dock.bake_btn.disabled = disabled
+	dock.commit_cuts_btn.disabled = disabled
+	dock.apply_cuts_btn.disabled = disabled
+	if dock.quick_play_btn:
+		dock.quick_play_btn.disabled = disabled
+	if dock.bake_selected_btn:
+		dock.bake_selected_btn.disabled = disabled
+	if dock.bake_changed_btn:
+		dock.bake_changed_btn.disabled = disabled
+	if dock.quick_play_camera_btn:
+		dock.quick_play_camera_btn.disabled = disabled
+	if dock.quick_play_area_btn:
+		dock.quick_play_area_btn.disabled = disabled
+	dock._update_disabled_hints()
+
+
+static func can_start_bake(dock: Object, action_label: String) -> bool:
+	if dock == null:
+		return false
+	if (
+		dock.level_root
+		and dock.level_root.has_method("is_bake_in_flight")
+		and dock.level_root.is_bake_in_flight()
+	):
+		dock.show_toast("%s will be available when the current bake finishes" % action_label, 1)
+		return false
+	return true
+
+
+static func on_quick_play(dock: Object) -> void:
+	if dock == null:
+		return
+	dock._log("Playtest requested")
+	dock._warn_missing_dependencies()
+	if not dock.level_root or not can_start_bake(dock, "Test Level"):
+		return
+
+	var spawn: Node3D = null
+	if dock.level_root.spawn_system:
+		spawn = dock.level_root.spawn_system.get_active_spawn()
+	if not spawn:
+		dock.show_toast("No player_start found — auto-creating default spawn", 1)
+		if dock.level_root.spawn_system:
+			var pre_state: Dictionary = {}
+			if dock.undo_redo and dock.level_root.state_system:
+				pre_state = dock.level_root.state_system.capture_state(true)
+			spawn = dock.level_root.spawn_system.create_default_spawn()
+			if dock.undo_redo and spawn and not pre_state.is_empty():
+				record_spawn_create_undo(dock, pre_state)
+
+	var mask = dock.get_collision_layer_mask()
+	if not await dock.level_root.bake(true, false, mask):
+		dock.show_toast("Test cancelled because the level could not be baked", 2)
+		return
+
+	if spawn and dock.level_root.spawn_system:
+		var validation: Dictionary = dock.level_root.spawn_system.validate_spawn(spawn, mask)
+		var severity: int = validation.get("severity", 0)
+		var issues: PackedStringArray = validation.get("issues", PackedStringArray())
+
+		if severity >= 2:
+			dock.level_root.spawn_system.show_validation_debug(spawn, validation, 10.0)
+			var issue_text := "\n".join(issues)
+			dock.show_toast("Spawn issues: %s" % issue_text, 2)
+			show_spawn_fix_dialog(dock, spawn, validation, mask)
+			return
+		if severity >= 1:
+			dock.level_root.spawn_system.show_validation_debug(spawn, validation, 6.0)
+			dock.show_toast("Spawn warning: %s" % "\n".join(issues), 1)
+
+	launch_playtest(dock)
+
+
+static func on_quick_play_from_camera(dock: Object) -> void:
+	if dock == null:
+		return
+	dock._log("Play from Camera requested")
+	dock._warn_missing_dependencies()
+	if not dock.level_root or not can_start_bake(dock, "Test from Camera"):
+		return
+	var camera: Camera3D = null
+	if dock._plugin and dock._plugin.last_3d_camera:
+		camera = dock._plugin.last_3d_camera
+	if not camera:
+		dock.show_toast("No editor camera available", 2)
+		return
+
+	var spawn: Node3D = null
+	if dock.level_root.spawn_system:
+		spawn = dock.level_root.spawn_system.get_active_spawn()
+	if not spawn:
+		dock.show_toast("No player_start found — auto-creating default spawn", 1)
+		if dock.level_root.spawn_system:
+			var pre_state: Dictionary = {}
+			if dock.undo_redo and dock.level_root.state_system:
+				pre_state = dock.level_root.state_system.capture_state(true)
+			spawn = dock.level_root.spawn_system.create_default_spawn()
+			if dock.undo_redo and spawn and not pre_state.is_empty():
+				record_spawn_create_undo(dock, pre_state)
+	if not spawn:
+		dock.show_toast("Could not create spawn point", 2)
+		return
+
+	var old_pos := spawn.global_position
+	var old_angle: float = 0.0
+	if spawn is DraftEntity:
+		old_angle = float((spawn as DraftEntity).entity_data.get("angle", 0.0))
+
+	# The spawn only sits at the camera long enough to bake and launch, and every
+	# path below puts it back. Recording the move as an undo action left the undo
+	# stack claiming a position the scene no longer had: Undo consumed a step
+	# without changing anything, and Redo moved the spawn to the camera for good.
+	spawn.global_position = camera.global_position
+	var camera_yaw_deg: float = rad_to_deg(camera.global_rotation.y)
+	if spawn is DraftEntity:
+		(spawn as DraftEntity).entity_data["angle"] = camera_yaw_deg
+	dock._log(
+		"Spawn temporarily at camera: %s (yaw %.1f)" % [str(camera.global_position), camera_yaw_deg]
+	)
+
+	var mask = dock.get_collision_layer_mask()
+	if not await dock.level_root.bake(true, false, mask):
+		restore_spawn(spawn, old_pos, old_angle)
+		dock.show_toast("Test cancelled because the level could not be baked", 2)
+		return
+
+	if spawn and dock.level_root.spawn_system:
+		var validation: Dictionary = dock.level_root.spawn_system.validate_spawn(spawn, mask)
+		var severity: int = validation.get("severity", 0)
+		var issues: PackedStringArray = validation.get("issues", PackedStringArray())
+
+		if severity >= 2:
+			dock.level_root.spawn_system.show_validation_debug(spawn, validation, 10.0)
+			dock.show_toast("Spawn issues: %s" % "\n".join(issues), 2)
+			show_spawn_fix_dialog(dock, spawn, validation, mask)
+			restore_spawn(spawn, old_pos, old_angle)
+			return
+		if severity >= 1:
+			dock.level_root.spawn_system.show_validation_debug(spawn, validation, 6.0)
+			dock.show_toast("Camera spawn warning: %s" % "\n".join(issues), 1)
+
+	# Put back before the launch rather than after it. Godot saves the edited scene
+	# on the way into a run, so a spawn still at the camera was written into the
+	# mapper's scene file (#822). The run reads the camera pose from the request.
+	restore_spawn(spawn, old_pos, old_angle)
+	launch_playtest(
+		dock, {"spawn_position": camera.global_position, "spawn_yaw_degrees": camera_yaw_deg}
+	)
+
+
+static func on_quick_play_selected_area(dock: Object) -> void:
+	if dock == null:
+		return
+	dock._log("Play Selected Area requested")
+	dock._warn_missing_dependencies()
+	if not dock.level_root or not can_start_bake(dock, "Test Selected Area"):
+		return
+	if not dock._guard_selection_action(
+		"Play Selected Area", dock.DockSelectionRequirement.BRUSHES_ONLY
+	):
+		return
+	if dock._selection_nodes.is_empty():
+		dock.show_toast("Select brushes to define play area", 1)
+		return
+
+	var prev_cordon_enabled: bool = dock.level_root.cordon_enabled
+	var prev_cordon_aabb: AABB = dock.level_root.cordon_aabb
+
+	dock.level_root.set_cordon_from_selection(dock._selection_nodes)
+	var play_area: AABB = dock.level_root.cordon_aabb
+	dock.show_toast("Cordon set to selection — baking area", 0)
+
+	var spawn: Node3D = null
+	if dock.level_root.spawn_system:
+		spawn = dock.level_root.spawn_system.get_active_spawn()
+	if not spawn:
+		dock.show_toast("No player_start found — auto-creating default spawn", 1)
+		if dock.level_root.spawn_system:
+			var pre_state: Dictionary = {}
+			if dock.undo_redo and dock.level_root.state_system:
+				pre_state = dock.level_root.state_system.capture_state(true)
+			spawn = dock.level_root.spawn_system.create_default_spawn()
+			if dock.undo_redo and spawn and not pre_state.is_empty():
+				record_spawn_create_undo(dock, pre_state)
+
+	var mask = dock.get_collision_layer_mask()
+	if not await dock.level_root.bake(true, false, mask):
+		restore_cordon_state(dock, prev_cordon_enabled, prev_cordon_aabb)
+		dock.show_toast("Test cancelled because the selected area could not be baked", 2)
+		return
+
+	if spawn and dock.level_root.spawn_system:
+		var validation: Dictionary = dock.level_root.spawn_system.validate_spawn(spawn, mask)
+		var severity: int = validation.get("severity", 0)
+		var issues: PackedStringArray = validation.get("issues", PackedStringArray())
+
+		if severity >= 2:
+			dock.level_root.spawn_system.show_validation_debug(spawn, validation, 10.0)
+			dock.show_toast("Spawn issues: %s" % "\n".join(issues), 2)
+			show_spawn_fix_dialog(dock, spawn, validation, mask)
+			restore_cordon_state(dock, prev_cordon_enabled, prev_cordon_aabb)
+			return
+		if severity >= 1:
+			dock.level_root.spawn_system.show_validation_debug(spawn, validation, 6.0)
+			dock.show_toast("Spawn warning: %s" % "\n".join(issues), 1)
+
+	# Before the launch, for the same reason as the camera spawn above.
+	restore_cordon_state(dock, prev_cordon_enabled, prev_cordon_aabb)
+	launch_playtest(dock, {"cordon": play_area})
+
+
+static func restore_cordon_state(dock: Object, enabled: bool, bounds: AABB) -> void:
+	if dock == null or not dock.level_root:
+		return
+	dock.level_root.cordon_enabled = enabled
+	dock.level_root.cordon_aabb = bounds
+	dock.level_root.tag_full_reconcile()
+	dock.level_root.update_cordon_visual()
+
+
+static func on_export_playtest(dock: Object) -> void:
+	if dock == null:
+		return
+	dock._log("Export Playtest Build requested")
+	if not dock.level_root or not can_start_bake(dock, "Export Playtest"):
+		dock.show_toast("No LevelRoot active", 2)
+		return
+
+	var spawn: Node3D = null
+	if dock.level_root.spawn_system:
+		spawn = dock.level_root.spawn_system.get_active_spawn()
+	if not spawn:
+		dock.show_toast("No player_start found — creating default spawn", 1)
+		if dock.level_root.spawn_system:
+			var pre_state: Dictionary = {}
+			if dock.undo_redo and dock.level_root.state_system:
+				pre_state = dock.level_root.state_system.capture_state(true)
+			spawn = dock.level_root.spawn_system.create_default_spawn()
+			if dock.undo_redo and spawn and not pre_state.is_empty():
+				record_spawn_create_undo(dock, pre_state)
+
+	var mask = dock.get_collision_layer_mask()
+	if spawn and dock.level_root.spawn_system:
+		var validation: Dictionary = dock.level_root.spawn_system.validate_spawn(spawn, mask)
+		var severity: int = validation.get("severity", 0)
+		if severity >= 2:
+			var issues: PackedStringArray = validation.get("issues", PackedStringArray())
+			dock.level_root.spawn_system.show_validation_debug(spawn, validation, 10.0)
+			dock.show_toast("Spawn blocked: %s" % "\n".join(issues), 2)
+			return
+
+	dock.show_toast("Baking for playtest...", 0)
+	if not await dock.level_root.bake(true, false, mask):
+		dock.show_toast("Export cancelled because the level could not be baked", 2)
+		return
+	dock.show_toast("Bake complete — exporting scene...", 0)
+
+	var export_path := "user://hammerforge_playtest.tscn"
+	var success: bool = dock.level_root.export_playtest_scene(export_path)
+	if not success:
+		dock.show_toast("Export failed — could not pack scene", 2)
+		return
+
+	dock.show_toast("Launching playtest...", 0)
+	if dock.editor_interface:
+		dock.editor_interface.play_custom_scene(export_path)
+	else:
+		dock.show_toast("No EditorInterface — cannot launch", 2)
+
+
+## Write the level as a scene the game loads, beside the level's own scene.
+##
+## Export Playtest Build validates a spawn, bakes, exports and launches. This does
+## the middle two and stops: there is nobody to drop at a spawn, because the game
+## brings its own player. What it writes has the same geometry and the same real
+## entity nodes - a light_point as an OmniLight3D, a logic_timer as a Timer - and
+## none of the debug rig (#697, #698).
+static func on_export_game_scene(dock: Object) -> void:
+	if dock == null:
+		return
+	dock._log("Export Game Scene requested")
+	if not dock.level_root or not can_start_bake(dock, "Export Game Scene"):
+		dock.show_toast("No LevelRoot active", 2)
+		return
+
+	dock.show_toast("Baking for export...", 0)
+	var mask = dock.get_collision_layer_mask()
+	if not await dock.level_root.bake(true, false, mask):
+		dock.show_toast("Export cancelled because the level could not be baked", 2)
+		return
+
+	var export_path := _game_scene_path(dock)
+	if not dock.level_root.export_game_scene(export_path):
+		dock.show_toast("Export failed — could not pack scene", 2)
+		return
+	dock.show_toast("Game scene written to %s" % export_path, 0)
+
+
+## Beside the level's own scene, named after it, so a project ends up with
+## `arena.tscn` and `arena_game.tscn` rather than a file in user:// nobody finds.
+static func _game_scene_path(dock: Object) -> String:
+	var source := ""
+	if dock.level_root.has_method("scene_source_path"):
+		source = str(dock.level_root.scene_source_path())
+	if source == "" or not source.begins_with("res://"):
+		return "res://hammerforge_game_scene.tscn"
+	return "%s/%s_game.tscn" % [source.get_base_dir(), source.get_file().get_basename()]
+
+
+static func show_spawn_fix_dialog(
+	dock: Object, spawn: Node3D, validation: Dictionary, _mask: int
+) -> void:
+	if dock == null:
+		return
+	var issues: PackedStringArray = validation.get("issues", PackedStringArray())
+	var dialog := ConfirmationDialog.new()
+	dialog.title = "Quick Play — Spawn Warning"
+	dialog.dialog_text = (
+		"Player spawn may be invalid:\n\n"
+		+ "\n".join(issues)
+		+ "\n\nFix automatically and play, or cancel?"
+	)
+	dialog.ok_button_text = "Fix & Play"
+	dialog.add_cancel_button("Cancel")
+	dialog.confirmed.connect(
+		func():
+			if not is_instance_valid(dock):
+				dialog.queue_free()
+				return
+			if is_instance_valid(spawn) and dock.level_root and dock.level_root.spawn_system:
+				var old_pos := spawn.global_position
+				dock.level_root.spawn_system.auto_fix_spawn(spawn, validation)
+				dock.level_root.spawn_system.cleanup_debug()
+				record_spawn_move_undo(dock, spawn, old_pos, spawn.global_position)
+				dock.show_toast("Spawn fixed — launching playtest", 0)
+			launch_playtest(dock)
+			dialog.queue_free()
+	)
+	dialog.canceled.connect(
+		func():
+			if is_instance_valid(dock):
+				dock.show_toast("Quick Play cancelled", 0)
+			dialog.queue_free()
+	)
+	dock.add_child(dialog)
+	dialog.popup_centered()
+
+
+static func record_spawn_create_undo(dock: Object, before_state: Dictionary) -> void:
+	if (
+		dock == null
+		or not dock.undo_redo
+		or not dock.level_root
+		or not dock.level_root.state_system
+	):
+		return
+	var after_state: Dictionary = dock.level_root.state_system.capture_state(true)
+	dock.undo_redo.create_action("Auto-create player_start")
+	dock.undo_redo.add_do_method(dock.level_root.state_system, "restore_state", after_state)
+	dock.undo_redo.add_undo_method(dock.level_root.state_system, "restore_state", before_state)
+	dock.undo_redo.commit_action(false)
+
+
+static func record_spawn_move_undo(
+	dock: Object, spawn: Node3D, old_pos: Vector3, new_pos: Vector3
+) -> void:
+	if dock == null or not dock.undo_redo or not dock.level_root or old_pos == new_pos:
+		return
+	dock.undo_redo.create_action("Fix player_start position")
+	dock.undo_redo.add_do_property(spawn, "global_position", new_pos)
+	dock.undo_redo.add_undo_property(spawn, "global_position", old_pos)
+	dock.undo_redo.commit_action(false)
+
+
+static func restore_spawn(spawn: Node3D, pos: Vector3, angle_deg: float) -> void:
+	if not is_instance_valid(spawn):
+		return
+	spawn.global_position = pos
+	if spawn is DraftEntity:
+		(spawn as DraftEntity).entity_data["angle"] = angle_deg
+
+
+static func on_spawn_validate(dock: Object) -> void:
+	if dock == null or not dock.level_root or not dock.level_root.spawn_system:
+		if dock:
+			dock.show_toast("No LevelRoot available", 1)
+		return
+	if not can_start_bake(dock, "Validate Spawn"):
+		dock.show_toast("No LevelRoot available", 1)
+		return
+	var spawn = dock.level_root.spawn_system.get_active_spawn()
+	if not spawn:
+		dock.show_toast("No player_start entity found", 1)
+		return
+	var mask = dock.get_collision_layer_mask()
+	dock.show_toast("Baking before validation…", 0)
+	if not await dock.level_root.bake(true, false, mask):
+		dock.show_toast("Spawn validation cancelled because the level could not be baked", 2)
+		return
+	if not is_instance_valid(spawn) or not spawn.is_inside_tree():
+		dock.show_toast("Spawn was removed during bake", 2)
+		return
+	var validation: Dictionary = dock.level_root.spawn_system.validate_spawn(spawn, mask)
+	dock.level_root.spawn_system.show_validation_debug(spawn, validation, 10.0)
+	var issues: PackedStringArray = validation.get("issues", PackedStringArray())
+	if validation.get("valid", false):
+		dock.show_toast("Spawn is valid", 0)
+	else:
+		dock.show_toast("Spawn issues: %s" % "\n".join(issues), 2)
+
+
+static func on_spawn_auto_create(dock: Object) -> void:
+	if dock == null or not dock.level_root or not dock.level_root.spawn_system:
+		if dock:
+			dock.show_toast("No LevelRoot available", 1)
+		return
+	var existing = dock.level_root.spawn_system.get_active_spawn()
+	if existing:
+		dock.show_toast("player_start already exists — select and move it instead", 1)
+		return
+	var pre_state: Dictionary = {}
+	if dock.undo_redo and dock.level_root.state_system:
+		pre_state = dock.level_root.state_system.capture_state(true)
+	var spawn = dock.level_root.spawn_system.create_default_spawn()
+	if spawn and not pre_state.is_empty():
+		record_spawn_create_undo(dock, pre_state)
+	dock.show_toast("Default player_start created", 0)
+
+
+static func on_show_spawn_debug_toggled(dock: Object, enabled: bool) -> void:
+	if dock == null or not dock.level_root or not dock.level_root.spawn_system:
+		return
+	if enabled:
+		if not can_start_bake(dock, "Show Spawn Preview"):
+			if dock._show_spawn_debug:
+				dock._show_spawn_debug.set_pressed_no_signal(false)
+			return
+		var spawn = dock.level_root.spawn_system.get_active_spawn()
+		if not spawn:
+			dock.show_toast("No player_start to preview", 1)
+			if dock._show_spawn_debug:
+				dock._show_spawn_debug.set_pressed_no_signal(false)
+			return
+		var mask = dock.get_collision_layer_mask()
+		if not await dock.level_root.bake(true, false, mask):
+			dock.show_toast("Spawn preview cancelled because the level could not be baked", 2)
+			if dock._show_spawn_debug:
+				dock._show_spawn_debug.set_pressed_no_signal(false)
+			return
+		if not is_instance_valid(spawn) or not spawn.is_inside_tree():
+			dock.show_toast("Spawn was removed during bake", 2)
+			if dock._show_spawn_debug:
+				dock._show_spawn_debug.set_pressed_no_signal(false)
+			return
+		var validation: Dictionary = dock.level_root.spawn_system.validate_spawn(spawn, mask)
+		dock.level_root.spawn_system.show_validation_debug(spawn, validation, 0.0)
+	else:
+		dock.level_root.spawn_system.cleanup_debug()
+
+
+## Every way the dock starts a playtest goes through here, so that the run it
+## starts can tell itself apart from the mapper running their own game (#771).
+## `overrides` is what that one run should do differently from the scene, and
+## goes into the request rather than onto the level (#822). See
+## `HFPlaytestRequest.write()` for the keys.
+static func launch_playtest(dock: Object, overrides: Dictionary = {}) -> void:
+	if dock == null:
+		return
+	request_playtest_player(dock, overrides)
+	notify_running_instances(dock)
+	if dock.editor_interface:
+		dock.editor_interface.play_current_scene()
+
+
+## Leave the request the launched run will collect. Written rather than set on
+## the node because `play_current_scene()` plays the scene *file*: a property set
+## here would have to be saved into the mapper's own scene to reach the running
+## instance, and would then be on for their shipped game too -- which is the
+## second character controller #719 removed.
+static func request_playtest_player(dock: Object, overrides: Dictionary = {}) -> void:
+	if HFPlaytestRequest.write(overrides):
+		return
+	if dock != null:
+		dock._log("Failed to write the playtest request file", true)
+
+
+static func notify_running_instances(dock: Object) -> void:
+	if dock == null:
+		return
+	var lock_dir = "res://.hammerforge"
+	var abs_lock_dir = ProjectSettings.globalize_path(lock_dir)
+	if not DirAccess.dir_exists_absolute(abs_lock_dir):
+		DirAccess.make_dir_recursive_absolute(abs_lock_dir)
+	var file = FileAccess.open("%s/reload.lock" % lock_dir, FileAccess.WRITE)
+	if not file:
+		dock._log("Failed to write reload lock file", true)
+		return
+	file.store_string(str(Time.get_ticks_msec()))
+
+
+static func warn_missing_dependencies(dock: Object) -> void:
+	if dock == null or not dock.level_root:
+		return
+	var warnings: Array = dock.level_root.check_missing_dependencies()
+	if warnings.is_empty():
+		return
+	dock._set_status_warning("Missing dependencies: %d (see Output)" % warnings.size(), 5.0)
+	for warning in warnings:
+		dock._log("Dependency: %s" % str(warning), true)
+
+
+static func run_validation(dock: Object, auto_fix: bool) -> void:
+	if dock == null or not dock.level_root:
+		if dock:
+			dock._set_status("No LevelRoot for validation", true)
+		return
+	var result: Dictionary = {}
+	var issues: Array = []
+	var fixed := 0
+	if auto_fix:
+		# The repair count comes from the validator, which counted it exactly.
+		# It used to be re-derived as before minus after, which is not the number
+		# of repairs: a pass that fixes one issue and exposes another reported
+		# zero fixed. That cost a whole validation pass as well.
+		#
+		# The second pass is what remains afterwards. `validate()` reports every
+		# finding whether or not it repaired it, so its own list is not the
+		# residue - and the residue is the one thing a mapper wants after an
+		# auto-fix. The log used to print the list from before the fix, so every
+		# repaired issue was listed as though it were still there.
+		var before: Dictionary = dock.level_root.capture_state()
+		fixed = int(dock.level_root.validate_level(true).get("fixed", 0))
+		HFUndoHelper.commit_completed(
+			dock.undo_redo,
+			dock.level_root,
+			"Validate + Fix",
+			before,
+			Callable(dock, "record_history")
+		)
+		result = dock.level_root.validate_level(false)
+		issues = result.get("issues", [])
+	else:
+		result = dock.level_root.validate_level(false)
+		issues = result.get("issues", [])
+	if issues.is_empty():
+		if auto_fix and fixed > 0:
+			dock._set_status("Validate: fixed %d, no issues left" % fixed, false, 3.0)
+		else:
+			dock._set_status("Validate: no issues found", false, 3.0)
+		return
+	var message = "Validate: %d issue(s)" % issues.size()
+	if auto_fix:
+		message = "Validate: fixed %d, %d remaining" % [fixed, issues.size()]
+	dock._set_status_warning(message, 6.0)
+	for issue in issues:
+		dock._log("[Validate] %s" % str(issue), true)

@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://rwknoulwjauy"]
+
+[node name="Game UI" type="Control" unique_id=1014770228]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Status" type="Label" parent="." unique_id=49196867]
+layout_mode = 0
+offset_right = 54.0
+offset_bottom = 49.0
+text = "Status:
+"
+
+[node name="Journal" type="Label" parent="." unique_id=1908532290]
+layout_mode = 0
+offset_top = 22.21
+offset_right = 112.0
+offset_bottom = 71.21001
+text = "Journal Closed
+"
+
+[node name="Journal2" type="Label" parent="." unique_id=1842674299]
+layout_mode = 0
+offset_top = 44.51
+offset_right = 112.0
+offset_bottom = 93.51001
+text = "Journal Closed
+"

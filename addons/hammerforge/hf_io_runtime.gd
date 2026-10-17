@@ -1,0 +1,727 @@
+## Runtime I/O dispatcher — translates HammerForge entity I/O metadata into
+## live Godot signals.  Attach this node to a baked/exported scene and it will
+## auto-wire every connection stored in `entity_io_outputs` metadata on child
+## entities so that firing an output on one entity calls the corresponding
+## input method (or signal) on the target entity, with delay and fire-once
+## semantics handled automatically.
+##
+## Usage from game code:
+##   var dispatcher = $HFIODispatcher  # or get the singleton
+##   dispatcher.fire("my_button", "OnPressed", "")
+##
+## Or from an entity script:
+##   HFIORuntime.fire_on(self, "OnTrigger")
+extends Node
+class_name HFIORuntime
+
+const DISPATCHER_GROUP := "hf_io_dispatcher"
+
+## The engine signal a brush entity class raises its own outputs from.
+##
+## Every wire a mapper draws in the Objects tab was dispatched correctly and
+## never started, because nothing called `fire()`: the bake built the `Area3D`,
+## `wire()` built the connection table, and no source had anything connected to
+## the event that is supposed to raise the output (#686). A trigger volume needs
+## nothing from the game - a body entering it is the whole event - so the
+## dispatcher raises those itself. A point entity's class can name its own in
+## `output_signals`, which reaches the node as `entity_io_output_signals` meta.
+##
+## A button is not on this list on purpose. Pressing is something a player does,
+## so the game says when it happened: `HFIORuntime.fire_on(button, "OnPressed")`.
+## The playtest player does exactly that with its Use key.
+const CLASS_SIGNAL_OUTPUTS := {
+	"trigger_once": {"body_entered": "OnStartTouch", "body_exited": "OnEndTouch"},
+	"trigger_multiple": {"body_entered": "OnStartTouch", "body_exited": "OnEndTouch"},
+}
+
+## Classes that raise an output once for the life of the volume, whatever the
+## connections hanging off it say. `trigger_once` describes itself as firing the
+## first time the player enters it, and that is the only thing separating it from
+## `trigger_multiple`, which bakes to the same node.
+const CLASS_FIRE_ONCE := {"trigger_once": {"OnStartTouch": true, "OnEndTouch": true}}
+
+## Emitted whenever an I/O output fires (useful for debugging / logging).
+signal io_fired(
+	source_name: String,
+	output_name: String,
+	target_name: String,
+	input_name: String,
+	parameter: String
+)
+
+## Emitted when an input is delivered to a target entity.
+signal io_received(target_name: String, input_name: String, parameter: String)
+
+# ---------------------------------------------------------------------------
+# Internal bookkeeping
+# ---------------------------------------------------------------------------
+
+## instance_id (int) -> [{output_name, target_name, input_name, parameter, delay, fire_once, _fired}]
+## Keyed by object instance ID so two sources sharing a name keep separate connection sets.
+var _connections: Dictionary = {}
+
+## source_name (String) -> [instance_id, ...] reverse lookup for the string-based fire() API.
+var _source_name_to_ids: Dictionary = {}
+
+## name -> [Node, ...] cache (rebuilt on wire).  Multiple nodes may share a name.
+var _entity_cache: Dictionary = {}
+
+## Persistent node paths for additional scan roots.  Survives scene save/reload
+## because @export NodePath values are serialized by Godot.  Resolved to live
+## Node references at wire() time.
+@export var extra_scan_root_paths: Array[NodePath] = []
+
+## Transient extra scan roots set via script (not serialized).  Use this from
+## code paths like _attach_io_dispatcher that run in the same session.
+var extra_scan_roots: Array[Node] = []
+
+## Tracks connected (entity, signal_name) pairs so wire() can disconnect
+## stale lambdas before reconnecting.
+var _signal_connections: Array = []  # [{entity: Node, sig_name: String, callable: Callable}]
+
+## "<instance id>:<output name>" for every class-level output already raised, so
+## a `trigger_once` volume stays fired.
+var _class_outputs_fired: Dictionary = {}
+
+## The `_fired_key` of every fire once connection that has fired, so it stays
+## fired when `wire()` rebuilds the connection table.
+var _connections_fired: Dictionary = {}
+
+## If true, prints every I/O fire to the console.
+@export var debug_logging: bool = false
+
+# ---------------------------------------------------------------------------
+# Lifecycle
+# ---------------------------------------------------------------------------
+
+
+func _enter_tree() -> void:
+	add_to_group(DISPATCHER_GROUP)
+
+
+func _exit_tree() -> void:
+	if is_in_group(DISPATCHER_GROUP):
+		remove_from_group(DISPATCHER_GROUP)
+
+
+func _ready() -> void:
+	wire()
+
+
+## Scan the scene tree for entities carrying `entity_io_outputs` metadata and
+## build the runtime connection table.  Safe to call multiple times: it rebuilds
+## everything except which one-shot outputs have already fired.
+func wire() -> void:
+	_disconnect_all_signals()
+	_connections.clear()
+	_source_name_to_ids.clear()
+	_entity_cache.clear()
+	# Collect all candidate scan roots, then prune overlapping subtrees so no
+	# node is visited twice.
+	var roots: Array[Node] = []
+	var primary: Node = get_parent() if get_parent() else self
+	roots.append(primary)
+	for np in extra_scan_root_paths:
+		if np != NodePath(""):
+			var resolved: Node = get_node_or_null(np)
+			if is_instance_valid(resolved):
+				roots.append(resolved)
+	for extra_root in extra_scan_roots:
+		if is_instance_valid(extra_root):
+			roots.append(extra_root)
+	var pruned: Array[Node] = _prune_overlapping_roots(roots)
+	for r in pruned:
+		_cache_entities(r)
+		_collect_connections(r)
+	# Kept for every source still alive. `wire()` is safe to call again, and
+	# clearing these with the rest let the same `trigger_once` volume, or the same
+	# fire once connection, fire a second time (#825). Instance ids are not reused,
+	# so a source that replaced a fired one starts fresh under its own id.
+	for fired in [_class_outputs_fired, _connections_fired]:
+		for key in (fired as Dictionary).keys():
+			if not is_instance_id_valid(int(str(key).get_slice(":", 0))):
+				(fired as Dictionary).erase(key)
+	_create_user_signals()
+	_connect_signals()
+	_connect_class_signals()
+	if debug_logging:
+		print(
+			(
+				"HFIORuntime: wired %d source(s), %d entity(ies) cached"
+				% [_connections.size(), _entity_cache.size()]
+			)
+		)
+
+
+# ---------------------------------------------------------------------------
+# Public API
+# ---------------------------------------------------------------------------
+
+
+## Fire an output by source entity name.  When multiple sources share the same
+## name, fires from ALL of them (use fire_from() or fire_on() for per-instance
+## dispatch).
+func fire(source_name: String, output_name: String, parameter: String = "") -> void:
+	var ids: Array = _source_name_to_ids.get(source_name, [])
+	for id in ids:
+		_fire_instance(id, source_name, output_name, parameter)
+
+
+## Fire an output from a specific source node instance.  Only runs connections
+## that belong to this exact node, even if other nodes share the same name.
+func fire_from(entity: Node, output_name: String, parameter: String = "") -> void:
+	if not is_instance_valid(entity):
+		return
+	var id: int = entity.get_instance_id()
+	_fire_instance(id, entity.name, output_name, parameter)
+
+
+## Static convenience — fire an output from a specific node reference.
+static func fire_on(entity: Node, output_name: String, parameter: String = "") -> void:
+	if not is_instance_valid(entity) or not entity.is_inside_tree():
+		return
+	var dispatcher := _find_dispatcher(entity)
+	if dispatcher:
+		dispatcher.fire_from(entity, output_name, parameter)
+
+
+## Internal: fire connections belonging to a single source instance ID.
+func _fire_instance(id: int, source_name: String, output_name: String, parameter: String) -> void:
+	var conns: Array = _connections.get(id, [])
+	for conn in conns:
+		if str(conn.get("output_name", "")) != output_name:
+			continue
+		if conn.get("_fired", false) and conn.get("fire_once", false):
+			continue
+		var target_name: String = str(conn.get("target_name", ""))
+		var input_name: String = str(conn.get("input_name", ""))
+		var param: String = parameter if parameter != "" else str(conn.get("parameter", ""))
+		var delay: float = float(conn.get("delay", 0.0))
+		if delay > 0.0:
+			_fire_delayed(source_name, output_name, target_name, input_name, param, delay, conn)
+		else:
+			_deliver(source_name, output_name, target_name, input_name, param)
+			if conn.get("fire_once", false):
+				conn["_fired"] = true
+				_connections_fired[conn.get("_fired_key", "")] = true
+
+
+# ---------------------------------------------------------------------------
+# Signal creation & connection
+# ---------------------------------------------------------------------------
+
+
+## For every source entity, add user signals for each unique output_name so
+## that standard Godot emit_signal / connect also works.
+func _create_user_signals() -> void:
+	for id in _connections:
+		var entity: Node = instance_from_id(id)
+		if not is_instance_valid(entity):
+			continue
+		var seen: Dictionary = {}
+		for conn in _connections[id]:
+			var sig_name: String = _signal_name(str(conn.get("output_name", "")))
+			if seen.has(sig_name):
+				continue
+			seen[sig_name] = true
+			if not entity.has_signal(sig_name):
+				entity.add_user_signal(sig_name, [{"name": "parameter", "type": TYPE_STRING}])
+
+
+## Disconnect all signal connections made by previous wire() calls.
+func _disconnect_all_signals() -> void:
+	for entry in _signal_connections:
+		# Untyped: a source freed since the last wire is a freed instance here, and
+		# assigning one to a typed local is an error that stops `wire()` dead.
+		var entity = entry["entity"]
+		if is_instance_valid(entity) and entity.is_connected(entry["sig_name"], entry["callable"]):
+			entity.disconnect(entry["sig_name"], entry["callable"])
+	_signal_connections.clear()
+
+
+## Connect user signals on source entities to a lambda that calls fire_from(),
+## so game scripts can simply `entity.emit_signal("io_OnTrigger", "")`.
+## Uses fire_from (instance-aware) to avoid cross-firing when names collide.
+func _connect_signals() -> void:
+	for id in _connections:
+		var entity: Node = instance_from_id(id)
+		if not is_instance_valid(entity):
+			continue
+		var seen: Dictionary = {}
+		for conn in _connections[id]:
+			var sig_name: String = _signal_name(str(conn.get("output_name", "")))
+			if seen.has(sig_name):
+				continue
+			seen[sig_name] = true
+			var ent: Node = entity  # capture for lambda
+			var on: String = str(conn.get("output_name", ""))
+			var cb := func(param: String = "") -> void: fire_from(ent, on, param)
+			entity.connect(sig_name, cb)
+			_signal_connections.append({"entity": entity, "sig_name": sig_name, "callable": cb})
+
+
+## Connect the engine signal a source's class raises its outputs from, so a graph
+## the mapper wired runs on its own rather than waiting for the game to call
+## `fire()` by hand. Connections made here are recorded alongside the user-signal
+## ones, so the next `wire()` disconnects them the same way.
+func _connect_class_signals() -> void:
+	# Runtime only, which is what the rest of this class is for. `bake_wire_io`
+	# attaches a dispatcher during an editor bake as well, and a volume that runs
+	# the graph because a mapper dragged a brush through it is not something
+	# anybody asked for. The user signals above stay connected either way, because
+	# raising one is always something the caller decided to do.
+	if Engine.is_editor_hint():
+		return
+	for id in _connections:
+		var entity: Node = instance_from_id(id)
+		if not is_instance_valid(entity):
+			continue
+		var entity_class: String = str(entity.get_meta("brush_entity_class", ""))
+		var signal_outputs: Dictionary = CLASS_SIGNAL_OUTPUTS.get(entity_class, {}).duplicate()
+		# A point entity's class can name its own, the way it names input methods:
+		# `logic_timer` raises OnTimer from `Timer.timeout` (#826).
+		var named: Variant = entity.get_meta("entity_io_output_signals", {})
+		if named is Dictionary:
+			signal_outputs.merge(named as Dictionary, true)
+		var once_outputs: Dictionary = CLASS_FIRE_ONCE.get(entity_class, {})
+		for sig_name in signal_outputs:
+			if not entity.has_signal(sig_name):
+				continue
+			var ent: Node = entity  # captured by the lambda
+			var output_name: String = str(signal_outputs[sig_name])
+			var once: bool = bool(once_outputs.get(output_name, false))
+			var fired_key: String = "%d:%s" % [id, output_name]
+			# The signature is the widest of the ones on this table: `body_entered`
+			# hands over the body, and a default lets the same lambda serve a
+			# parameterless signal if one is ever added.
+			var cb := func(_body: Node = null) -> void:
+				if once and _class_outputs_fired.has(fired_key):
+					return
+				_class_outputs_fired[fired_key] = true
+				fire_from(ent, output_name)
+			entity.connect(sig_name, cb)
+			_signal_connections.append({"entity": ent, "sig_name": sig_name, "callable": cb})
+
+
+# ---------------------------------------------------------------------------
+# Delivery
+# ---------------------------------------------------------------------------
+
+
+func _deliver(
+	source_name: String,
+	output_name: String,
+	target_name: String,
+	input_name: String,
+	parameter: String
+) -> void:
+	var targets: Array = _entity_cache.get(target_name, [])
+	# Filter out stale refs
+	var valid_targets: Array = []
+	for t in targets:
+		if is_instance_valid(t):
+			valid_targets.append(t)
+	if valid_targets.is_empty():
+		if debug_logging:
+			push_warning(
+				(
+					"HFIORuntime: target '%s' not found for %s.%s"
+					% [target_name, source_name, output_name]
+				)
+			)
+		return
+
+	for target in valid_targets:
+		io_fired.emit(source_name, output_name, target_name, input_name, parameter)
+		io_received.emit(target_name, input_name, parameter)
+		if debug_logging:
+			print(
+				(
+					"HFIORuntime: %s.%s -> %s.%s(%s)"
+					% [source_name, output_name, target_name, input_name, parameter]
+				)
+			)
+		_deliver_to_target(target, input_name, parameter)
+
+
+## Whether an input name may be delivered by calling a method of that name.
+##
+## `has_method()` answers for everything `Object` and `Node` implement, and the
+## snake_case fallback makes the collision easy to hit from ordinary PascalCase
+## naming: an input called `QueueFree` deleted the target, `Free` would have
+## deleted it mid-frame, and `SetScript`, `Hide` and `ReplaceBy` are all one
+## typo away. The input name is free text from a dock field with nothing between
+## it and here, so a name that collides with the engine was destructive while a
+## plain typo was silent.
+##
+## Only methods the target's own script defines are called. An engine method, or
+## anything starting with an underscore, falls through to `_on_io_input` and then
+## to the user signal, which is where a game that means to hide a node on an
+## input can handle it deliberately.
+func _is_callable_input(target: Node, method_name: String) -> bool:
+	if method_name.begins_with("_"):
+		return false
+	# Default third argument: ancestors count. `queue_free` is on `Node`, and the
+	# target is a `Node3D` or further down.
+	if ClassDB.class_has_method(target.get_class(), method_name):
+		push_warning(
+			(
+				"HFIORuntime: input '%s' on '%s' names an engine method - not calling it."
+				% [method_name, target.name]
+			)
+		)
+		return false
+	# A handler needing two or more arguments cannot be satisfied from one
+	# parameter field. Refusing it here sends the input down the fallback chain
+	# instead of raising an error that aborts delivery entirely.
+	if _arity_of(target, method_name).x > 1:
+		push_warning(
+			(
+				"HFIORuntime: input '%s' on '%s' needs more than one argument - not calling it."
+				% [method_name, target.name]
+			)
+		)
+		return false
+	return true
+
+
+## How many arguments a method needs, and how many it will take.
+##
+## `x` is the count with no default, `y` the total, or -1 when the method is
+## variadic. Read off the target rather than guessed from whether a parameter was
+## typed: a handler declared with no argument, fired with one, raised a script
+## error and was not called, and so did a handler that requires one fired without
+## one. The error aborted `_deliver_to_target()` where it stood, so the three
+## fallbacks below it - the snake_case name, `_on_io_input`, and the user signal -
+## never ran either, and those exist so an input always lands somewhere.
+func _arity_of(target: Node, method_name: String) -> Vector2i:
+	for entry in target.get_method_list():
+		if str(entry.get("name", "")) != method_name:
+			continue
+		var args: Array = entry.get("args", [])
+		var defaults: Array = entry.get("default_args", [])
+		if int(entry.get("flags", 0)) & METHOD_FLAG_VARARG:
+			return Vector2i(maxi(0, args.size() - defaults.size()), -1)
+		return Vector2i(maxi(0, args.size() - defaults.size()), args.size())
+	return Vector2i(0, 0)
+
+
+## Call an input handler in the shape its own signature asks for.
+##
+## A method that takes nothing is called with nothing, whatever was typed in the
+## parameter field. A method that takes one is called with the parameter, which
+## is the empty string when none was given - the same value `_on_io_input` has
+## always been handed.
+func _call_input(target: Node, method_name: String, parameter: String) -> void:
+	if _arity_of(target, method_name).y == 0:
+		target.call(method_name)
+		return
+	target.call(method_name, parameter)
+
+
+## The engine method a class says an input means, or "".
+##
+## `_is_callable_input()` refuses an input whose name is an engine method, and
+## that rule is right: an input called `QueueFree` deleted its target. It also
+## made `logic_timer` unusable as shipped, because the two inputs it declares are
+## `Start` and `Stop`, which are exactly `Timer.start()` and `Timer.stop()`
+## (#714). A class can now name the engine method an input means, the same way a
+## property names the engine property it maps to, so the guard has an explicit
+## grant from the entity library rather than a guess about free text.
+func _granted_method(target: Node, input_name: String) -> String:
+	var granted: Variant = target.get_meta("entity_io_input_methods", {})
+	if not (granted is Dictionary):
+		return ""
+	var method: String = str((granted as Dictionary).get(input_name, ""))
+	if method == "" or not target.has_method(method):
+		return ""
+	return method
+
+
+## Call a method the class granted, in the shape the engine declares it.
+##
+## An engine method's argument is typed and an I/O parameter is free text from a
+## dock field. `Timer.start()` takes an optional float, so handing it the empty
+## string the parameterless case supplies is an argument type error, and that
+## error stops the delivery where it stands. A granted method that can take no
+## argument is called with none when nothing was authored, and an authored
+## parameter is converted to the type the method declares - which is what makes
+## `Start` with "2.5" in the parameter field a two and a half second timer.
+func _call_granted_method(target: Node, method_name: String, parameter: String) -> void:
+	var arity: Vector2i = _arity_of(target, method_name)
+	if arity.y == 0 or (parameter == "" and arity.x == 0):
+		target.call(method_name)
+		return
+	target.call(method_name, _parameter_as_declared(target, method_name, parameter))
+
+
+## The authored parameter in the type the method's first argument declares.
+func _parameter_as_declared(target: Node, method_name: String, parameter: String) -> Variant:
+	for entry in target.get_method_list():
+		if str(entry.get("name", "")) != method_name:
+			continue
+		var args: Array = entry.get("args", [])
+		if args.is_empty():
+			return parameter
+		match int(args[0].get("type", TYPE_STRING)):
+			TYPE_FLOAT:
+				return parameter.to_float()
+			TYPE_INT:
+				return parameter.to_int()
+			TYPE_BOOL:
+				return parameter.to_lower() in ["1", "true", "yes", "on"]
+			_:
+				return parameter
+	return parameter
+
+
+## Deliver an input to a single target node.
+func _deliver_to_target(target: Node, input_name: String, parameter: String) -> void:
+	# 0) The engine method this input's own class says it means.
+	var granted: String = _granted_method(target, input_name)
+	if granted != "":
+		_call_granted_method(target, granted, parameter)
+		return
+
+	# 1) Try calling the input method directly on the target (e.g. "Open", "TurnOn").
+	var method_name: String = input_name
+	if target.has_method(method_name) and _is_callable_input(target, method_name):
+		_call_input(target, method_name, parameter)
+		return
+
+	# 2) Try snake_case variant (e.g. "TurnOn" -> "turn_on").
+	var snake_name: String = _to_snake_case(method_name)
+	if (
+		snake_name != method_name
+		and target.has_method(snake_name)
+		and _is_callable_input(target, snake_name)
+	):
+		_call_input(target, snake_name, parameter)
+		return
+
+	# 3) Try a generic handler: _on_io_input(input_name, parameter).
+	if target.has_method("_on_io_input"):
+		target.call("_on_io_input", input_name, parameter)
+		return
+
+	# 3b) Enable and Disable on a node the bake built for a brush entity. There is
+	# no script on it to define them, and `func_wall`, `trigger_once` and
+	# `trigger_multiple` all declare both (#827). The user signal below still goes
+	# out, so a game already listening for it is not cut off.
+	if input_name in ["Enable", "Disable"] and target.has_meta("brush_entity_class"):
+		_set_brush_entity_enabled(target, input_name == "Enable")
+
+	# 4) Emit a user signal on the target so scripts can connect to it.
+	var target_sig: String = _signal_name(input_name)
+	if not target.has_signal(target_sig):
+		target.add_user_signal(target_sig, [{"name": "parameter", "type": TYPE_STRING}])
+	target.emit_signal(target_sig, parameter)
+
+
+## A trigger stops detecting bodies, a body loses its collision, and a mesh hides.
+## A wall is a mesh and a body under one name, so both halves are delivered to.
+##
+## Deferred where physics is involved: a trigger's touch is the usual reason to
+## disable something, and the physics server refuses changes made inside it.
+func _set_brush_entity_enabled(target: Node, enabled: bool) -> void:
+	if target is Area3D:
+		target.set_deferred("monitoring", enabled)
+	elif target is CollisionObject3D:
+		for child in target.get_children():
+			if child is CollisionShape3D:
+				child.set_deferred("disabled", not enabled)
+	elif target is Node3D:
+		(target as Node3D).visible = enabled
+
+
+func _fire_delayed(
+	source_name: String,
+	output_name: String,
+	target_name: String,
+	input_name: String,
+	parameter: String,
+	delay: float,
+	conn: Dictionary
+) -> void:
+	if not is_inside_tree():
+		return
+	var timer := get_tree().create_timer(delay)
+	timer.timeout.connect(
+		func() -> void:
+			if not is_instance_valid(self):
+				return
+			if conn.get("_fired", false) and conn.get("fire_once", false):
+				return
+			_deliver(source_name, output_name, target_name, input_name, parameter)
+			if conn.get("fire_once", false):
+				conn["_fired"] = true
+				_connections_fired[conn.get("_fired_key", "")] = true
+	)
+
+
+# ---------------------------------------------------------------------------
+# Tree scanning
+# ---------------------------------------------------------------------------
+
+
+func _cache_entities(node: Node) -> void:
+	if node == self:
+		for child in node.get_children():
+			_cache_entities(child)
+		return
+	# Cache by node name — multiple nodes may share a name
+	_cache_entity_under_key(node.name, node)
+	# Also cache by entity_name meta if present
+	var meta_name = node.get_meta("entity_name", "")
+	if meta_name != "" and str(meta_name) != node.name:
+		_cache_entity_under_key(str(meta_name), node)
+	for child in node.get_children():
+		_cache_entities(child)
+
+
+func _cache_entity_under_key(key: String, node: Node) -> void:
+	if not _entity_cache.has(key):
+		_entity_cache[key] = []
+	var arr: Array = _entity_cache[key]
+	if node not in arr:
+		arr.append(node)
+
+
+func _collect_connections(node: Node) -> void:
+	if node == self:
+		for child in node.get_children():
+			_collect_connections(child)
+		return
+	# Not a typed local. A value of another type here - a String from a
+	# hand-edited scene, an older metadata format, a Dictionary someone wrote by
+	# hand - used to be a runtime error on this line, and GDScript unwinds the
+	# whole function, including the recursion at the bottom. One bad entity took
+	# every entity under it out of the wiring, in the shipped game, with nothing
+	# but a line in a log nobody reads.
+	var raw_outputs = node.get_meta("entity_io_outputs", [])
+	var outputs: Array = []
+	if raw_outputs is Array:
+		outputs = raw_outputs
+	elif raw_outputs != null:
+		push_warning(
+			(
+				"HFIORuntime: '%s' has entity_io_outputs of type %s, not a list - skipping it."
+				% [node.name, type_string(typeof(raw_outputs))]
+			)
+		)
+	if not outputs.is_empty():
+		var id: int = node.get_instance_id()
+		var source_name: String = node.name
+		if not _connections.has(id):
+			_connections[id] = []
+		for conn in outputs:
+			if conn is Dictionary:
+				var entry: Dictionary = conn.duplicate()
+				entry["_fired_key"] = (
+					"%d:%s:%s:%s:%s"
+					% [
+						id,
+						conn.get("output_name", ""),
+						conn.get("target_name", ""),
+						conn.get("input_name", ""),
+						conn.get("parameter", ""),
+					]
+				)
+				entry["_fired"] = _connections_fired.has(entry["_fired_key"])
+				_connections[id].append(entry)
+		# Reverse lookup: name -> [instance_id, ...]
+		_index_source_name(source_name, id)
+		# Authors fire by the logical entity name, which can differ from the
+		# generated node name on baked triggers and meshes.
+		var meta_name := str(node.get_meta("entity_name", ""))
+		if meta_name != "" and meta_name != source_name:
+			_index_source_name(meta_name, id)
+	for child in node.get_children():
+		_collect_connections(child)
+
+
+func _index_source_name(key: String, id: int) -> void:
+	if not _source_name_to_ids.has(key):
+		_source_name_to_ids[key] = []
+	var id_list: Array = _source_name_to_ids[key]
+	if id not in id_list:
+		id_list.append(id)
+
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+
+## Remove roots that are descendants of (or identical to) another root in the
+## list, so no subtree is scanned more than once.  O(n²) on the root count
+## which is typically 1–3.
+static func _prune_overlapping_roots(roots: Array[Node]) -> Array[Node]:
+	# Deduplicate by instance ID first
+	var seen_ids: Dictionary = {}
+	var unique: Array[Node] = []
+	for r in roots:
+		var id: int = r.get_instance_id()
+		if not seen_ids.has(id):
+			seen_ids[id] = true
+			unique.append(r)
+	# Remove any root that is a descendant of another root
+	var pruned: Array[Node] = []
+	for i in range(unique.size()):
+		var is_covered := false
+		for j in range(unique.size()):
+			if i != j and unique[j].is_ancestor_of(unique[i]):
+				is_covered = true
+				break
+		if not is_covered:
+			pruned.append(unique[i])
+	return pruned
+
+
+## Find the HFIORuntime dispatcher in the scene tree.  Tries current_scene
+## first, then walks up from the node to the tree root as a fallback (covers
+## GUT tests and editor context where current_scene is null).
+static func _find_dispatcher(node: Node) -> HFIORuntime:
+	var tree := node.get_tree() if node else null
+	if not tree:
+		return null
+	var grouped: Node = tree.get_first_node_in_group(DISPATCHER_GROUP)
+	if grouped is HFIORuntime:
+		return grouped
+	# Fallback for detached test scenes that never entered the tree group.
+	var scene_root: Node = tree.current_scene
+	if scene_root:
+		var found := _find_dispatcher_recursive(scene_root)
+		if found:
+			return found
+	var top: Node = node
+	while top.get_parent():
+		top = top.get_parent()
+	return _find_dispatcher_recursive(top)
+
+
+static func _find_dispatcher_recursive(node: Node) -> HFIORuntime:
+	for child in node.get_children():
+		if child is HFIORuntime:
+			return child
+		var found := _find_dispatcher_recursive(child)
+		if found:
+			return found
+	return null
+
+
+## Convert an output/input name to a Godot signal name.
+## e.g. "OnTrigger" -> "io_OnTrigger"
+static func _signal_name(io_name: String) -> String:
+	return "io_" + io_name
+
+
+## Convert PascalCase / camelCase to snake_case.
+static func _to_snake_case(s: String) -> String:
+	var result := ""
+	for i in range(s.length()):
+		var c: String = s[i]
+		if c == c.to_upper() and c != c.to_lower() and i > 0:
+			result += "_"
+		result += c.to_lower()
+	return result

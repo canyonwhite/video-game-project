@@ -1,0 +1,170 @@
+@tool
+class_name HFEditorTool
+extends RefCounted
+
+## Base class for custom editor tools.
+##
+## Subclass this to create tools that integrate with HammerForge's tool system.
+## Register instances with HFToolRegistry. The registry activates/deactivates
+## tools and routes input events to the active tool.
+
+## The LevelRoot this tool operates on (set by registry on activate).
+var root: Node3D
+
+## Whether this tool is currently active.
+var is_active := false
+
+## Undo/redo manager — set by plugin on activation for tools that create brushes.
+var undo_redo: EditorUndoRedoManager = null
+
+## Optional callback to record actions in the dock history panel.
+## Set by plugin on activation. Signature: func(action_name: String) -> void
+var history_callback: Callable = Callable()
+
+
+## Returns true if this tool can execute in the current state.
+## Override in subclass to add specific requirements.
+func can_activate(p_root: Node3D) -> bool:
+	return p_root != null
+
+
+## Returns a user-facing reason string when can_activate() is false.
+## Override in subclass to provide specific failure reasons.
+func get_poll_fail_reason(p_root: Node3D) -> String:
+	if p_root == null:
+		return "No LevelRoot in scene"
+	return ""
+
+
+## Display name for toolbar button.
+func tool_name() -> String:
+	return "Custom Tool"
+
+
+## Unique numeric tool ID. Built-in IDs: 0=Draw, 1=Select, 2=ExtrudeUp, 3=ExtrudeDown.
+## External tools should use IDs >= 100.
+func tool_id() -> int:
+	return -1
+
+
+## KEY_* constant for keyboard shortcut, or 0 for none.
+func tool_shortcut_key() -> int:
+	return 0
+
+
+## Called when tool becomes active.
+func activate(p_root: Node3D, _p_camera: Camera3D) -> void:
+	root = p_root
+	is_active = true
+
+
+## Called when tool is deactivated (another tool activated).
+func deactivate() -> void:
+	is_active = false
+	root = null
+
+
+## Handle mouse/key input. Return EditorPlugin.AFTER_GUI_INPUT_STOP to consume.
+func handle_input(_event: InputEvent, _camera: Camera3D, _mouse_pos: Vector2) -> int:
+	return EditorPlugin.AFTER_GUI_INPUT_PASS
+
+
+## Handle keyboard shortcut. Return EditorPlugin.AFTER_GUI_INPUT_STOP to consume.
+func handle_keyboard(_event: InputEventKey) -> int:
+	return EditorPlugin.AFTER_GUI_INPUT_PASS
+
+
+## Settle a pointer gesture when buttonless motion proves that LMB-up was lost.
+## Return true when the tool closed an active capture.
+func recover_lost_pointer_capture() -> bool:
+	return false
+
+
+## Cancel a transient pointer gesture after application/viewport focus loss.
+## Return true when the tool closed an active capture.
+func cancel_pointer_capture() -> bool:
+	return false
+
+
+## Lines for the shortcut HUD overlay.
+func get_shortcut_hud_lines() -> PackedStringArray:
+	return PackedStringArray()
+
+
+# ---------------------------------------------------------------------------
+# Declarative settings — subclasses override get_settings_schema() to expose
+# configurable properties.  The dock auto-generates UI controls from the schema.
+# ---------------------------------------------------------------------------
+
+## Internal settings storage.
+var _settings: Dictionary = {}
+
+
+## Return an array of setting descriptors.  Each is a dict with keys:
+## "name" (String), "type" ("bool"|"int"|"float"|"string"|"enum"|"color"|"vector3"),
+## "label" (String, display name), "default" (Variant), and optionally:
+## "min"/"max" (numeric), "options" (PackedStringArray for enum).
+## Override in subclass to expose tool-specific settings.
+func get_settings_schema() -> Array:
+	return []
+
+
+## Read a setting value by key.
+func get_setting(key: String) -> Variant:
+	# Fall back to schema default if not explicitly set
+	if _settings.has(key):
+		return _settings[key]
+	for prop in get_settings_schema():
+		if prop.get("name", "") == key:
+			return prop.get("default")
+	return null
+
+
+## Write a setting value by key.
+##
+## A setting is held to its schema here rather than only in the control the dock
+## generates from that schema, so a preset, a restore, a script or a control
+## someone adds later cannot put a value into the tool that the tool itself says
+## is illegal. A number is held to its min and max, an enum to its own options,
+## and a value that is not a number is refused outright: the geometry built from
+## one is not wrong in a way anything downstream can see.
+func set_setting(key: String, value: Variant) -> void:
+	var prop := _schema_for(key)
+	var kind := str(prop.get("type", ""))
+	# An enum's range is its `options` array. The dock builds an OptionButton from
+	# it and has no item past the end to show, so an index the options do not have
+	# is a setting nothing can display or correct, handed back to a tool that
+	# indexes its own array with it.
+	if kind == "enum" and (value is float or value is int):
+		var options: Array = Array(prop.get("options", []))
+		var index := int(value)
+		if index < 0 or index >= options.size():
+			HFLog.warn(
+				"HammerForge: %s has no choice %d, keeping %s" % [key, index, str(get_setting(key))]
+			)
+			return
+		_settings[key] = index
+		return
+	if (kind == "float" or kind == "int") and (value is float or value is int):
+		var number := float(value)
+		if not is_finite(number):
+			HFLog.warn("HammerForge: %s is not a number, keeping %s" % [key, str(get_setting(key))])
+			return
+		if prop.has("min"):
+			number = maxf(number, float(prop["min"]))
+		if prop.has("max"):
+			number = minf(number, float(prop["max"]))
+		if kind == "int":
+			_settings[key] = int(round(number))
+		else:
+			_settings[key] = number
+		return
+	_settings[key] = value
+
+
+## The schema entry for a setting, or an empty dictionary if it has none.
+func _schema_for(key: String) -> Dictionary:
+	for prop in get_settings_schema():
+		if prop is Dictionary and str(prop.get("name", "")) == key:
+			return prop
+	return {}

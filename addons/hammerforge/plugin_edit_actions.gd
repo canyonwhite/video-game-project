@@ -1,0 +1,708 @@
+@tool
+class_name HFPluginEditActions
+extends RefCounted
+## Undoable managed-object edit actions dispatched by HammerForge's command surfaces.
+
+# Preloaded under their global names so the script parses before Godot has
+# registered the global classes, as on a fresh clone.
+@warning_ignore_start("shadowed_global_identifier")
+const HFUndoHelper = preload("undo_helper.gd")
+const HFOpResult = preload("hf_op_result.gd")
+@warning_ignore_restore("shadowed_global_identifier")
+
+
+static func delete_selected(plugin: Object, root: Node) -> bool:
+	var selection = plugin.get_editor_interface().get_selection()
+	var nodes = plugin._current_selection_nodes()
+	var brush_ids: Array = []
+	var entity_paths: Array = []
+	for node in nodes:
+		if root.is_brush_node(node):
+			var info = root.get_brush_info_from_node(node)
+			if info.is_empty():
+				continue
+			var brush_id = str(info.get("brush_id", ""))
+			if brush_id != "":
+				brush_ids.append(brush_id)
+		elif root.is_entity_node(node):
+			var entity: Node = plugin._managed_entity_owner(root, node)
+			if entity:
+				entity_paths.append(root.get_path_to(entity))
+	var object_count := brush_ids.size() + entity_paths.size()
+	if object_count == 0:
+		return false
+	var action_name := (
+		"Delete Brushes"
+		if entity_paths.is_empty()
+		else ("Delete Entities" if brush_ids.is_empty() else "Delete HammerForge Objects")
+	)
+	if object_count >= 3:
+		var dlg = ConfirmationDialog.new()
+		dlg.title = action_name
+		dlg.dialog_text = (
+			"Delete %d HammerForge objects? This can be undone with Ctrl+Z." % object_count
+		)
+		dlg.min_size = Vector2i(280, 80)
+		plugin._add_confirmable_dialog(dlg)
+		dlg.confirmed.connect(
+			func():
+				if not is_instance_valid(plugin) or not is_instance_valid(root):
+					dlg.queue_free()
+					return
+				plugin.hf_selection.clear()
+				selection.clear()
+				HFUndoHelper.commit(
+					plugin._get_undo_redo(),
+					root,
+					action_name,
+					"delete_managed_nodes",
+					[brush_ids, entity_paths],
+					false,
+					Callable(plugin, "_record_history")
+				)
+				dlg.queue_free()
+		)
+		dlg.canceled.connect(
+			func():
+				if not is_instance_valid(plugin):
+					return
+				dlg.queue_free()
+		)
+		dlg.popup_centered()
+		return true
+	plugin.hf_selection.clear()
+	selection.clear()
+	HFUndoHelper.commit(
+		plugin._get_undo_redo(),
+		root,
+		action_name,
+		"delete_managed_nodes",
+		[brush_ids, entity_paths],
+		false,
+		Callable(plugin, "_record_history")
+	)
+	return true
+
+
+## The selected brushes and entities, as the nodes themselves.
+##
+## `collect_managed_targets()` below answers the same question as ids and paths,
+## which is what the `*_managed_nodes` methods take. The prefab capture path takes
+## nodes, so this is the same walk with the other answer.
+static func collect_managed_nodes(plugin: Object, root: Node) -> Dictionary:
+	var brush_nodes: Array = []
+	var entity_nodes: Array = []
+	for node in plugin._current_selection_nodes():
+		if node and node is Node3D and root.is_brush_node(node):
+			brush_nodes.append(node)
+		elif node and node is Node3D and root.is_entity_node(node):
+			var entity: Node = plugin._managed_entity_owner(root, node)
+			if entity:
+				entity_nodes.append(entity)
+	return {"brush_nodes": brush_nodes, "entity_nodes": entity_nodes}
+
+
+## Put the selection on the clipboard. Changes nothing in the level, so there is
+## no undo step: copying is not an edit (#703).
+static func copy_selection(plugin: Object, root: Node) -> bool:
+	var targets: Dictionary = collect_managed_nodes(plugin, root)
+	return root.prefab_system.copy_to_clipboard(targets["brush_nodes"], targets["entity_nodes"])
+
+
+## Place what is on the clipboard, where it was copied from.
+##
+## Registered through `commit_completed()` rather than `commit()`, for the reason
+## that function exists: the paste has to be run to learn what it made, and what
+## it made is what gets selected afterwards. It also makes redo deterministic,
+## because redo puts back the state this paste produced rather than reading the
+## clipboard a second time and pasting whatever is on it by then.
+static func paste_clipboard(plugin: Object, root: Node) -> bool:
+	var selection = plugin.get_editor_interface().get_selection()
+	var before: Dictionary = root.capture_state()
+	var result: Dictionary = root.prefab_system.paste_from_clipboard()
+	var brush_ids: Array = result.get("brush_ids", [])
+	var entity_nodes: Array = result.get("entity_nodes", [])
+	if brush_ids.is_empty() and entity_nodes.is_empty():
+		return false
+	HFUndoHelper.commit_completed(
+		plugin._get_undo_redo(), root, "Paste", before, Callable(plugin, "_record_history")
+	)
+	# Selected, because the first thing anyone does with a pasted piece is move
+	# it, and hunting for it in the level first is not part of that.
+	plugin.hf_selection.clear()
+	for brush_id in brush_ids:
+		var pasted = root.find_brush_by_id(str(brush_id))
+		if pasted:
+			plugin.hf_selection.append(pasted)
+	for entity in entity_nodes:
+		if is_instance_valid(entity):
+			plugin.hf_selection.append(entity)
+	plugin._apply_hf_selection(selection)
+	return true
+
+
+static func duplicate_selected(plugin: Object, root: Node) -> bool:
+	var selection = plugin.get_editor_interface().get_selection()
+	var nodes = plugin._current_selection_nodes()
+	var brush_infos: Array = []
+	var entity_infos: Array = []
+	var step = root.grid_snap if root.grid_snap > 0.0 else 1.0
+	for node in nodes:
+		if root.is_brush_node(node):
+			var info = root.build_duplicate_info(node, Vector3(step, 0.0, 0.0))
+			if not info.is_empty():
+				brush_infos.append(info)
+		elif root.is_entity_node(node):
+			var entity: Node = plugin._managed_entity_owner(root, node)
+			if entity:
+				var info: Dictionary = root.build_duplicate_entity_info(
+					entity, Vector3(step, 0.0, 0.0)
+				)
+				if not info.is_empty():
+					entity_infos.append(info)
+	if brush_infos.is_empty() and entity_infos.is_empty():
+		return false
+	var action_name := (
+		"Duplicate Brushes"
+		if entity_infos.is_empty()
+		else ("Duplicate Entities" if brush_infos.is_empty() else "Duplicate HammerForge Objects")
+	)
+	HFUndoHelper.commit(
+		plugin._get_undo_redo(),
+		root,
+		action_name,
+		"create_managed_duplicates",
+		[brush_infos, entity_infos],
+		false,
+		Callable(plugin, "_record_history")
+	)
+	plugin.hf_selection.clear()
+	for info in brush_infos:
+		var duplicate_brush = root.find_brush_by_id(info.get("brush_id", ""))
+		if duplicate_brush:
+			plugin.hf_selection.append(duplicate_brush)
+	for info in entity_infos:
+		var duplicate_entity: Node = root.entities_node.get_node_or_null(
+			NodePath(str(info.get("name", "")))
+		)
+		if duplicate_entity:
+			plugin.hf_selection.append(duplicate_entity)
+	plugin._apply_hf_selection(selection)
+	return true
+
+
+## Brush ids and entity paths for the current selection, shaped the way the
+## `*_managed_nodes` methods on LevelRoot take them.
+##
+## The four transform commands pass both arrays on to `HFUndoHelper.commit()` as
+## a scope, which is a claim that the command changes those objects and nothing
+## else (#737, #761). They can make it: they move, rotate, mirror and unrotate
+## brushes and entities that are already there, and touch no registry, no palette
+## and nothing else in the level. Nothing in a record can check a claim, so
+## `test_scoped_undo_step.gd` is what holds them to it.
+##
+## There is no filter on the way. An entity used to end the claim, because a
+## scope had nowhere to put one, and now it has one. The only rule left is "at
+## least one object", which each command has already checked by the time it
+## commits, and an id or a path that cannot be recorded makes
+## `capture_brush_scope()` refuse and take the whole snapshot instead.
+static func collect_managed_targets(plugin: Object, root: Node) -> Dictionary:
+	var nodes = plugin._current_selection_nodes()
+	var brush_ids: Array = []
+	var entity_paths: Array = []
+	for node in nodes:
+		if node and node is Node3D and root.is_brush_node(node):
+			var info = root.get_brush_info_from_node(node)
+			var brush_id = str(info.get("brush_id", ""))
+			if brush_id != "":
+				brush_ids.append(brush_id)
+		elif node and node is Node3D and root.is_entity_node(node):
+			var entity: Node = plugin._managed_entity_owner(root, node)
+			if entity:
+				entity_paths.append(root.get_path_to(entity))
+	return {"brush_ids": brush_ids, "entity_paths": entity_paths}
+
+
+## A collation key that changes whenever the next press would mean something
+## different. Two commands only merge into one undo entry when they are the same
+## command, on the same objects, going the same way.
+static func collation_tag(
+	action: String, brush_ids: Array, entity_paths: Array, inputs: Array
+) -> String:
+	var parts := PackedStringArray([action])
+	for brush_id in brush_ids:
+		parts.append(str(brush_id))
+	for entity_path in entity_paths:
+		parts.append(str(entity_path))
+	for value in inputs:
+		parts.append(str(value))
+	return "|".join(parts)
+
+
+static func nudge_selected(plugin: Object, root: Node, direction: Vector3) -> bool:
+	var step = root.grid_snap if root.grid_snap > 0.0 else 1.0
+	var targets := collect_managed_targets(plugin, root)
+	var brush_ids: Array = targets["brush_ids"]
+	var entity_paths: Array = targets["entity_paths"]
+	if brush_ids.is_empty() and entity_paths.is_empty():
+		return false
+	var offset = direction * step
+	HFUndoHelper.commit(
+		plugin._get_undo_redo(),
+		root,
+		"Nudge HammerForge Objects",
+		"nudge_managed_nodes",
+		[brush_ids, entity_paths, offset],
+		false,
+		Callable(plugin, "_record_history"),
+		collation_tag("nudge", brush_ids, entity_paths, [direction, step]),
+		true,
+		brush_ids,
+		entity_paths
+	)
+	return true
+
+
+static func group_selected(plugin: Object, root: Node) -> bool:
+	var nodes = plugin._hammerforge_selection_nodes(root)
+	if nodes.size() < 2 or not root or not root.visgroup_system:
+		return false
+	var group_name = "group_%d" % Time.get_ticks_usec()
+	root.visgroup_system.group_selection(group_name, nodes)
+	plugin._record_history("Group Selection")
+	if plugin.dock:
+		plugin.dock.refresh_visgroup_ui()
+	return true
+
+
+static func ungroup_selected(plugin: Object, root: Node) -> bool:
+	var nodes = plugin._hammerforge_selection_nodes(root)
+	if nodes.is_empty() or not root or not root.visgroup_system:
+		return false
+	var grouped: Array = []
+	for node in nodes:
+		if str(root.visgroup_system.get_group_of(node)) != "":
+			grouped.append(node)
+	if grouped.is_empty():
+		return false
+	root.visgroup_system.ungroup_nodes(grouped)
+	plugin._record_history("Ungroup Selection")
+	if plugin.dock:
+		plugin.dock.refresh_visgroup_ui()
+	return true
+
+
+static func hollow_selected(plugin: Object, root: Node) -> bool:
+	var nodes = plugin._current_selection_nodes()
+	if nodes.is_empty():
+		return false
+	var brush = nodes[0]
+	if not root.is_brush_node(brush):
+		return false
+	var info = root.get_brush_info_from_node(brush)
+	var brush_id = str(info.get("brush_id", ""))
+	if brush_id == "":
+		return false
+	var thickness = plugin.dock.get_hollow_thickness() if plugin.dock else 4.0
+	var check: HFOpResult = root.can_hollow_brush(brush_id, thickness)
+	if not check.ok:
+		root.user_message.emit(check.user_text(), 1)
+		return true
+	if root.hollow_preview:
+		root.hollow_preview.show_preview(brush_id, thickness)
+	var dlg = ConfirmationDialog.new()
+	dlg.title = "Hollow Brush"
+	# The wall count comes from the same planner that built the preview. A brush
+	# with many faces shells into many walls — a cylinder becomes a tube of them —
+	# and that is worth knowing before committing rather than after.
+	dlg.dialog_text = (
+		"Hollow with wall thickness %.1f into %s?\n(Yellow wireframe shows resulting walls)"
+		% [thickness, check.message if check.message != "" else "walls"]
+	)
+	dlg.min_size = Vector2i(300, 100)
+	plugin._add_confirmable_dialog(dlg)
+	dlg.confirmed.connect(
+		func():
+			if not is_instance_valid(plugin) or not is_instance_valid(root):
+				dlg.queue_free()
+				return
+			if root.hollow_preview:
+				root.hollow_preview.clear()
+			HFUndoHelper.commit(
+				plugin._get_undo_redo(),
+				root,
+				"Hollow",
+				"hollow_brush_by_id",
+				[brush_id, thickness],
+				false,
+				Callable(plugin, "_record_history")
+			)
+			dlg.queue_free()
+	)
+	dlg.canceled.connect(
+		func():
+			if not is_instance_valid(plugin):
+				return
+			if root and is_instance_valid(root) and root.hollow_preview:
+				root.hollow_preview.clear()
+			dlg.queue_free()
+	)
+	dlg.popup_centered()
+	return true
+
+
+static func merge_selected(plugin: Object, root: Node) -> bool:
+	var nodes = plugin._current_selection_nodes()
+	var brush_ids: Array = []
+	for node in nodes:
+		if node and root.is_brush_node(node):
+			var info = root.get_brush_info_from_node(node)
+			var brush_id = str(info.get("brush_id", ""))
+			if brush_id != "":
+				brush_ids.append(brush_id)
+	if brush_ids.size() < 2:
+		if plugin.dock:
+			plugin.dock.show_toast("Select at least 2 brushes to merge", 1)
+		return false
+	var check: HFOpResult = root.can_merge_brushes(brush_ids)
+	if not check.ok:
+		root.user_message.emit(check.user_text(), 1)
+		return true
+	HFUndoHelper.commit(
+		plugin._get_undo_redo(),
+		root,
+		"Merge Brushes",
+		"merge_brushes_by_ids",
+		[brush_ids],
+		false,
+		Callable(plugin, "_record_history")
+	)
+	return true
+
+
+static func move_selected_to_floor(plugin: Object, root: Node) -> bool:
+	return move_selected_vertical(plugin, root, "Move to Floor", "move_brushes_to_floor")
+
+
+static func move_selected_to_ceiling(plugin: Object, root: Node) -> bool:
+	return move_selected_vertical(plugin, root, "Move to Ceiling", "move_brushes_to_ceiling")
+
+
+static func move_selected_vertical(
+	plugin: Object, root: Node, action_name: String, method_name: String
+) -> bool:
+	var nodes = plugin._current_selection_nodes()
+	var brush_ids: Array = []
+	for node in nodes:
+		if node and root.is_brush_node(node):
+			var info = root.get_brush_info_from_node(node)
+			var brush_id = str(info.get("brush_id", ""))
+			if brush_id != "":
+				brush_ids.append(brush_id)
+	if brush_ids.is_empty():
+		return false
+	HFUndoHelper.commit(
+		plugin._get_undo_redo(),
+		root,
+		action_name,
+		method_name,
+		[brush_ids],
+		false,
+		Callable(plugin, "_record_history")
+	)
+	return true
+
+
+## Cut every selected brush along the plane of the currently selected face.
+##
+## With rotation in the toolbox this is the cheapest route to an angled cut:
+## pick the face whose plane you want, select what to cut, and clip.
+static func clip_to_face_plane_selected(plugin: Object, root: Node) -> bool:
+	if not root:
+		return false
+	var face_selection: Dictionary = root.face_selection
+	if face_selection.is_empty():
+		root.user_message.emit(
+			"Clip to Face: select a face to cut along first — enter Face Select and click one", 1
+		)
+		return false
+	var source_id := ""
+	var face_index := -1
+	for key in face_selection:
+		var indices: Array = face_selection.get(key, [])
+		if indices.is_empty():
+			continue
+		var source = root.find_brush_by_id(str(key))
+		if source == null:
+			continue
+		source_id = str(key)
+		face_index = int(indices[0])
+		break
+	if source_id == "" or face_index < 0:
+		root.user_message.emit("Clip to Face: no usable face is selected", 1)
+		return false
+
+	var plane: Plane = root.brush_system.face_world_plane(source_id, face_index)
+	if plane.normal.length_squared() < 0.5:
+		root.user_message.emit("Clip to Face: the selected face has no usable plane", 1)
+		return false
+
+	var brush_ids := clip_target_brush_ids(plugin, root)
+	if brush_ids.is_empty():
+		root.user_message.emit("Clip to Face: select the brushes to cut", 1)
+		return false
+
+	# Ask before committing. An action that cuts nothing would still open an undo
+	# entry and claim the level changed.
+	var cuttable: Array = []
+	for brush_id in brush_ids:
+		if root.brush_system.plane_splits_brush(str(brush_id), plane):
+			cuttable.append(str(brush_id))
+	if cuttable.is_empty():
+		root.user_message.emit(
+			"Clip to Face: that plane does not pass through any selected brush", 1
+		)
+		return false
+
+	HFUndoHelper.commit(
+		plugin._get_undo_redo(),
+		root,
+		"Clip to Face Plane",
+		"clip_brushes_by_plane",
+		[cuttable, plane],
+		false,
+		Callable(plugin, "_record_history")
+	)
+	_release_face_select_after_cut(plugin, root)
+	return true
+
+
+## The brushes a face-plane cut should take, including the ones Face Select hid.
+##
+## Entering Face Select empties the object selection on purpose, so by the time a
+## reference face exists there is nothing left in the live selection to cut. The
+## objects that were selected on the way in are the ones the user meant.
+static func clip_target_brush_ids(plugin: Object, root: Node) -> Array:
+	var brush_ids: Array = collect_managed_targets(plugin, root)["brush_ids"]
+	if not brush_ids.is_empty():
+		return brush_ids
+	var saved: Array = plugin.get("_face_mode_saved_object_selection")
+	if saved == null:
+		return brush_ids
+	for node in saved:
+		if not is_instance_valid(node) or not (node is Node3D) or not root.is_brush_node(node):
+			continue
+		var info = root.get_brush_info_from_node(node)
+		var brush_id := str(info.get("brush_id", ""))
+		if brush_id != "":
+			brush_ids.append(brush_id)
+	return brush_ids
+
+
+## Both selections named brushes that the cut has just replaced. Drop them and
+## leave Face Select rather than restoring a selection of freed nodes.
+static func _release_face_select_after_cut(plugin: Object, root: Node) -> void:
+	var saved: Array = plugin.get("_face_mode_saved_object_selection")
+	if saved != null:
+		saved.clear()
+	if root and root.has_method("clear_face_selection"):
+		root.clear_face_selection()
+	if plugin.has_method("_close_face_select_mode"):
+		plugin._close_face_select_mode()
+
+
+static func clip_selected(plugin: Object, root: Node) -> bool:
+	var nodes = plugin._current_selection_nodes()
+	if nodes.is_empty():
+		return false
+	var brush = nodes[0]
+	if not root.is_brush_node(brush):
+		return false
+	var info = root.get_brush_info_from_node(brush)
+	var brush_id = str(info.get("brush_id", ""))
+	if brush_id == "":
+		return false
+	var center = info.get("center", Vector3.ZERO)
+	var split_pos = center.y if center is Vector3 else 0.0
+	var check: HFOpResult = root.can_clip_brush(brush_id, 1, split_pos)
+	if not check.ok:
+		root.user_message.emit(check.user_text(), 1)
+		return true
+	if root.clip_preview:
+		root.clip_preview.show_preview(brush_id, 1, split_pos)
+	var dlg = ConfirmationDialog.new()
+	dlg.title = "Clip Brush"
+	dlg.dialog_text = (
+		"Split brush along Y axis at %.1f?\n(Cyan wireframe shows resulting pieces)" % split_pos
+	)
+	dlg.min_size = Vector2i(300, 100)
+	plugin._add_confirmable_dialog(dlg)
+	dlg.confirmed.connect(
+		func():
+			if not is_instance_valid(plugin) or not is_instance_valid(root):
+				dlg.queue_free()
+				return
+			if root.clip_preview:
+				root.clip_preview.clear()
+			HFUndoHelper.commit(
+				plugin._get_undo_redo(),
+				root,
+				"Clip Brush",
+				"clip_brush_by_id",
+				[brush_id, 1, split_pos],
+				false,
+				Callable(plugin, "_record_history")
+			)
+			dlg.queue_free()
+	)
+	dlg.canceled.connect(
+		func():
+			if not is_instance_valid(plugin):
+				return
+			if root and is_instance_valid(root) and root.clip_preview:
+				root.clip_preview.clear()
+			dlg.queue_free()
+	)
+	dlg.popup_centered()
+	return true
+
+
+static func carve_selected(plugin: Object, root: Node) -> bool:
+	var nodes = plugin._current_selection_nodes()
+	if nodes.is_empty():
+		return false
+	var carve_ids: Array = []
+	for node in nodes:
+		if not root.is_brush_node(node):
+			continue
+		var info = root.get_brush_info_from_node(node)
+		var brush_id = str(info.get("brush_id", ""))
+		if brush_id != "":
+			carve_ids.append(brush_id)
+	if carve_ids.is_empty():
+		return false
+	if root.carve_preview:
+		root.carve_preview.show_preview(carve_ids[0])
+	var dlg = ConfirmationDialog.new()
+	dlg.title = "Carve"
+	dlg.dialog_text = (
+		"Carve %d brush(es)?\n(Green wireframe shows resulting pieces)" % carve_ids.size()
+	)
+	dlg.min_size = Vector2i(300, 100)
+	plugin._add_confirmable_dialog(dlg)
+	dlg.confirmed.connect(
+		func():
+			if not is_instance_valid(plugin) or not is_instance_valid(root):
+				dlg.queue_free()
+				return
+			if root.carve_preview:
+				root.carve_preview.clear()
+			for brush_id in carve_ids:
+				HFUndoHelper.commit(
+					plugin._get_undo_redo(),
+					root,
+					"Carve",
+					"carve_with_brush",
+					[brush_id],
+					false,
+					Callable(plugin, "_record_history")
+				)
+			dlg.queue_free()
+	)
+	dlg.canceled.connect(
+		func():
+			if not is_instance_valid(plugin):
+				return
+			if root and is_instance_valid(root) and root.carve_preview:
+				root.carve_preview.clear()
+			dlg.queue_free()
+	)
+	dlg.popup_centered()
+	return true
+
+
+# ---------------------------------------------------------------------------
+# Free transform
+# ---------------------------------------------------------------------------
+
+
+static func rotate_selected(plugin: Object, root: Node, direction: int) -> bool:
+	if not root:
+		return false
+	var targets := collect_managed_targets(plugin, root)
+	var brush_ids: Array = targets["brush_ids"]
+	var entity_paths: Array = targets["entity_paths"]
+	if brush_ids.is_empty() and entity_paths.is_empty():
+		return false
+	var step := absf(float(root.rotate_snap_degrees))
+	if is_zero_approx(step):
+		return false
+	var angle_degrees := step if direction >= 0 else -step
+	var axis_index: int = root.transform_axis_index(1)
+	var pivot: Vector3 = root.resolve_transform_pivot(brush_ids, entity_paths)
+	HFUndoHelper.commit(
+		plugin._get_undo_redo(),
+		root,
+		"Rotate HammerForge Objects",
+		"rotate_managed_nodes",
+		[brush_ids, entity_paths, axis_index, angle_degrees, pivot],
+		false,
+		Callable(plugin, "_record_history"),
+		collation_tag("rotate", brush_ids, entity_paths, [axis_index, signf(angle_degrees)]),
+		true,
+		brush_ids,
+		entity_paths
+	)
+	return true
+
+
+static func flip_selected(plugin: Object, root: Node) -> bool:
+	if not root:
+		return false
+	var targets := collect_managed_targets(plugin, root)
+	var brush_ids: Array = targets["brush_ids"]
+	var entity_paths: Array = targets["entity_paths"]
+	if brush_ids.is_empty() and entity_paths.is_empty():
+		return false
+	var axis_index: int = root.transform_axis_index(0)
+	var pivot: Vector3 = root.resolve_transform_pivot(brush_ids, entity_paths)
+	HFUndoHelper.commit(
+		plugin._get_undo_redo(),
+		root,
+		"Flip HammerForge Objects",
+		"flip_managed_nodes",
+		[brush_ids, entity_paths, axis_index, pivot],
+		false,
+		Callable(plugin, "_record_history"),
+		"",
+		false,
+		brush_ids,
+		entity_paths
+	)
+	return true
+
+
+## Clear rotation on the selected brushes, keeping their position and size.
+##
+## Hollow, clip and carve all work in the brush's own frame now, so this is a
+## tidying command rather than the way back to any of them.
+static func reset_rotation_selected(plugin: Object, root: Node) -> bool:
+	if not root:
+		return false
+	var targets := collect_managed_targets(plugin, root)
+	var brush_ids: Array = targets["brush_ids"]
+	if brush_ids.is_empty():
+		return false
+	HFUndoHelper.commit(
+		plugin._get_undo_redo(),
+		root,
+		"Reset HammerForge Rotation",
+		"reset_managed_rotation",
+		[brush_ids],
+		false,
+		Callable(plugin, "_record_history"),
+		"",
+		false,
+		brush_ids
+	)
+	return true

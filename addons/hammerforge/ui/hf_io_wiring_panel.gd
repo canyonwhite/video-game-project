@@ -1,0 +1,624 @@
+@tool
+extends VBoxContainer
+class_name HFIOWiringPanel
+
+## Visual I/O wiring panel — shows source entity's outputs as draggable ports,
+## available targets as drop zones, and a preset picker for quick wiring.
+## Embedded in the Entities tab when an entity is selected.
+
+signal connection_added(
+	source: Node,
+	output_name: String,
+	target_name: String,
+	input_name: String,
+	parameter: String,
+	delay: float,
+	fire_once: bool
+)
+## Emitted immediately before the panel changes the level, so whoever owns the
+## undo manager can take the before state. The matching done signal commits it.
+signal will_change(action_name: String)
+## Emitted when a `will_change` came to nothing, so the before state taken for it
+## is dropped rather than left to pair with whatever happens next.
+signal change_abandoned
+signal preset_applied(source: Node, preset_name: String, count: int)
+## Emitted after an output has been removed, so the dock can commit the undo step
+## the matching `will_change` opened.
+signal connection_removed(source: Node, index: int)
+signal highlight_toggled(enabled: bool)
+
+var _source_entity: Node = null
+var _entity_system = null  # HFEntitySystem
+var _io_presets = null  # HFIOPresets
+var _io_visualizer = null  # HFIOVisualizer
+
+# UI elements
+var _header_label: Label
+var _summary_label: Label
+var _highlight_btn: Button
+var _outputs_list: ItemList
+var _outputs_remove: Button
+var _preset_option: OptionButton
+var _preset_delete_btn: Button
+var _preset_apply_btn: Button
+var _preset_save_btn: Button
+var _target_map_container: VBoxContainer
+var _target_map_edits: Dictionary = {}  # tag -> LineEdit
+var _wire_btn: Button
+var _wire_output: LineEdit
+var _wire_output_pick: OptionButton
+var _wire_target: OptionButton
+var _wire_input: LineEdit
+var _wire_input_pick: OptionButton
+var _wire_param: LineEdit
+var _wire_delay: SpinBox
+var _wire_once: CheckBox
+
+
+func _ready() -> void:
+	_build_ui()
+
+
+func setup(entity_system, io_presets, io_visualizer) -> void:
+	_entity_system = entity_system
+	_io_presets = io_presets
+	_io_visualizer = io_visualizer
+
+
+func set_source_entity(entity: Node) -> void:
+	_source_entity = entity
+	_refresh()
+	_sync_highlight_button()
+
+
+## Sync highlight button pressed state from the authoritative visualizer.
+func _sync_highlight_button() -> void:
+	if _highlight_btn and _io_visualizer:
+		var current: bool = _io_visualizer.highlight_connected
+		if _highlight_btn.button_pressed != current:
+			_highlight_btn.set_pressed_no_signal(current)
+
+
+func _build_ui() -> void:
+	# --- Header ---
+	var header_row = HBoxContainer.new()
+	add_child(header_row)
+
+	_header_label = Label.new()
+	_header_label.text = "I/O Wiring"
+	_header_label.add_theme_font_size_override("font_size", 13)
+	_header_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header_row.add_child(_header_label)
+
+	_highlight_btn = Button.new()
+	_highlight_btn.text = "Highlight"
+	_highlight_btn.tooltip_text = "Toggle Highlight Connected — pulse linked entities"
+	_highlight_btn.toggle_mode = true
+	_highlight_btn.flat = true
+	_highlight_btn.focus_mode = Control.FOCUS_NONE
+	_highlight_btn.add_theme_font_size_override("font_size", 11)
+	_highlight_btn.toggled.connect(_on_highlight_toggled)
+	header_row.add_child(_highlight_btn)
+
+	# --- Connection summary ---
+	_summary_label = Label.new()
+	_summary_label.add_theme_font_size_override("font_size", 11)
+	_summary_label.add_theme_color_override("font_color", Color(0.7, 0.8, 1.0, 0.8))
+	_summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD
+	add_child(_summary_label)
+
+	# --- Current outputs ---
+	var out_lbl = Label.new()
+	out_lbl.text = "Outputs:"
+	out_lbl.add_theme_font_size_override("font_size", 11)
+	add_child(out_lbl)
+
+	_outputs_list = ItemList.new()
+	_outputs_list.custom_minimum_size.y = 60
+	_outputs_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_outputs_list.allow_reselect = true
+	add_child(_outputs_list)
+
+	# This list used to be display only, and the plainer duplicate above it in the
+	# Objects tab was the one with a Remove beside it. The panel is where a mapper
+	# works on wiring, so the Remove belongs here and the duplicate is gone (#616).
+	_outputs_remove = Button.new()
+	_outputs_remove.text = "Remove Output"
+	_outputs_remove.disabled = true
+	_outputs_remove.pressed.connect(_on_outputs_remove_pressed)
+	add_child(_outputs_remove)
+	_outputs_list.item_selected.connect(_on_outputs_list_selected)
+	_outputs_list.empty_clicked.connect(_on_outputs_list_empty_clicked)
+
+	# --- Quick wire section ---
+	var wire_sep = HSeparator.new()
+	add_child(wire_sep)
+
+	var wire_lbl = Label.new()
+	wire_lbl.text = "Quick Wire:"
+	wire_lbl.add_theme_font_size_override("font_size", 11)
+	add_child(wire_lbl)
+
+	# Output name
+	var row1 = HBoxContainer.new()
+	add_child(row1)
+	var r1_lbl = Label.new()
+	r1_lbl.text = "Out:"
+	r1_lbl.custom_minimum_size.x = 45
+	row1.add_child(r1_lbl)
+	_wire_output = LineEdit.new()
+	_wire_output.placeholder_text = "OnTrigger"
+	_wire_output.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row1.add_child(_wire_output)
+	# The form is free text, and stays free text: a mapper may wire to a name the
+	# definition does not declare. What was missing is a way to find out what the
+	# names are without reading the presets (#613).
+	_wire_output_pick = OptionButton.new()
+	_wire_output_pick.tooltip_text = "Output names this entity class declares"
+	_wire_output_pick.item_selected.connect(_on_output_name_picked)
+	row1.add_child(_wire_output_pick)
+
+	# Target entity (dropdown of available entities)
+	var row2 = HBoxContainer.new()
+	add_child(row2)
+	var r2_lbl = Label.new()
+	r2_lbl.text = "To:"
+	r2_lbl.custom_minimum_size.x = 45
+	row2.add_child(r2_lbl)
+	_wire_target = OptionButton.new()
+	_wire_target.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# The inputs on offer belong to whatever is being wired to, so they follow it.
+	_wire_target.item_selected.connect(_on_wire_target_selected)
+	row2.add_child(_wire_target)
+
+	# Input name
+	var row3 = HBoxContainer.new()
+	add_child(row3)
+	var r3_lbl = Label.new()
+	r3_lbl.text = "In:"
+	r3_lbl.custom_minimum_size.x = 45
+	row3.add_child(r3_lbl)
+	_wire_input = LineEdit.new()
+	_wire_input.placeholder_text = "Open"
+	_wire_input.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row3.add_child(_wire_input)
+	_wire_input_pick = OptionButton.new()
+	_wire_input_pick.tooltip_text = "Input names the target entity class declares"
+	_wire_input_pick.item_selected.connect(_on_input_name_picked)
+	row3.add_child(_wire_input_pick)
+
+	# Param + delay + once row
+	var row4 = HBoxContainer.new()
+	add_child(row4)
+	_wire_param = LineEdit.new()
+	_wire_param.placeholder_text = "param"
+	_wire_param.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_wire_param.custom_minimum_size.x = 50
+	row4.add_child(_wire_param)
+	_wire_delay = SpinBox.new()
+	_wire_delay.min_value = 0.0
+	_wire_delay.max_value = 999.0
+	_wire_delay.step = 0.1
+	_wire_delay.suffix = "s"
+	_wire_delay.custom_minimum_size.x = 65
+	row4.add_child(_wire_delay)
+	_wire_once = CheckBox.new()
+	_wire_once.text = "1x"
+	_wire_once.tooltip_text = "Fire once"
+	row4.add_child(_wire_once)
+
+	# Wire button
+	_wire_btn = Button.new()
+	_wire_btn.text = "Wire Connection"
+	_wire_btn.tooltip_text = "Add this output → target.input connection"
+	_wire_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_wire_btn.pressed.connect(_on_wire_pressed)
+	add_child(_wire_btn)
+
+	# --- Preset section ---
+	var preset_sep = HSeparator.new()
+	add_child(preset_sep)
+
+	var preset_lbl = Label.new()
+	preset_lbl.text = "Connection Presets:"
+	preset_lbl.add_theme_font_size_override("font_size", 11)
+	add_child(preset_lbl)
+
+	var preset_row = HBoxContainer.new()
+	add_child(preset_row)
+	_preset_option = OptionButton.new()
+	_preset_option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_preset_option.item_selected.connect(_on_preset_selected)
+	preset_row.add_child(_preset_option)
+
+	_preset_apply_btn = Button.new()
+	_preset_apply_btn.text = "Apply"
+	_preset_apply_btn.tooltip_text = "Apply selected preset to this entity"
+	_preset_apply_btn.pressed.connect(_on_preset_apply)
+	preset_row.add_child(_preset_apply_btn)
+
+	_preset_save_btn = Button.new()
+	_preset_save_btn.text = "Save"
+	_preset_save_btn.tooltip_text = "Save this entity's connections as a new preset"
+	_preset_save_btn.pressed.connect(_on_preset_save)
+	preset_row.add_child(_preset_save_btn)
+
+	_preset_delete_btn = Button.new()
+	_preset_delete_btn.text = "Delete"
+	_preset_delete_btn.tooltip_text = "Delete the selected saved preset"
+	_preset_delete_btn.pressed.connect(_on_preset_delete)
+	preset_row.add_child(_preset_delete_btn)
+
+	# Target mapping area (shown when preset has tags)
+	_target_map_container = VBoxContainer.new()
+	add_child(_target_map_container)
+
+
+func _refresh() -> void:
+	_refresh_outputs()
+	_refresh_target_dropdown()
+	_refresh_name_pickers()
+	_refresh_summary()
+	_refresh_presets()
+
+
+func _refresh_outputs() -> void:
+	if not _outputs_list:
+		return
+	_outputs_list.clear()
+	if _source_entity and _entity_system:
+		for conn in _entity_system.get_entity_outputs(_source_entity):
+			if conn is Dictionary:
+				_outputs_list.add_item(connection_label(conn))
+	_update_outputs_remove_enabled()
+
+
+## The one place a connection is turned into a line of text. There were two, in
+## two files, and they had already drifted to `[once]` and `[1x]` (#616).
+static func connection_label(conn: Dictionary) -> String:
+	var label := (
+		"%s → %s.%s"
+		% [
+			str(conn.get("output_name", "")),
+			str(conn.get("target_name", "")),
+			str(conn.get("input_name", "")),
+		]
+	)
+	var delay := float(conn.get("delay", 0.0))
+	if delay > 0.0:
+		label += " (%.1fs)" % delay
+	if bool(conn.get("fire_once", false)):
+		label += " [once]"
+	return label
+
+
+func _update_outputs_remove_enabled() -> void:
+	if not _outputs_remove:
+		return
+	_outputs_remove.disabled = (
+		_source_entity == null
+		or _outputs_list == null
+		or _outputs_list.get_selected_items().is_empty()
+	)
+
+
+func _on_outputs_list_selected(_index: int) -> void:
+	_update_outputs_remove_enabled()
+
+
+func _on_outputs_list_empty_clicked(_at_position: Vector2, _button_index: int) -> void:
+	_update_outputs_remove_enabled()
+
+
+func _on_outputs_remove_pressed() -> void:
+	if not _source_entity or not _entity_system or not _outputs_list:
+		return
+	var selected := _outputs_list.get_selected_items()
+	if selected.is_empty():
+		return
+	var index: int = selected[0]
+	will_change.emit("Remove Entity Output")
+	_entity_system.remove_entity_output(_source_entity, index)
+	connection_removed.emit(_source_entity, index)
+	_refresh()
+
+
+## Fill the two name dropdowns from the definitions: the outputs of the entity
+## being wired, and the inputs of whatever it is being wired to.
+func _refresh_name_pickers() -> void:
+	_fill_name_picker(_wire_output_pick, "outputs", _source_entity)
+	_fill_name_picker(_wire_input_pick, "inputs", _selected_target_node())
+
+
+func _fill_name_picker(picker: OptionButton, key: String, entity: Node) -> void:
+	if not picker:
+		return
+	picker.clear()
+	var names := _declared_names(entity, key)
+	if names.is_empty():
+		picker.add_item("--")
+		picker.disabled = true
+		return
+	picker.disabled = false
+	picker.add_item("--")
+	for entry_name in names:
+		picker.add_item(str(entry_name))
+
+
+func _declared_names(entity: Node, key: String) -> Array:
+	if not entity or not _entity_system:
+		return []
+	var entity_class := str(entity.get("entity_class")) if entity.get("entity_class") else ""
+	if entity_class == "":
+		entity_class = str(entity.get("entity_type")) if entity.get("entity_type") else ""
+	if entity_class == "":
+		entity_class = str(entity.get_meta("brush_entity_class", ""))
+	if entity_class == "":
+		return []
+	var definition: Dictionary = _entity_system.get_entity_definition(entity_class)
+	var names = definition.get(key, [])
+	return names if names is Array else []
+
+
+## The node currently chosen in the target dropdown, or null.
+func _selected_target_node() -> Node:
+	if not _wire_target or not _entity_system or not _entity_system.root:
+		return null
+	var idx := _wire_target.selected
+	if idx < 0:
+		return null
+	var wanted := _wire_target.get_item_text(idx).replace(" (self)", "")
+	for holder in [_entity_system.root.entities_node, _entity_system.root.draft_brushes_node]:
+		if not holder:
+			continue
+		for child in holder.get_children():
+			if is_instance_valid(child) and str(child.name) == wanted:
+				return child
+	return null
+
+
+func _on_wire_target_selected(_index: int) -> void:
+	_fill_name_picker(_wire_input_pick, "inputs", _selected_target_node())
+
+
+func _on_output_name_picked(index: int) -> void:
+	if index <= 0 or not _wire_output or not _wire_output_pick:
+		return
+	_wire_output.text = _wire_output_pick.get_item_text(index)
+	_wire_output_pick.select(0)
+
+
+func _on_input_name_picked(index: int) -> void:
+	if index <= 0 or not _wire_input or not _wire_input_pick:
+		return
+	_wire_input.text = _wire_input_pick.get_item_text(index)
+	_wire_input_pick.select(0)
+
+
+func _refresh_target_dropdown() -> void:
+	if not _wire_target:
+		return
+	_wire_target.clear()
+	if not _entity_system or not _entity_system.root:
+		return
+	var entities_node = _entity_system.root.entities_node
+	if not entities_node:
+		return
+	for child in entities_node.get_children():
+		if not is_instance_valid(child):
+			continue
+		if child == _source_entity:
+			_wire_target.add_item("%s (self)" % child.name)
+		else:
+			_wire_target.add_item(child.name)
+	# Also list brush entities
+	var brushes_node = _entity_system.root.draft_brushes_node
+	if brushes_node:
+		for child in brushes_node.get_children():
+			if is_instance_valid(child) and _entity_system.is_brush_io_target(child):
+				_wire_target.add_item(child.name)
+
+
+func _refresh_summary() -> void:
+	if not _summary_label:
+		return
+	if not _source_entity or not _io_visualizer:
+		_summary_label.text = ""
+		return
+	var summary = _io_visualizer.get_connection_summary(_source_entity.name)
+	var triggers: int = summary.get("triggers", 0)
+	var triggered_by: int = summary.get("triggered_by", 0)
+	var target_names: Array = summary.get("target_names", [])
+	var source_names: Array = summary.get("source_names", [])
+	var parts: Array = []
+	if triggers > 0:
+		(
+			parts
+			. append(
+				(
+					"Triggers %d target%s (%s)"
+					% [
+						triggers,
+						"" if triggers == 1 else "s",
+						", ".join(target_names.slice(0, 4)),
+					]
+				)
+			)
+		)
+	if triggered_by > 0:
+		(
+			parts
+			. append(
+				(
+					"Triggered by %d source%s (%s)"
+					% [
+						triggered_by,
+						"" if triggered_by == 1 else "s",
+						", ".join(source_names.slice(0, 4)),
+					]
+				)
+			)
+		)
+	if parts.is_empty():
+		_summary_label.text = "No connections"
+	else:
+		_summary_label.text = " | ".join(parts)
+
+
+func _refresh_presets() -> void:
+	if not _preset_option:
+		return
+	_preset_option.clear()
+	if not _io_presets:
+		return
+	var presets = _io_presets.get_all_presets()
+	for p in presets:
+		var name_str: String = str(p.get("name", ""))
+		var builtin: bool = bool(p.get("builtin", false))
+		if builtin:
+			_preset_option.add_item(name_str + " [built-in]")
+		else:
+			_preset_option.add_item(name_str)
+	_update_target_map_ui()
+	_update_preset_delete_enabled()
+
+
+func _on_highlight_toggled(pressed: bool) -> void:
+	highlight_toggled.emit(pressed)
+
+
+func _on_wire_pressed() -> void:
+	if not _source_entity or not _entity_system:
+		return
+	var output_name = _wire_output.text.strip_edges()
+	if output_name == "":
+		return
+	var target_idx = _wire_target.selected
+	if target_idx < 0:
+		return
+	var target_text: String = _wire_target.get_item_text(target_idx)
+	# Strip " (self)" suffix
+	var target_name = target_text.replace(" (self)", "")
+	var input_name = _wire_input.text.strip_edges()
+	if input_name == "":
+		return
+	var parameter = _wire_param.text.strip_edges()
+	var delay = _wire_delay.value
+	var fire_once = _wire_once.button_pressed
+	will_change.emit("Add Entity Output")
+	_entity_system.add_entity_output(
+		_source_entity, output_name, target_name, input_name, parameter, delay, fire_once
+	)
+	connection_added.emit(
+		_source_entity, output_name, target_name, input_name, parameter, delay, fire_once
+	)
+	_refresh()
+
+
+func _on_preset_selected(_index: int) -> void:
+	_update_target_map_ui()
+	_update_preset_delete_enabled()
+
+
+func _on_preset_apply() -> void:
+	if not _source_entity or not _io_presets:
+		return
+	var presets = _io_presets.get_all_presets()
+	var idx = _preset_option.selected
+	if idx < 0 or idx >= presets.size():
+		return
+	var preset = presets[idx]
+	# Build target map from LineEdits
+	var target_map: Dictionary = {}
+	for tag in _target_map_edits:
+		var edit: LineEdit = _target_map_edits[tag]
+		if edit and edit.text.strip_edges() != "":
+			target_map[tag] = edit.text.strip_edges()
+	var unresolved: Array = []
+	will_change.emit("Apply I/O Preset")
+	var count = _io_presets.apply_preset(_source_entity, preset, target_map, unresolved)
+	if count > 0:
+		var applied_name := str(preset.get("name", ""))
+		if not unresolved.is_empty():
+			applied_name = "%s (no target given for %s)" % [applied_name, ", ".join(unresolved)]
+		preset_applied.emit(_source_entity, applied_name, count)
+		_refresh()
+	else:
+		change_abandoned.emit()
+
+
+func _on_preset_save() -> void:
+	if not _source_entity or not _io_presets:
+		return
+	var entity_name: String = _source_entity.name
+	var preset_name = "From %s" % entity_name
+	var ok = _io_presets.save_entity_as_preset(_source_entity, preset_name)
+	if ok:
+		_refresh_presets()
+		_preset_option.selected = _preset_option.item_count - 1
+		_update_target_map_ui()
+
+
+## Take the selected user preset back out of the list.
+##
+## The list was append-only and lives under `user://`, so it followed the mapper
+## into every level they opened afterwards, and the only way to clean it up was
+## to hand-edit the JSON. Every other library in the plugin has a removal path.
+func _on_preset_delete() -> void:
+	if not _io_presets or not _preset_option:
+		return
+	var idx = _preset_option.selected
+	var builtin_count: int = _io_presets.BUILTIN_PRESETS.size()
+	if idx < builtin_count:
+		return
+	# remove_user_preset() indexes the user array; the dropdown puts the
+	# built-ins first.
+	_io_presets.remove_user_preset(idx - builtin_count)
+	_refresh_presets()
+	_update_target_map_ui()
+
+
+func _update_preset_delete_enabled() -> void:
+	if not _preset_delete_btn or not _io_presets:
+		return
+	var builtin_count: int = _io_presets.BUILTIN_PRESETS.size()
+	_preset_delete_btn.disabled = _preset_option.selected < builtin_count
+
+
+func _update_target_map_ui() -> void:
+	# Clear existing map editors
+	for child in _target_map_container.get_children():
+		_target_map_container.remove_child(child)
+		child.queue_free()
+	_target_map_edits.clear()
+
+	if not _io_presets or not _preset_option:
+		return
+	var presets = _io_presets.get_all_presets()
+	var idx = _preset_option.selected
+	if idx < 0 or idx >= presets.size():
+		return
+	var preset = presets[idx]
+	var tags = _io_presets.get_preset_target_tags(preset)
+	if tags.is_empty():
+		return
+
+	var map_lbl = Label.new()
+	map_lbl.text = "Map targets:"
+	map_lbl.add_theme_font_size_override("font_size", 10)
+	map_lbl.add_theme_color_override("font_color", Color(0.6, 0.7, 0.9, 0.8))
+	_target_map_container.add_child(map_lbl)
+
+	for tag in tags:
+		var row = HBoxContainer.new()
+		_target_map_container.add_child(row)
+		var lbl = Label.new()
+		lbl.text = "%s:" % tag
+		lbl.custom_minimum_size.x = 70
+		lbl.add_theme_font_size_override("font_size", 10)
+		row.add_child(lbl)
+		var edit = LineEdit.new()
+		edit.placeholder_text = "entity_name"
+		edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(edit)
+		_target_map_edits[tag] = edit
